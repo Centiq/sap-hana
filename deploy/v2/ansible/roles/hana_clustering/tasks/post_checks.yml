@@ -1,0 +1,10 @@
+---
+
+  - name: Ensure replication status is active
+    shell: "source ~/.bashrc ; python {{ path_sys_rep_status }} | grep 'overall system replication status: ACTIVE'"
+    register: grep_result
+    until: grep_result.rc == 0
+    changed_when: False
+    retries: 30
+    delay: 30
+    when: is_clustered_system and ansible_hostname == databases[0].nodes[0].dbname

@@ -1,0 +1,16 @@
+---
+
+hana_group: "sapsys"
+sid: HN1
+instance_number: 10
+
+hana_dir: "/hana"
+sap_dir: "/usr/sap"
+tmp_ssfs_dir: "/tmp"
+
+# For low spec Dev instances the timeout needs to be high
+# A delay of 2 seconds is also recommended
+# 2700 seconds is 45 minutes!
+
+hana_stop_start_timeout: 2700
+hana_stop_start_delay: 2

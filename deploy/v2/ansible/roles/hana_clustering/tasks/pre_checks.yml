@@ -1,0 +1,95 @@
+---
+
+- name: Check hana system replication variables are set and not empty
+  assert:
+    that:
+      - "hana_group is defined"
+      - "hana_group | trim != ''"
+      - "tmp_ssfs_dat is defined"
+      - "tmp_ssfs_dat | trim != ''"
+      - "tmp_ssfs_key is defined"
+      - "tmp_ssfs_key | trim != ''"
+      - "hana_global_dir is defined"
+      - "hana_global_dir | trim != ''"
+      - "path_ssfs_dat is defined"
+      - "path_ssfs_dat | trim != ''"
+      - "path_ssfs_key is defined"
+      - "path_ssfs_key | trim != ''"
+      - "path_global_ini is defined"
+      - "path_global_ini | trim != ''"
+      - "sid is defined"
+      - "sid | trim != ''"
+      - "hana_shared_dir is defined"
+      - "hana_shared_dir | trim != ''"
+      - "instance_number is defined"
+      - "instance_number | trim != ''"
+      - "path_sapcontrol is defined"
+      - "path_sapcontrol | trim != ''"
+      - "path_hdbnsutil is defined"
+      - "path_hdbnsutil | trim != ''"
+      - "path_sys_rep_status is defined"
+      - "path_sys_rep_status | trim != ''"
+
+- name: "Check that HANA directory {{ hana_dir }} exists"
+  block:
+    - stat:
+        path: "{{ hana_dir }}"
+      register: p
+      tags:
+        - skip_ansible_lint
+
+    - fail:
+        msg: "{{ hana_dir }} is not a directory"
+      when: not (p.stat.isdir is defined and p.stat.isdir)
+      tags:
+        - skip_ansible_lint
+
+- name: "Check that SAP directory {{ sap_dir }} exists"
+  block:
+    - stat:
+        path: "{{ sap_dir }}"
+      register: p
+      tags:
+        - skip_ansible_lint
+
+    - fail:
+        msg: "{{ sap_dir }} does not exist"
+      when: not (p.stat.isdir is defined and p.stat.isdir)
+      tags:
+        - skip_ansible_lint
+
+- name: "Check that HANA IDX SVR file {{ path_idx_svr }} exists"
+  block:
+    - stat:
+        path: "{{ path_idx_svr }}"
+      register: p
+      tags:
+        - skip_ansible_lint
+
+    - fail:
+        msg: "HANA IDX SVR file {{ path_idx_svr }} does not exist"
+      when: p.stat.exists == False
+      tags:
+        - skip_ansible_lint
+
+- name: "Check if HANA DB Util {{ path_hdbnsutil }} exists"
+  block:
+    - stat:
+        path: "{{ path_hdbnsutil }}"
+      register: p
+      tags:
+        - skip_ansible_lint
+
+    - fail:
+        msg: "{{ path_hdbnsutil }} does not exist"
+      when: p.stat.exists == False
+      tags:
+        - skip_ansible_lint
+
+- name: Check HANA log mode is set to normal
+  shell: "source ~/.bashrc ; {{ path_hdbsql }} -n localhost -i {{ instance }} -u SYSTEM -p {{ databases[0].credentials.db_systemdb_password }} 'SELECT DISTINCT log_mode FROM SYS.M_LOG_BUFFER'"
+  register: p
+  failed_when: p.rc != 0 or ("NORMAL" not in p.stdout)
+  changed_when: False
+  tags:
+    - skip_ansible_lint

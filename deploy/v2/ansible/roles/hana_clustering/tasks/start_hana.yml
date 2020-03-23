@@ -1,0 +1,31 @@
+---
+
+# sapcontrol EXITCODES
+#     0  Last webmethod call successful
+#     1  Last webmethod call failed, invalid parameter
+#     2  StartWait, StopWait, WaitforStarted, WaitforStopped, RestartServiceWait
+#        timed out
+#        CheckSystemCertificates detected warnings
+#     3  GetProcessList succeeded, all processes running correctly
+#        CheckSystemCertificates detected errors
+#     4  GetProcessList succeeded, all processes stopped
+
+- name: Ensure HANA is running
+  block:
+    - name: Determine if HANA is running
+      shell: >
+        source ~/.bashrc ; {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
+      failed_when: False
+      changed_when: False
+      ignore_errors: True
+      register: hana_running
+
+    - name: Start HANA if not already running
+      shell: "source ~/.bashrc ; {{ path_sapcontrol }} -nr {{ instance_number }} -function StartWait {{ hana_stop_start_timeout }} {{ hana_stop_start_delay }}"
+      when: hana_running.rc != 3
+
+- name: Check HANA is running
+  shell: source ~/.bashrc ; {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
+  register: hana_running
+  changed_when: False
+  failed_when: hana_running.rc != 0 and hana_running.rc != 3
