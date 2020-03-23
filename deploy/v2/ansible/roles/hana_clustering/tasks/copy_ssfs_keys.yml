@@ -1,7 +1,7 @@
 ---
 
 - name: Ensure the Primary node SSFS files are present on the local host
-  when: ansible_hostname == databases[0].nodes[0].dbname
+  when: ansible_hostname == output.databases[0].nodes[0].dbname
   block:
 
     - name: Ensure there is a local copy of Primary node SSFS_{{ sid | upper }}.DAT file
@@ -17,7 +17,7 @@
         flat: yes
 
 - name: Ensure the Primary node SSFS files are placed on the Secondary node
-  when: ansible_hostname != databases[0].nodes[0].dbname
+  when: ansible_hostname != output.databases[0].nodes[0].dbname
   block:
 
     - name: Check SSFS_{{ sid | upper }}.DAT backup file exists on the Secondary node
