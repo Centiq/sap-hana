@@ -27,4 +27,5 @@
   shell: >
     {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
   changed_when: False
+  register: hana_stopped
   failed_when: hana_stopped.rc != 4

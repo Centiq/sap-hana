@@ -25,6 +25,6 @@
 - name: Check HANA is running
   shell: >
     {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
-  register: hana_running
   changed_when: False
+  register: hana_running
   failed_when: hana_running.rc != 3
