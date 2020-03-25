@@ -69,9 +69,13 @@ function check_command_installed()
 	local cmd="$1"
 	local advice="$2"
 
+	# disable exit on error throughout this section as it's designed to fail
+	# when cmd is not installed
+	set +e
 	local is_cmd_installed
 	command -v "${cmd}" > /dev/null
 	is_cmd_installed=$?
+	set -e
 
 	local error="This script depends on the '${cmd}' command being installed"
 	# append advice if any was provided
