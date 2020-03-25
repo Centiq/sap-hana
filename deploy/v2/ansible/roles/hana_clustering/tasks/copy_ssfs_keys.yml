@@ -32,7 +32,7 @@
         state: hard
       when: dat_backup_result.stat.exists == False
 
-    - name: Check SSFS_.{{ sid | upper }}.KEY backup file exists on the Secondary node
+    - name: Check SSFS_{{ sid | upper }}.KEY backup file exists on the Secondary node
       stat:
         path: "{{ path_ssfs_key }}.bak"
       register: key_backup_result

@@ -11,22 +11,20 @@
 #        CheckSystemCertificates detected errors
 #     4  GetProcessList succeeded, all processes stopped
 
-- name: Ensure HANA is stopped
-  block:
-    - name: Determine if HANA is stopped
-      shell: >
-        source ~/.bashrc ; {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
-      failed_when: False
-      changed_when: False
-      ignore_errors: True
-      register: hana_stopped
+- name: Determine if HANA is stopped
+  shell: >
+    {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
+  failed_when: False
+  changed_when: False
+  register: hana_stopped
 
-    - name: Stop HANA if not already stopped
-      shell: "source ~/.bashrc ; {{ path_sapcontrol }} -nr {{ instance_number }} -function StopWait {{ hana_stop_start_timeout }} {{ hana_stop_start_delay }}"
-      when: hana_stopped.rc != 4
+- name: Stop HANA if not already stopped
+  shell: >
+    {{ path_sapcontrol }} -nr {{ instance_number }} -function StopWait {{ hana_stop_start_timeout }} {{ hana_stop_start_delay }}
+  when: hana_stopped.rc != 4
 
 - name: Check HANA is stopped
   shell: >
-    source ~/.bashrc ; {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
+    {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
   changed_when: False
-  failed_when: hana_running.rc != 0 and hana_running.rc != 4
+  failed_when: hana_stopped.rc != 4

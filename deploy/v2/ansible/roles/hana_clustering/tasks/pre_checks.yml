@@ -88,7 +88,7 @@
 
 - name: Check HANA log mode is set to normal
   shell: >
-    source ~/.bashrc ; {{ path_hdbsql }} -n localhost -i {{ instance }}
+    {{ path_hdbsql }} -n localhost -i {{ instance_number }}
     -u SYSTEM -p {{ hana_database.credentials.db_systemdb_password }}
     "SELECT VALUE FROM M_INIFILE_CONTENTS WHERE FILE_NAME='global.ini' AND LAYER_NAME='DEFAULT' AND SECTION='persistence' AND KEY='log_mode'"
   register: p

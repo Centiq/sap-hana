@@ -35,6 +35,7 @@ path_ssfs_dat: "{{ hana_global_dir }}/security/rsecssfs/data/{{ hsr_dat_name }}"
 path_ssfs_key: "{{ hana_global_dir }}/security/rsecssfs/key/{{ hsr_key_name }}"
 path_global_ini: "{{ hana_global_dir }}/hdb/custom/config/global.ini"
 
+path_idx_svr: "{{ hana_instance_executable_dir }}/hdbindexserver"
 path_hdbsql: "{{ hana_instance_executable_dir }}/hdbsql"
 path_hdbnsutil: "{{ hana_instance_executable_dir }}/hdbnsutil"
 path_sapcontrol: "{{ hana_instance_executable_dir }}/sapcontrol"
