@@ -2,7 +2,6 @@
 
     # HANA must be restarted after setting the value in global.ini
   - name: Ensure option ssl=systempki set in section [communication] of global.ini.
-    become: true
     ini_file:
       path: "{{ path_global_ini }}"
       section: communication

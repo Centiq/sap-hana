@@ -1,6 +1,7 @@
 ---
 
 - name: Ensure HANA is configured for System Replication
+  become_user: "{{ sid_admin_user }}"
   block:
     - import_tasks: set_global_ini_value.yml
     - import_tasks: stop_hana.yml
@@ -25,6 +26,7 @@
   when: ansible_hostname == hana_database.nodes[0].dbname
 
 - name: Ensure System Replication is configured
+  become_user: "{{ sid_admin_user }}"
   block:
     - import_tasks: set_global_ini_value.yml
     - import_tasks: stop_hana.yml

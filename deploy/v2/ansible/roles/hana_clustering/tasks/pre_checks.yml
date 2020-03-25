@@ -92,24 +92,23 @@
   become: true
 
 - name: Check that HANA system user ({{ hana_system_user }}) can access the SYSTEM database
+  become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
     {{ path_hdbsql }} -i {{ instance_number }} -u {{ hana_system_user }} -p '{{ hana_system_user_password }}'
     -n {{ hana_container_address }} '{{ dummy_cmd }}'
-  become: true
-  become_user: "{{ sid_admin_user }}"
   changed_when: false
 
 - name: Check that HANA system user ({{ hana_system_user }}) can access the tenant database {{ hana_tenant_database_name }}
+  become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
     {{ path_hdbsql }} -i {{ instance_number }} -u {{ hana_system_user }} -p '{{ hana_system_user_password }}'
     -n {{ hana_tenant_address }} '{{ dummy_cmd }}'
-  become: true
-  become_user: "{{ sid_admin_user }}"
   changed_when: false
 
 - name: Check HANA log mode is set to normal
+  become_user: "{{ sid_admin_user }}"
   shell: >
     {{ path_hdbsql }} -n localhost -i {{ instance_number }}
     -u SYSTEM -p {{ hana_system_user_password }}
