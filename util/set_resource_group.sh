@@ -53,11 +53,15 @@ function edit_json_template_for_resource_group()
 {
 	local rg_name="$1"
 	local json_template_name="$2"
+
+	# this is the JSON path in jq format
 	local rg_name_json_path='"infrastructure", "resource_group", "name"'
 
 	# Only attempt to set for non-empty resource groups
 	if [[ "${rg_name}" != "" ]]; then
 		edit_json_template_for_path "${rg_name_json_path}" "${rg_name}" "${json_template_name}"
+	else
+		error_and_exit "The resource group name cannot be empty"
 	fi
 }
 
