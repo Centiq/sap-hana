@@ -2,7 +2,7 @@
 
 hana_group: "sapsys"
 sid: HN1
-instance_number: 10
+instance_number: 0
 hana_system_user: "SYSTEM"
 
 hana_dir: "/hana"
