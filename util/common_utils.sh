@@ -110,6 +110,6 @@ function edit_json_template_for_path()
 	# edit JSON template file contents and write to temp file
 	eval "${jq_command}" > "${temp_template_json}"
 
-    # replace original JSON template file with temporary edited one
-    mv "${temp_template_json}" "${target_json}"
+	# replace original JSON template file with temporary edited one
+	mv "${temp_template_json}" "${target_json}"
 }
