@@ -60,6 +60,11 @@
   become_user: root
   roles:
     - { role: hdb-server-install }
+    - role: hana-system-replication
+      vars:
+        sid: "{{ hana_database.instance.sid }}"
+        instance_number: "{{ hana_database.instance.instance_number }}"
+      when: is_clustered_system
 
 # Linux jumpboxes components install
 - hosts: jumpboxes_linux
@@ -67,11 +72,6 @@
   become_user: root
   roles:
     - { role: linux-jumpboxes-install }
-    - role: hana-system-replication
-      vars:
-        sid: "{{ hana_database.instance.sid }}"
-        instance_number: "{{ hana_database.instance.instance_number }}"
-      when: is_clustered_system
 
 # Windows jumpboxes components install
 - hosts: jumpboxes_windows
