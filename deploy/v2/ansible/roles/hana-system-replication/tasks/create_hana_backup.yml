@@ -20,7 +20,7 @@
     . ~/.bashrc && {{ path_hdbsql }} -i {{ instance_number }} -u {{ hana_system_user }} -p '{{ hana_system_user_password }}'
     -n {{ hana_container_address }} "{{ backup_cmd_for_systemdb }}"
   vars:
-    backup_required: "'{{ backup_cmd_no_rows_found }}' in backup_exists_cmd_for_systemdb_result.stdout"
+    backup_required: "('{{ backup_cmd_no_rows_found }}' in backup_exists_cmd_for_systemdb_result.stdout) | bool"
   when: backup_required
 
 - name: Check whether backup exists for tenant {{ hana_tenant_database_name }} database for System Identifier {{ sid }}
@@ -37,5 +37,5 @@
     . ~/.bashrc && {{ path_hdbsql }} -i {{ instance_number }} -u {{ hana_system_user }} -p '{{ hana_system_user_password }}'
     -n {{ hana_container_address }} "{{ backup_cmd_for_tenant }}"
   vars:
-    backup_required: "'{{ backup_cmd_no_rows_found }}' in backup_exists_cmd_for_tenant_result.stdout"
+    backup_required: "('{{ backup_cmd_no_rows_found }}' in backup_exists_cmd_for_tenant_result.stdout) | bool"
   when: backup_required
