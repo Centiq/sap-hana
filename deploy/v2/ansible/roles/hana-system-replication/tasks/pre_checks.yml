@@ -93,7 +93,7 @@
 - name: Check HANA log mode is set to normal
   become_user: "{{ sid_admin_user }}"
   shell: >
-    {{ hdbsql_command }} "{{ get_log_mode_cmd }}"
+    {{ hdbsql_command }} -n {{ hana_container_address }} "{{ get_log_mode_cmd }}"
   register: p
   failed_when: p.rc != 0 or ("normal" not in p.stdout)
   changed_when: false
