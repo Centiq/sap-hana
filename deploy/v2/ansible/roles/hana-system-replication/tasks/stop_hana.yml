@@ -1,6 +1,5 @@
 ---
 
-
 # sapcontrol EXITCODES
 #     0  Last webmethod call successful
 #     1  Last webmethod call failed, invalid parameter
