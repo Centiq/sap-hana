@@ -13,77 +13,46 @@
       - "hana_stop_start_timeout | trim | length != 0"
       - "hana_stop_start_delay | trim | length != 0"
 
-- name: "Check that HANA directory {{ hana_dir }} exists"
-  block:
-    - stat:
-        path: "{{ hana_dir }}"
-      register: file_dir_status
-      tags:
-        - skip_ansible_lint
+- name: "Check that HANA directory {{ hana_dir }} exists and is a directory"
+  stat:
+    path: "{{ hana_dir }}"
+  register: file_dir_status
+  failed_when: not (file_dir_status.stat.isdir is defined and file_dir_status.stat.isdir)
 
-    - fail:
-        msg: "{{ hana_dir }} is not a directory"
-      when: not (file_dir_status.stat.isdir is defined and file_dir_status.stat.isdir)
-      tags:
-        - skip_ansible_lint
-
-- name: "Check that SAP directory {{ sap_dir }} exists"
-  block:
-    - stat:
-        path: "{{ sap_dir }}"
-      register: file_dir_status
-      tags:
-        - skip_ansible_lint
-
-    - fail:
-        msg: "{{ sap_dir }} does not exist"
-      when: not (file_dir_status.stat.isdir is defined and file_dir_status.stat.isdir)
-      tags:
-        - skip_ansible_lint
+- name: "Check that SAP directory {{ sap_dir }} exists and is a directory"
+  stat:
+    path: "{{ sap_dir }}"
+  register: file_dir_status
+  failed_when: not (file_dir_status.stat.isdir is defined and file_dir_status.stat.isdir)
 
 - name: "Check that HANA IDX SVR file {{ path_idx_svr }} exists"
-  block:
-    - stat:
-        path: "{{ path_idx_svr }}"
-      register: file_dir_status
-      tags:
-        - skip_ansible_lint
-
-    - fail:
-        msg: "HANA IDX SVR file {{ path_idx_svr }} does not exist"
-      when: file_dir_status.stat.exists == false
-      tags:
-        - skip_ansible_lint
+  stat:
+    path: "{{ path_idx_svr }}"
+  register: file_dir_status
+  failed_when: file_dir_status.stat.exists == false
 
 - name: "Check if HANA DB Util {{ path_hdbnsutil }} exists"
-  block:
-    - stat:
-        path: "{{ path_hdbnsutil }}"
-      register: file_dir_status
-      tags:
-        - skip_ansible_lint
+  stat:
+    path: "{{ path_hdbnsutil }}"
+  register: file_dir_status
+  failed_when: file_dir_status.stat.exists == false
 
-    - fail:
-        msg: "{{ path_hdbnsutil }} does not exist"
-      when: file_dir_status.stat.exists == false
-      tags:
-        - skip_ansible_lint
-
-- name: Check that HANA admin user {{ sid_admin_user }} exists
-  shell: "id {{ sid_admin_user }}"
+- name: Check that HANA admin OS user {{ sid_admin_user }} exists
+  user:
+    name: "{{ sid_admin_user }}"
+  check_mode: true
   changed_when: false
-  become: true
-  tags:
-    - skip_ansible_lint
+  register: sid_admin_user_status
+  failed_when: sid_admin_user_status.failed
 
-- name: Check that HANA system user ({{ hana_system_user }}) can access the SYSTEM database
+- name: Check that HANA DB system user ({{ hana_system_user }}) can access the SYSTEM database
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
     {{ hdbsql_command }} -n {{ hana_container_address }} '{{ dummy_cmd }}'
   changed_when: false
 
-- name: Check that HANA system user ({{ hana_system_user }}) can access the tenant database {{ hana_tenant_database_name }}
+- name: Check that HANA DB system user ({{ hana_system_user }}) can access the tenant database {{ hana_tenant_database_name }}
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
