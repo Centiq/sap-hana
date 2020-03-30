@@ -24,7 +24,7 @@ path_hdbnsutil: "{{ hana_instance_executable_dir }}/hdbnsutil"
 path_sapcontrol: "{{ hana_instance_executable_dir }}/sapcontrol"
 path_sys_rep_status: "{{ hana_instance_executable_dir }}/python_support/systemReplicationStatus.py"
 
-is_clustered_system: "{{ hana_database.high_availability }}"
+is_clustered_system: "{{ hana_database.high_availability | default(false) }}"
 
 # HANA Backup directory
 sid_backup_dir: "{{ hana_backup_dir }}/{{ sid | upper }}"
