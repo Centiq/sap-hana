@@ -37,7 +37,15 @@ hana_tenant_address: "localhost:3{{ instance_number }}15"
 hana_system_user_password: "{{ hana_database.credentials.db_systemdb_password }}"
 hana_tenant_database_name: "{{ sid | upper }}"
 
+# Complete hdbsql command
+hdbsql_command: "{{ path_hdbsql }} -n localhost -i {{ instance_number }} -u SYSTEM -p {{ hana_system_user_password }}"
+
 # SQL Commands
+get_log_mode_cmd: "SELECT VALUE FROM M_INIFILE_CONTENTS
+  WHERE FILE_NAME='global.ini'
+  AND LAYER_NAME='DEFAULT'
+  AND SECTION='persistence'
+  AND KEY='log_mode'"
 backup_exists_cmd_for_systemdb: "SELECT SYS.M_BACKUP_CATALOG.BACKUP_ID FROM SYS.M_BACKUP_CATALOG
   INNER JOIN SYS.M_BACKUP_CATALOG_FILES ON SYS.M_BACKUP_CATALOG.ENTRY_ID = SYS.M_BACKUP_CATALOG_FILES.ENTRY_ID
   WHERE SYS.M_BACKUP_CATALOG.STATE_NAME='successful'

@@ -80,24 +80,20 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
-    {{ path_hdbsql }} -i {{ instance_number }} -u {{ hana_system_user }} -p '{{ hana_system_user_password }}'
-    -n {{ hana_container_address }} '{{ dummy_cmd }}'
+    {{ hdbsql_command }} -n {{ hana_container_address }} '{{ dummy_cmd }}'
   changed_when: false
 
 - name: Check that HANA system user ({{ hana_system_user }}) can access the tenant database {{ hana_tenant_database_name }}
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
-    {{ path_hdbsql }} -i {{ instance_number }} -u {{ hana_system_user }} -p '{{ hana_system_user_password }}'
-    -n {{ hana_tenant_address }} '{{ dummy_cmd }}'
+    {{ hdbsql_command }} -n {{ hana_tenant_address }} '{{ dummy_cmd }}'
   changed_when: false
 
 - name: Check HANA log mode is set to normal
   become_user: "{{ sid_admin_user }}"
   shell: >
-    {{ path_hdbsql }} -n localhost -i {{ instance_number }}
-    -u SYSTEM -p {{ hana_system_user_password }}
-    "SELECT VALUE FROM M_INIFILE_CONTENTS WHERE FILE_NAME='global.ini' AND LAYER_NAME='DEFAULT' AND SECTION='persistence' AND KEY='log_mode'"
+    {{ hdbsql_command }} "{{ get_log_mode_cmd }}"
   register: p
   failed_when: p.rc != 0 or ("normal" not in p.stdout)
   changed_when: false
