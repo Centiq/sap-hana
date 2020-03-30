@@ -17,13 +17,13 @@
   block:
     - stat:
         path: "{{ hana_dir }}"
-      register: p
+      register: file_dir_status
       tags:
         - skip_ansible_lint
 
     - fail:
         msg: "{{ hana_dir }} is not a directory"
-      when: not (p.stat.isdir is defined and p.stat.isdir)
+      when: not (file_dir_status.stat.isdir is defined and file_dir_status.stat.isdir)
       tags:
         - skip_ansible_lint
 
@@ -31,13 +31,13 @@
   block:
     - stat:
         path: "{{ sap_dir }}"
-      register: p
+      register: file_dir_status
       tags:
         - skip_ansible_lint
 
     - fail:
         msg: "{{ sap_dir }} does not exist"
-      when: not (p.stat.isdir is defined and p.stat.isdir)
+      when: not (file_dir_status.stat.isdir is defined and file_dir_status.stat.isdir)
       tags:
         - skip_ansible_lint
 
@@ -45,13 +45,13 @@
   block:
     - stat:
         path: "{{ path_idx_svr }}"
-      register: p
+      register: file_dir_status
       tags:
         - skip_ansible_lint
 
     - fail:
         msg: "HANA IDX SVR file {{ path_idx_svr }} does not exist"
-      when: p.stat.exists == false
+      when: file_dir_status.stat.exists == false
       tags:
         - skip_ansible_lint
 
@@ -59,13 +59,13 @@
   block:
     - stat:
         path: "{{ path_hdbnsutil }}"
-      register: p
+      register: file_dir_status
       tags:
         - skip_ansible_lint
 
     - fail:
         msg: "{{ path_hdbnsutil }} does not exist"
-      when: p.stat.exists == false
+      when: file_dir_status.stat.exists == false
       tags:
         - skip_ansible_lint
 
@@ -94,8 +94,8 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     {{ hdbsql_command }} -n {{ hana_container_address }} "{{ get_log_mode_cmd }}"
-  register: p
-  failed_when: p.rc != 0 or ("normal" not in p.stdout)
+  register: log_mode_status
+  failed_when: log_mode_status.rc != 0 or ("normal" not in log_mode_status.stdout)
   changed_when: false
   tags:
     - skip_ansible_lint

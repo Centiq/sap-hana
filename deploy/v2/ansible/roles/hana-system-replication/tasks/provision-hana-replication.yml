@@ -12,9 +12,9 @@
       shell: >
         source ~/.bashrc ;
         {{ path_hdbnsutil }} -sr_enable --name=SITEA
-      register: p
+      register: hana_status
       # rc == 102 means nameserver is already active
-      failed_when: p.rc != 0 and p.rc != 102
+      failed_when: hana_status.rc != 0 and hana_status.rc != 102
       # Ignore lack of idempotency temporarily until a good solution is known
       tags:
         - skip_ansible_lint
