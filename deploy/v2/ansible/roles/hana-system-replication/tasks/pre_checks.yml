@@ -4,23 +4,23 @@
   assert:
     that:
       - "hana_group is defined"
-      - "hana_group | trim != ''"
+      - "hana_group | trim | length == 0"
       - "sid is defined"
-      - "sid | trim != ''"
+      - "sid | trim | length == 0"
       - "instance_number is defined"
-      - "instance_number | trim != ''"
+      - "instance_number | trim | length == 0"
       - "hana_system_user is defined"
-      - "hana_system_user | trim != ''"
+      - "hana_system_user | trim | length == 0"
       - "hana_dir is defined"
-      - "hana_dir | trim != ''"
+      - "hana_dir | trim | length == 0"
       - "sap_dir is defined"
-      - "sap_dir | trim != ''"
+      - "sap_dir | trim | length == 0"
       - "tmp_ssfs_dir is defined"
-      - "tmp_ssfs_dir | trim != ''"
+      - "tmp_ssfs_dir | trim | length == 0"
       - "hana_stop_start_timeout is defined"
-      - "hana_stop_start_timeout | trim != ''"
+      - "hana_stop_start_timeout | trim | length == 0"
       - "hana_stop_start_delay is defined"
-      - "hana_stop_start_delay | trim != ''"
+      - "hana_stop_start_delay | trim | length == 0"
 
 - name: "Check that HANA directory {{ hana_dir }} exists"
   block:
@@ -82,6 +82,8 @@
   shell: "id {{ sid_admin_user }}"
   changed_when: false
   become: true
+  tags:
+    skip_ansible_lint: true
 
 - name: Check that HANA system user ({{ hana_system_user }}) can access the SYSTEM database
   become_user: "{{ sid_admin_user }}"

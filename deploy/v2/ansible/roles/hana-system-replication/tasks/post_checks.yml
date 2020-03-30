@@ -19,6 +19,7 @@
 - name: Ensure replication status is active
   become_user: "{{ sid_admin_user }}"
   shell: >
+    set -o pipefail
     source ~/.bashrc ;
     python {{ path_sys_rep_status }} | grep 'overall system replication status: ACTIVE'
   register: grep_result
