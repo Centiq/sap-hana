@@ -30,7 +30,7 @@
         src: "{{ path_ssfs_dat }}"
         path: "{{ path_ssfs_dat }}.bak"
         state: hard
-      when: dat_backup_result.stat.exists == False
+      when: dat_backup_result.stat.exists == false
 
     - name: Check SSFS_{{ sid | upper }}.KEY backup file exists on the Secondary node
       stat:
@@ -42,7 +42,7 @@
         src: "{{ path_ssfs_key }}"
         path: "{{ path_ssfs_key }}.bak"
         state: hard
-      when: key_backup_result.stat.exists == False
+      when: key_backup_result.stat.exists == false
 
     - name: Ensure original SSFS_{{ sid | upper }}.DAT file is removed on the Secondary node
       file:

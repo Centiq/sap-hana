@@ -24,7 +24,7 @@
     python {{ path_sys_rep_status }} | grep 'overall system replication status: ACTIVE'
   register: grep_result
   until: grep_result.rc == 0
-  changed_when: False
+  changed_when: false
   retries: 30
   delay: 30
   when: ansible_hostname == hana_database.nodes[0].dbname

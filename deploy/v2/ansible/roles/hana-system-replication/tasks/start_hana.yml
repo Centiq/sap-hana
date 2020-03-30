@@ -14,11 +14,11 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
-  failed_when: False
-  changed_when: False
+  failed_when: false
+  changed_when: false
   register: hana_running
 
-- name: Start HANA if not already running
+- name: Ensure HANA is running
   become_user: "{{ sid_admin_user }}"
   shell: >
     {{ path_sapcontrol }} -nr {{ instance_number }} -function StartWait {{ hana_stop_start_timeout }} {{ hana_stop_start_delay }}
@@ -28,6 +28,6 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     {{ path_sapcontrol }} -nr {{ instance_number }} -function GetProcessList
-  changed_when: False
+  changed_when: false
   register: hana_running
   failed_when: hana_running.rc != 3

@@ -60,7 +60,7 @@
 
     - fail:
         msg: "HANA IDX SVR file {{ path_idx_svr }} does not exist"
-      when: p.stat.exists == False
+      when: p.stat.exists == false
       tags:
         - skip_ansible_lint
 
@@ -74,7 +74,7 @@
 
     - fail:
         msg: "{{ path_hdbnsutil }} does not exist"
-      when: p.stat.exists == False
+      when: p.stat.exists == false
       tags:
         - skip_ansible_lint
 
@@ -109,6 +109,6 @@
     "SELECT VALUE FROM M_INIFILE_CONTENTS WHERE FILE_NAME='global.ini' AND LAYER_NAME='DEFAULT' AND SECTION='persistence' AND KEY='log_mode'"
   register: p
   failed_when: p.rc != 0 or ("normal" not in p.stdout)
-  changed_when: False
+  changed_when: false
   tags:
     - skip_ansible_lint
