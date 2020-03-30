@@ -1,6 +1,6 @@
 ---
 
-- name: Check hana system replication variables are set and not empty
+- name: Check HANA system replication variables are set and not empty
   assert:
     that:
       - "hana_group is defined"
