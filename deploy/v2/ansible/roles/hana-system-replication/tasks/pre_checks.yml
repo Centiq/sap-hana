@@ -17,8 +17,8 @@
       - "sap_dir | trim != ''"
       - "tmp_ssfs_dir is defined"
       - "tmp_ssfs_dir | trim != ''"
-      - "hana_stop_start_dir is defined"
-      - "hana_stop_start_dir | trim != ''"
+      - "hana_stop_start_timeout is defined"
+      - "hana_stop_start_timeout | trim != ''"
       - "hana_stop_start_delay is defined"
       - "hana_stop_start_delay | trim != ''"
 
