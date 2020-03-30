@@ -6,7 +6,7 @@
       - "hana_group is defined"
       - "hana_group | trim | length == 0"
       - "sid is defined"
-      - "sid | trim | length == 0"
+      - "sid | trim | regex_search('^\\d\\d$') | length == 2"
       - "instance_number is defined"
       - "instance_number | trim | length == 0"
       - "hana_system_user is defined"
