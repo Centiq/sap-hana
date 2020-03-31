@@ -1,0 +1,7 @@
+---
+
+clustering_service:
+  RedHat: "pcsd"
+  Suse: "corosync"
+
+clustering_command: "crm cluster"

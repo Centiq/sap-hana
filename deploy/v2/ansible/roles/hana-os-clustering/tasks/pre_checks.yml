@@ -1,0 +1,22 @@
+---
+
+
+- name: Check the required variables are set
+  assert:
+    that:
+      - "ha_cluster_pass is defined"
+      - "ha_cluster_pass | trim | length > 0"
+      - "stonith_sp_name is defined"
+      - "stonith_sp_name | trim | length > 0"
+      - "stonith_sp_pass is defined"
+      - "stonith_sp_pass | trim | length > 0"
+
+- name: Check the required Clustering scripts are available
+  when: ansible_os_family == 'Suse'
+  stat:
+    path: "{{ item }}"
+  with_items:
+    - "/usr/sbin/ha-cluster-init"
+    - "/usr/sbin/ha-cluster-join"
+  register: p
+  failed_when: not p.stat.exists

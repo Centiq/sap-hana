@@ -1,0 +1,213 @@
+---
+
+# Pre-provisioning tasks
+- name: Ensure clustering software is installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ha_packages[ansible_os_family] }}"
+
+- name: Ensure HA Cluster password is set
+  user:
+    name: hacluster
+    password: "{{ ha_cluster_password|password_hash('sha512') }}" # todo set variable
+
+- name: Ensure Clustering Service is started and enabled
+  systemd:
+    name: "{{ clustering_service[ansible_os_family] }}"
+    enabled: true
+    state: started
+
+# Pacemaker can create a large number of processes
+- name: Ensure Process limit is raised
+  become: True
+  lineinfile:
+    path: /etc/systemd/system.conf
+    state: present
+    regexp: "^#?\s*DefaultTasksMax="
+    line: "DefaultTasksMax=4096"
+  register: raise_process_limit
+
+- name: Ensure systemctl daemon is reloaded
+  systemd:
+    daemon_reload: True
+
+- name: Ensure clustering can manage Virtual IPs
+  become: True
+  lineinfile:
+    path: /etc/sysconfig/network/ifcfg-eth0   # todo is this the right adapter? Do we want the DB adapter?
+    state: present
+    regexp: "^#?\s*CLOUD_NETCONFIG_MANAGE="
+    line: "CLOUD_NETCONFIG_MANAGE='no'"
+
+
+# todo configure SSH access between node (swap SSH public keys)?
+
+
+
+## Load balancer details? The IP should be retrieved from the output.json details - does it need adding there?
+- name: Ensure Load Balancer facts are available
+  local_action:
+    module: azure_rm_loadbalancer_facts
+    name: "{{ load_balancer_name }}"
+    resource_group: "{{ azure_resource_group_name }}"
+  register: pacemaker_cluster_load_balancer_facts
+  become: false
+
+- name: Ensure Load Balancer IP is saved
+  set_fact:
+    pacemaker_cluster_load_balancer_ip_address:
+      '{{ pacemaker_cluster_load_balancer_facts.ansible_facts.azure_loadbalancers[0].properties.frontendIPConfigurations[0].properties.privateIPAddress }}'
+  become: false
+
+
+
+# ## Provisioning tasks # this appears to be replaced with crm cluster init
+# - name: Check existing clustering status
+#   become: yes
+#   shell: pcs cluster status | grep -c Online
+#   register: pcs_cluster_status
+#   changed_when: false
+#   failed_when: false
+
+# - name: Ensure clustering setup is run idempotently
+#   when: pcs_cluster_status.rc != 0 or pcs_cluster_status.stdout != "2"
+#   block:
+#     - name: Ensure authenticated to manage cluster if not already done
+#       become: yes
+#       command: "pcs cluster auth {{ hana_cluster_host_0 }} {{ hana_cluster_host_1 }} -u hacluster -p {{ ha_cluster_password }}"
+
+#     - name: Ensure both nodes are configured in the cluster if not already done
+#       become: yes
+#       command: "pcs cluster setup --start --name hana_cluster {{ hana_cluster_host_0 }} {{ hana_cluster_host_1 }} --force"
+
+#     - name: Ensure cluster is enabled if not already done
+#       become: yes
+#       command: pcs cluster enable --all
+
+#     - name: Ensure cluster is started if not already done
+#       become: yes
+#       command: pcs cluster start --all
+
+
+
+# - name: OS Cluster Tasks should run on the "Master" node only
+#   when: is_hana_primary_node
+#   block:
+#     - name: "Start: Provision OS cluster optimization"
+#       debug:
+#         msg: "Provision OS cluster optimization: Starting..."
+
+
+#     - name: Check STONITH method is defined
+#       ignore_errors: yes
+#       shell: >
+#         {{ pacemaker_cli_command }} stonith show | grep {{ pacemaker_cluster_stonith_resource_names_base }}
+#       args:
+#         executable: /bin/bash
+#       register: stonith_status
+#       become: yes
+#       failed_when: stonith_status.rc == 2
+
+#     - name: "Ensure STONITH method is defined and working for all nodes"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} stonith create {{ item }} {{ pacemaker_cluster_stonith_fence_name }} subscriptionId={{ azure_subscription_id }} resourceGroup={{ azure_resource_group_name }} tenantId={{ azure_active_directory_tenant_id }} login={{ pacemaker_cluster_stonith_app_username }} passwd={{ pacemaker_cluster_stonith_app_password }} pcmk_off_timeout={{ pacemaker_cluster_off_timeout }} pcmk_status_timeout={{ pacemaker_cluster_status_timeout }} power_timeout={{ pacemaker_cluster_power_timeout }} pcmk_reboot_timeout={{ pacemaker_cluster_reboot_timeout }} pcmk_reboot_retries={{ pacemaker_cluster_reboot_retries }} pcmk_off_retries={{ pacemaker_cluster_poweroff_retries }} pcmk_list_timeout={{ pacemaker_cluster_list_timeout }} pcmk_list_retries={{ pacemaker_cluster_list_retries }} pcmk_monitor_timeout={{ pacemaker_cluster_monitor_timeout }} pcmk_monitor_retries={{ pacemaker_cluster_monitor_retries }} pcmk_status_retries={{ pacemaker_cluster_status_retries }} network-fencing={{ pacemaker_cluster_network_fencing_status }} pcmk_host_map={{ hostname_prefix }}0:{{ vm_prefix }}0;{{ hostname_prefix }}1:{{ vm_prefix }}1"
+#       with_items: "{{ pacemaker_cluster_stonith_resource_names }}"
+#       when: stonith_status.rc == 1
+
+#     - name: "Ensure STONITH is enabled"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} property set stonith-enabled=true"
+
+
+#     - name: Check resource {{ pacemaker_cluster_load_balancer_ip_resource_name }}
+#       become: yes
+#       ignore_errors: yes
+#       command: "{{ pacemaker_cli_command }} resource show {{ pacemaker_cluster_load_balancer_ip_resource_name }}"
+#       register: pclbirn_resource
+
+#     - name: "Ensure the IP address (from Load Balancer) exists in the resource group"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} resource create {{ pacemaker_cluster_load_balancer_ip_resource_name }} IPaddr2 ip={{ pacemaker_cluster_load_balancer_ip_address }} --group {{ pacemaker_cluster_resource_group }}"
+#       when: pclbirn_resource.rc != 0
+
+
+#     - name: Check resource {{ pacemaker_cluster_load_balancer_network_card_resource_name }}
+#       become: yes
+#       ignore_errors: yes
+#       command: "{{ pacemaker_cli_command }} resource show {{ pacemaker_cluster_load_balancer_network_card_resource_name }}"
+#       register: pclbncrn_resource
+
+#     - name: "Ensure the Azure Load Balancer health-check exists in the resource group"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} resource create {{ pacemaker_cluster_load_balancer_network_card_resource_name }} azure-lb port={{ pacemaker_cluster_load_balancer_network_card_port }} --group {{ pacemaker_cluster_resource_group }}"
+#       when: pclbirn_resource.rc != 0
+
+
+
+#     - name: Check resource {{ pacemaker_cluster_hana_topology_resource_name }}
+#       become: yes
+#       ignore_errors: yes
+#       command: "{{ pacemaker_cli_command }} resource show {{ pacemaker_cluster_hana_topology_resource_name }}"
+#       register: pchtrn_resource
+
+#     - name: "Ensure the HANA Topology resource is correctly configured"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} resource create {{ pacemaker_cluster_hana_topology_resource_name }} SAPHanaTopology SID={{ sid }} InstanceNumber={{ pacemaker_cluster_hana_instance_number }} --clone clone-max={{ pacemaker_cluster_hana_clone_max }} clone-node-max={{ pacemaker_cluster_hana_clone_node_max }} interleave={{ pacemaker_cluster_hana_interleave }}"
+#       when: pchtrn_resource.rc != 0
+
+
+#     - name: Check resource {{ pacemaker_cluster_hana_resource_name }}
+#       become: yes
+#       ignore_errors: yes
+#       command: "{{ pacemaker_cli_command }} resource show {{ pacemaker_cluster_hana_resource_name }}"
+#       register: pchrn_resource
+
+#     - name: "Ensure the HANA Master/Slave set resource exists"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} resource create {{ pacemaker_cluster_hana_resource_name }} SAPHana SID={{ sid }} InstanceNumber={{ pacemaker_cluster_hana_instance_number }} PREFER_SITE_TAKEOVER=true DUPLICATE_PRIMARY_TIMEOUT=7200 AUTOMATED_REGISTER=true master notify=true clone-max={{ pacemaker_cluster_hana_clone_max }} clone-node-max={{ pacemaker_cluster_hana_clone_node_max }} interleave={{ pacemaker_cluster_hana_interleave }} timeout={{ pacemaker_cluster_hana_master_slave_set_timeout }}"
+#       when: pchrn_resource.rc != 0
+
+#     - name: Check order constraint
+#       become: yes
+#       ignore_errors: yes
+#       command: "{{ pacemaker_cli_command }} constraint order show"
+#       register: order_constraint
+
+#     - name: "Ensure only one concurrent master is allowed"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} constraint order {{ pacemaker_cluster_hana_topology_resource_name }}-clone then {{ pacemaker_cluster_hana_resource_name }}-master symmetrical=false"
+#       when: order_constraint.stdout.split(":")[1] | trim == ""
+
+
+#     - name: Check colocation constraint for {{ pacemaker_cluster_resource_group }}
+#       become: yes
+#       ignore_errors: yes
+#       shell: >
+#         {{ pacemaker_cli_command }} constraint colocation show | grep {{ pacemaker_cluster_resource_group }}
+#       args:
+#         executable: /bin/bash
+#       register: pcrg_constraint
+#       failed_when: pcrg_constraint.rc == 2
+
+#     - name: "Ensure the IP resource group follows the master"
+#       become: yes
+#       command: "{{ pacemaker_cli_command }} constraint colocation add {{ pacemaker_cluster_resource_group }} with master {{ pacemaker_cluster_hana_resource_name }}-master 2000"
+#       when: pcrg_constraint.rc == 1
+
+#     - name: Ensure cluster is stable
+#       become: yes
+#       shell: |
+#         source ~/.bashrc
+#         {{ pacemaker_cli_command }} status --full | grep hana_{{ sid | lower }}_sync_state
+#       args:
+#         executable: /bin/bash
+#       register: cluster_status
+#       changed_when: false
+#       retries: 90
+#       delay: 30
+#       until: '("PRIM" in cluster_status.stdout) and ("SOK" in cluster_status.stdout)'
+
+#     - name: "End: Provision OS cluster optimization"
+#       debug:
+#         msg: "Provision OS cluster optimization: ...ending"
