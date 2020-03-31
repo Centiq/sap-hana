@@ -61,6 +61,15 @@
   become: false
 
 
+# todo - ha-cluster-init like step - primary only
+
+# todo - ha-cluster-join like step - secondary only
+
+# todo - template corosync configuration - both nodes
+
+# todo - restart corosync service - both nodes
+
+# todo - configure stonith - primary node
 
 # ## Provisioning tasks # this appears to be replaced with crm cluster init
 # - name: Check existing clustering status

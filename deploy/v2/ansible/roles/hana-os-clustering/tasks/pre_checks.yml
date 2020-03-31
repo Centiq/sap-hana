@@ -10,6 +10,9 @@
       - "stonith_sp_name | trim | length > 0"
       - "stonith_sp_pass is defined"
       - "stonith_sp_pass | trim | length > 0"
+      - "db_nic_ips is defined"
+      - "db_nic_ips | type_debug == 'list'"
+      - "db_nic_ips | length == 2"
 
 - name: Check the required Clustering scripts are available
   when: ansible_os_family == 'Suse'
