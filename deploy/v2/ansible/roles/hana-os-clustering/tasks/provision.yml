@@ -95,7 +95,7 @@
 
 #   4. Start Cluster # todo is this the right interface?
     - name: Ensure cluster (hdb_{{ sid | upper }}) is configured
-      shell: "crm cluster init cluster --name 'hdb_{{ sid | upper }}' --interface eth0"
+      shell: "crm cluster init -y cluster --name 'hdb_{{ sid | upper }}' --interface eth0"
 
 - name: Ensure Secondary node joins the Cluster
   when: ansible_hostname == hana_database.nodes[1].dbname
