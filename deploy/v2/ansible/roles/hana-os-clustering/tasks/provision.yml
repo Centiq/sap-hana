@@ -119,33 +119,8 @@
 
 # todo - configure stonith - primary node
 
-# ## Provisioning tasks # this appears to be replaced with crm cluster init
-# - name: Check existing clustering status
-#   become: yes
-#   shell: pcs cluster status | grep -c Online
-#   register: pcs_cluster_status
-#   changed_when: false
-#   failed_when: false
-
-# - name: Ensure clustering setup is run idempotently
-#   when: pcs_cluster_status.rc != 0 or pcs_cluster_status.stdout != "2"
-#   block:
-#     - name: Ensure authenticated to manage cluster if not already done
-#       become: yes
-#       command: "pcs cluster auth {{ hana_cluster_host_0 }} {{ hana_cluster_host_1 }} -u hacluster -p {{ ha_cluster_password }}"
-
-#     - name: Ensure both nodes are configured in the cluster if not already done
-#       become: yes
-#       command: "pcs cluster setup --start --name hana_cluster {{ hana_cluster_host_0 }} {{ hana_cluster_host_1 }} --force"
-
-#     - name: Ensure cluster is enabled if not already done
-#       become: yes
-#       command: pcs cluster enable --all
-
-#     - name: Ensure cluster is started if not already done
-#       become: yes
-#       command: pcs cluster start --all
-
+#####################
+# pcs commands below for configuring the stonith parameters
 
 
 # - name: OS Cluster Tasks should run on the "Master" node only
