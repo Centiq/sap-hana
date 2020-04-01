@@ -43,11 +43,11 @@ logging {
 
 nodelist {
     node {
-        ring0_addr: {{ db_nic_ips[0] }}
+        ring0_addr: {{ hana_database.nodes[0].db_nic_ip }}
         nodeid:     1
     }
     node {
-        ring0_addr: {{ db_nic_ips[1] }}
+        ring0_addr: {{ hana_database.nodes[1].db_nic_ip }}
         nodeid:     2
     }
 }

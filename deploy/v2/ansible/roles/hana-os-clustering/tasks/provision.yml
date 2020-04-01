@@ -60,10 +60,55 @@
       '{{ pacemaker_cluster_load_balancer_facts.ansible_facts.azure_loadbalancers[0].properties.frontendIPConfigurations[0].properties.privateIPAddress }}'
   become: false
 
+# SLES Clustering
+# Ref: https://documentation.suse.com/sle-ha/12-SP4/html/SLE-HA-install-quick/index.html
 
-# todo - ha-cluster-init like step - primary only
+# todo NTP server for datetime sync?
 
-# todo - ha-cluster-join like step - secondary only
+# Set up Hosts entries for the cluster nodes
+- name: Ensure the Primary node hosts entry exits
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    insertafter: EOF
+    regexp: "{{ hana_database.nodes[0].dbname }}"
+    line: "{{ hana_database.nodes[0].db_nic_ip }} {{ hana_database.nodes[0].dbname }}"
+
+- name: Ensure the Secondary node hosts entry exits
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    insertafter: EOF
+    regexp: "{{ hana_database.nodes[1].dbname }}"
+    line: "{{ hana_database.nodes[1].db_nic_ip }} {{ hana_database.nodes[1].dbname }}"
+
+# https://rpm.pbone.net/index.php3/stat/45/idpl/27916721/numer/8/nazwa/ha-cluster-init
+- name: Ensure Primary node initiates the Cluster
+  when: ansible_hostname == hana_database.nodes[0].dbname
+  become: True
+  block:
+#   1. SSH keys for passwordless - @todo?
+#   2. csync2 config
+    - name: Ensure csync2 is configured
+      shell: crm cluster init -y csync2
+
+#   3. corosync config
+    - name: Ensure corosync is configured
+      shell: crm cluster init -y -u corosync
+
+#   4. Start Cluster # todo is this the right interface?
+    - name: Ensure cluster (hdb_{{ sid | upper }}) is configured
+      shell: "crm cluster init cluster --name 'hdb_{{ sid | upper }}' --interface eth0"
+
+- name: Ensure Secondary node joins the Cluster
+  when: ansible_hostname == hana_database.nodes[1].dbname
+  become: True
+  block:
+    - name: Ensure the configuration files are synchronised
+      shell: "crm cluster join -y -c {{ hana_database.nodes[0].db_nic_ip }} csync2"
+
+    - name: Ensure the cluster is joined
+      shell: "crm cluster join -y -c {{ hana_database.nodes[0].db_nic_ip }} cluster"
 
 # todo - template corosync configuration - both nodes
 
