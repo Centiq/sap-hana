@@ -20,7 +20,6 @@
 
 # Pacemaker can create a large number of processes
 - name: Ensure Process limit is raised
-  become: True
   lineinfile:
     path: /etc/systemd/system.conf
     state: present
@@ -33,7 +32,6 @@
     daemon_reload: True
 
 - name: Ensure clustering can manage Virtual IPs
-  become: True
   lineinfile:
     path: /etc/sysconfig/network/ifcfg-eth0   # todo is this the right adapter? Do we want the DB adapter?
     state: present
@@ -85,7 +83,6 @@
 # https://rpm.pbone.net/index.php3/stat/45/idpl/27916721/numer/8/nazwa/ha-cluster-init
 - name: Ensure Primary node initiates the Cluster
   when: ansible_hostname == hana_database.nodes[0].dbname
-  become: True
   block:
 #   1. SSH keys for passwordless - @todo?
 #   2. csync2 config
@@ -102,7 +99,6 @@
 
 - name: Ensure Secondary node joins the Cluster
   when: ansible_hostname == hana_database.nodes[1].dbname
-  become: True
   block:
     - name: Ensure the configuration files are synchronised
       shell: "crm cluster join -y -c {{ hana_database.nodes[0].db_nic_ip }} csync2"
