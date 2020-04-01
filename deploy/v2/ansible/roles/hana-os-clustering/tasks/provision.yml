@@ -70,7 +70,7 @@
     state: present
     insertafter: EOF
     regexp: "{{ hana_database.nodes[0].dbname }}"
-    line: "{{ hana_database.nodes[0].db_nic_ip }} {{ hana_database.nodes[0].dbname }}"
+    line: "{{ hana_database.nodes[0].ip_db_nic }} {{ hana_database.nodes[0].dbname }}"
 
 - name: Ensure the Secondary node hosts entry exits
   lineinfile:
@@ -78,7 +78,7 @@
     state: present
     insertafter: EOF
     regexp: "{{ hana_database.nodes[1].dbname }}"
-    line: "{{ hana_database.nodes[1].db_nic_ip }} {{ hana_database.nodes[1].dbname }}"
+    line: "{{ hana_database.nodes[1].ip_db_nic }} {{ hana_database.nodes[1].dbname }}"
 
 # https://rpm.pbone.net/index.php3/stat/45/idpl/27916721/numer/8/nazwa/ha-cluster-init
 - name: Ensure Primary node initiates the Cluster
@@ -101,10 +101,10 @@
   when: ansible_hostname == hana_database.nodes[1].dbname
   block:
     - name: Ensure the configuration files are synchronised
-      shell: "crm cluster join -y -c {{ hana_database.nodes[0].db_nic_ip }} csync2"
+      shell: "crm cluster join -y -c {{ hana_database.nodes[0].ip_db_nic }} csync2"
 
     - name: Ensure the cluster is joined
-      shell: "crm cluster join -y -c {{ hana_database.nodes[0].db_nic_ip }} cluster"
+      shell: "crm cluster join -y -c {{ hana_database.nodes[0].ip_db_nic }} cluster"
 
 - name: Ensure cluster configuration contains correct details
   template:
