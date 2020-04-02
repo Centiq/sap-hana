@@ -6,8 +6,8 @@ clustering_service:
 
 clustering_command: "crm cluster"
 
-crm_token:
-  totem: 30000
+crm_totem:
+  token: 30000
   retransmits: 10
   join: 60
   consensus: 36000
