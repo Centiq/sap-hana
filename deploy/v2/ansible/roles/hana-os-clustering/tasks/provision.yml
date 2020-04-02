@@ -119,6 +119,37 @@
 
 # todo - configure stonith - primary node
 
+# 1. Enable maintenance mode
+# 2. Set defaults
+#    - property "cib-bootstrap-options"
+#    - rsc_defaults "rsc-options"
+# 3. Create service Principal
+# 4. Assign service principal as owner of DB VMs
+# 5. Configure fencing
+#    - primitive rsc_st_azure_1 stonith:fence_azure_arm
+#    - primitive rsc_st_azure_2 stonith:fence_azure_arm
+#    - colocation col_st_azure -2000: rsc_st_azure_1:Started rsc_st_azure_2:Started
+# 6. Define Topology
+#    - SAPHanaTopology resource
+#    - SAPHanaTopology clone
+# 7. Configure the HANA resources
+#    - primitive SAPHana resource wit operations
+#    - master slave
+#    - primitive heartbeat
+#    - primitive anything (?)
+#    - group
+#    - colocation resource
+# 8. Resource clean up
+# 9. Disable maintenance mode
+
+
+
+
+
+
+
+
+
 #####################
 # pcs commands below for configuring the stonith parameters
 
