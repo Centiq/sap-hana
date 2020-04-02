@@ -7,11 +7,6 @@
     state: present
   with_items: "{{ ha_packages[ansible_os_family] }}"
 
-- name: Ensure HA Cluster password is set
-  user:
-    name: hacluster
-    password: "{{ ha_cluster_password|password_hash('sha512') }}" # todo set variable
-
 - name: Ensure Clustering Service is started and enabled
   systemd:
     name: "{{ clustering_service[ansible_os_family] }}"
@@ -105,6 +100,11 @@
 
     - name: Ensure the cluster is joined
       shell: "crm cluster join -y -c {{ hana_database.nodes[0].ip_db_nic }} cluster"
+
+- name: Ensure HA Cluster password is set to something secure
+  user:
+    name: hacluster
+    password: "{{ ha_cluster_password|password_hash('sha512') }}" # todo set variable
 
 - name: Ensure cluster configuration contains correct details
   template:

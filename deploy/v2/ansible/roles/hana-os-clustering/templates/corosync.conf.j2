@@ -8,11 +8,11 @@ totem {
     cluster_name:        hacluster
     clear_node_high_bit: yes
 
-    token:                               {{ crm_token.totem }}
-    token_retransmits_before_loss_const: {{ crm_token.retransmits }}
-    join:                                {{ crm_token.join }}
-    consensus:                           {{ crm_token.consensus }}
-    max_messages:                        {{ crm_token.max_messages }}
+    token:                               {{ crm_totem.token }}
+    token_retransmits_before_loss_const: {{ crm_totem.retransmits }}
+    join:                                {{ crm_totem.join }}
+    consensus:                           {{ crm_totem.consensus }}
+    max_messages:                        {{ crm_totem.max_messages }}
 
     interface {
         ringnumber: 0
