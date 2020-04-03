@@ -90,11 +90,12 @@ function create_service_principal_script()
 
 	# create custom role for fencing agent
 
-	local fencing_template='fencing_agent_role'
-
-	assignable_scopes=$(sed -i -e "s/SUBSCRIPTION_ID/${subscription_id}" fencing_agent_role.json)
+	local fencing_template='Linux Fence Agent Role'
+	local sp_prefix='http://'
+	local az_subscription_id=$(echo ${subscription_id} | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
+	assignable_scopes=$(sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" fencing_agent_role.json)
 	fencing_agent_role=$(az role definition create --role-definition "${fencing_template}.json")
-	asign_sp_role=$(az role assignment create --assignee "${service_principal_name}" --role "${fencing_template}")
+	asign_sp_role=$(az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}")
 
 
 	# restore to previous value
