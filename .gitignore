@@ -19,4 +19,4 @@
 
 # service principal auth secrets
 set-sp.sh
-set-clustering-auth-*
+set-clustering-auth.sh
