@@ -144,8 +144,8 @@
         subscriptionId="{{ subscription_id }}"
         resourceGroup="{{ infrastructure.resource_group.name }}"
         tenantId="{{ azure_active_directory_id }}"
-        login="{{ service_principal_application_id }}"
-        passwd="{{ service_principal_application_password }}"
+        login="{{ stonith_service_principal_application_id }}"
+        passwd="{{ stonith_service_principal_application_password }}"
         action="off"
 
     #    - primitive rsc_st_azure_2 stonith:fence_azure_arm
@@ -155,8 +155,8 @@
         subscriptionId="{{ subscription_id }}"
         resourceGroup="{{ infrastructure.resource_group_name }}"
         tenantId="{{ azure_active_directory_id }}"
-        login="{{ service_principal_application_id }}"
-        passwd="{{ service_principal_application_password }}"
+        login="{{ stonith_service_principal_application_id }}"
+        passwd="{{ stonith_service_principal_application_password }}"
         action="off"
 
     #    - colocation col_st_azure -2000: rsc_st_azure_1:Started rsc_st_azure_2:Started
