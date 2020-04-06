@@ -1,0 +1,22 @@
+---
+
+- name: Ensure ssh keys on both nodes
+  become: "{{ sid_admin_user }}"
+  block:
+    - name: Check for existence of id_rsa_trust file
+      file:
+        path: ~/.ssh/id_rsa_trust
+        state: file
+      check_mode: true
+      register: id_rsa_trust_file_status
+
+    - name: Check for existence of id_rsa_trust.pub file
+      file:
+        path: ~/.ssh/id_rsa_trust.pub
+        state: file
+      check_mode: true
+      register: id_rsa_trust_file_pub_status
+
+    - name: Ensure key pair exists
+      shell: >
+        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa_trust -q -N ""
