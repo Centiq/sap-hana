@@ -18,7 +18,7 @@
   lineinfile:
     path: /etc/systemd/system.conf
     state: present
-    regexp: "^#?\s*DefaultTasksMax="
+    regexp: "^#?\\s*DefaultTasksMax="
     line: "DefaultTasksMax=4096"
   register: raise_process_limit
 
@@ -30,7 +30,7 @@
   lineinfile:
     path: /etc/sysconfig/network/ifcfg-eth0   # @TODO is this the right adapter? Do we want the DB adapter?
     state: present
-    regexp: "^#?\s*CLOUD_NETCONFIG_MANAGE="
+    regexp: "^#?\\s*CLOUD_NETCONFIG_MANAGE="
     line: "CLOUD_NETCONFIG_MANAGE='no'"
 
 
@@ -141,22 +141,22 @@
     - name: Ensure the Primary STONITH fencing device is created
       shell: >
         crm configure primitive rsc_st_azure_1 stonith:fence_azure_arm params
-        subscriptionId="{{ @TODO - SUBSCRIPTION_ID }}"
+        subscriptionId="{{ subscription_id }}"
         resourceGroup="{{ infrastructure.resource_group.name }}"
-        tenantId="{{ @TODO - AZURE_ACTIVE_DIRECTORY_ID }}"
-        login="{{ @TODO - SERVICE_PRINCIPAL_APPLICATION_ID }}"
-        passwd="{{ @TODO - SERVICE_PRINCIPAL_APPLICATION_PASSWORD }}"
+        tenantId="{{ azure_active_directory_id }}"
+        login="{{ service_principal_application_id }}"
+        passwd="{{ service_principal_application_password }}"
         action="off"
 
     #    - primitive rsc_st_azure_2 stonith:fence_azure_arm
     - name: Ensure the Secondary STONITH fencing device is created
       shell: >
         crm configure primitive rsc_st_azure_2 stonith:fence_azure_arm params
-        subscriptionId="{{ @TODO - SUBSCRIPTION_ID }}"
-        resourceGroup="{{ @TODO - RESOURCE_GROUP_NAME }}"
-        tenantId="{{ @TODO - AZURE_ACTIVE_DIRECTORY_ID }}"
-        login="{{ @TODO - SERVICE_PRINCIPAL_APPLICATION_ID }}"
-        passwd="{{ @TODO - SERVICE_PRINCIPAL_APPLICATION_PASSWORD }}"
+        subscriptionId="{{ subscription_id }}"
+        resourceGroup="{{ infrastructure.resource_group_name }}"
+        tenantId="{{ azure_active_directory_id }}"
+        login="{{ service_principal_application_id }}"
+        passwd="{{ service_principal_application_password }}"
         action="off"
 
     #    - colocation col_st_azure -2000: rsc_st_azure_1:Started rsc_st_azure_2:Started
