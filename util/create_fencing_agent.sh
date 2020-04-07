@@ -37,7 +37,7 @@ function main()
 
 function check_command_line_arguments()
 {
-    local args_count=$#
+    local args_count="$#"
 
     # Check there's just a single argument provided
     if [[ ${args_count} -ne 1 ]]; then
@@ -113,3 +113,6 @@ function check_auth_script_does_not_exist()
 
 # Execute the main program flow with all arguments
 main "$@"
+
+# revert json template back to original state
+sed -i -e "s/${az_subscription_id}/SUBSCRIPTION_ID/" util/fencing_agent_role.json
