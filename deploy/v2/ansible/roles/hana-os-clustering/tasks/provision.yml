@@ -7,12 +7,6 @@
     state: present
   with_items: "{{ ha_packages[ansible_os_family] }}"
 
-- name: Ensure Clustering Service is started and enabled
-  systemd:
-    name: "{{ clustering_service[ansible_os_family] }}"
-    enabled: true
-    state: started
-
 # Pacemaker can create a large number of processes
 - name: Ensure Process limit is raised
   lineinfile:
