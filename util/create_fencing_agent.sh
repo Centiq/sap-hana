@@ -93,7 +93,7 @@ function create_service_principal_script()
 	local az_subscription_id=$(echo ${subscription_id} | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
 	assignable_scopes=$(sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" util/fencing_agent_role.json)
 	fencing_agent_role=$(az role definition create --role-definition "${fencing_template}.json")
-	asign_sp_role=$(az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}")
+	assign_sp_role=$(az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}")
 
 
 	# restore to previous value
