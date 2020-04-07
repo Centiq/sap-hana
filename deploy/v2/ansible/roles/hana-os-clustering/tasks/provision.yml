@@ -26,9 +26,9 @@
   systemd:
     daemon_reload: True
 
-- name: Ensure clustering can manage Virtual IPs
+- name: Ensure clustering can manage Virtual IPs on the Database Interface
   lineinfile:
-    path: /etc/sysconfig/network/ifcfg-eth0   # @TODO is this the right adapter? Do we want the DB adapter?
+    path: /etc/sysconfig/network/ifcfg-eth1
     state: present
     regexp: "^#?\\s*CLOUD_NETCONFIG_MANAGE="
     line: "CLOUD_NETCONFIG_MANAGE='no'"
@@ -97,7 +97,7 @@
 
 #   4. Start Cluster # @TODO is this the right interface?
     - name: Ensure cluster (hdb_{{ sid | upper }}) is configured
-      shell: "crm cluster init -y cluster --name 'hdb_{{ sid | upper }}' --interface eth0"
+      shell: "crm cluster init -y cluster --name 'hdb_{{ sid | upper }}' --interface eth1"
 
 - name: Ensure Secondary node joins the Cluster
   when: ansible_hostname == hana_database.nodes[1].dbname
@@ -111,7 +111,7 @@
 - name: Ensure HA Cluster password is set to something secure
   user:
     name: hacluster
-    password: "{{ ha_cluster_password|password_hash('sha512') }}" # @TODO set variable
+    password: "{{ ha_cluster_password | password_hash('sha512') }}" # @TODO set variable
 
 - name: Ensure cluster configuration contains correct details
   template:
@@ -125,7 +125,7 @@
     state: restarted
 
 # @TODO - configure stonith - primary node
-- name: Ensure the Cluester STONITH is configured
+- name: Ensure the Cluster STONITH is configured
   when: ansible_hostname == hana_database.nodes[0].dbname
   block:
     # 1. Enable maintenance mode

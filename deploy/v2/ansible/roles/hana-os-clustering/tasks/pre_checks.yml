@@ -4,8 +4,8 @@
 - name: Check the required variables are set
   assert:
     that:
-      - "ha_cluster_pass is defined"
-      - "ha_cluster_pass | trim | length > 0"
+      - "ha_cluster_password is defined"
+      - "ha_cluster_password | trim | length > 0"
       - "subscription_id is defined"
       - "subscription_id | trim | length > 0"
       - "azure_active_directory_id is defined"
