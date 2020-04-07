@@ -35,7 +35,6 @@ function main()
 }
 
 
-
 function check_command_line_arguments()
 {
     local args_count=$#
@@ -94,14 +93,12 @@ EOF
     az role definition create --role-definition "${fencing_template}.json"
     az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
 
-
     # restore to previous value
     IFS="${ifs_backup}"
 
     echo "A service principal has been created in Azure > App registrations, with the name: ${service_principal_name}"
     echo "Azure authorization details can be found within the script: ${auth_script}"
     echo "The Azure authorization details are automatically used by the utility scripts if present."
-
 
 }
 
