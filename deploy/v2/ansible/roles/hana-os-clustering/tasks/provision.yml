@@ -47,13 +47,13 @@
   when: ansible_hostname == hana_database.nodes[1].dbname
   authorized_key:
     user: root
-    key: "{{ hostvars[hana_database.nodes[0]].cluster_public_ssh_key.stdout }}"
+    key: "{{ hostvars[hana_database.nodes[0].dbname].cluster_public_ssh_key.stdout }}"
 
 - name: Ensure the Secondary Node public key is on the Primary node
   when: ansible_hostname == hana_database.nodes[0].dbname
   authorized_key:
     user: root
-    key: "{{ hostvars[hana_database.nodes[1]].cluster_public_ssh_key.stdout }}"
+    key: "{{ hostvars[hana_database.nodes[1].dbname].cluster_public_ssh_key.stdout }}"
 
 #########
 # Load balancer details? The IP should be retrieved from the output.json details
