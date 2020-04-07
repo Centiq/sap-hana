@@ -62,7 +62,6 @@ function create_service_principal_script()
 
 	# create the service principal and capture the output
 	sp_details=$(az ad sp create-for-rbac --name "${service_principal_name}")
-	local sp_details=$(az ad sp create-for-rbac --name "${service_principal_name}")
 	local sp_creation_status=$?=$?
 
 	# check the SP was created successfully
@@ -90,10 +89,10 @@ function create_service_principal_script()
 
 	local fencing_template='Linux Fence Agent Role'
 	local sp_prefix='http://'
-	local az_subscription_id=$(echo ${subscription_id} | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
-	assignable_scopes=$(sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" util/fencing_agent_role.json)
-	fencing_agent_role=$(az role definition create --role-definition "${fencing_template}.json")
-	assign_sp_role=$(az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}")
+	az_subscription_id=$(echo "${subscription_id}" | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
+	sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" util/fencing_agent_role.json
+	az role definition create --role-definition "${fencing_template}.json"
+	az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
 
 
 	# restore to previous value
@@ -109,9 +108,9 @@ function create_service_principal_script()
 
 function check_auth_script_does_not_exist()
 {
-	[ ! -f ${auth_script} ]
+	[ ! -f "${auth_script}" ]
 	auth_exists=$?
-	continue_or_error_and_exit $auth_exists "Authorization file already exists: ${auth_script}. Please reuse, move, or remove it."
+	continue_or_error_and_exit "$auth_exists" "Authorization file already exists: ${auth_script}. Please reuse, move, or remove it."
 }
 
 
