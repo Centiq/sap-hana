@@ -33,8 +33,27 @@
     regexp: "^#?\\s*CLOUD_NETCONFIG_MANAGE="
     line: "CLOUD_NETCONFIG_MANAGE='no'"
 
+# Configure SSH Keys for inter-node communication as root
+- name: Ensure there are SSH keys for the root user to communicate between nodes
+  shell: crm clustere init -y ssh
+  args:
+    creates: /root/.ssh/id_rsa
 
-# @TODO configure SSH access between node (swap SSH public keys)?
+- name: Ensure the Public SSH keys is stored in a variable
+  shell: cat /root/.ssh/id_rsa.pub
+  register: cluster_public_ssh_key
+
+- name: Ensure the Primary Node public key is on the Secondary node
+  when: ansible_hostname == hana_database.nodes[1].dbname
+  authorized_key:
+    user: root
+    key: "{{ hostvars[hana_database.nodes[0]].cluster_public_ssh_key.stdout }}"
+
+- name: Ensure the Secondary Node public key is on the Primary node
+  when: ansible_hostname == hana_database.nodes[0].dbname
+  authorized_key:
+    user: root
+    key: "{{ hostvars[hana_database.nodes[1]].cluster_public_ssh_key.stdout }}"
 
 #########
 # Load balancer details? The IP should be retrieved from the output.json details
