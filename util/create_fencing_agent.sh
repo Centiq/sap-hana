@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#
 #######################################################################################################################################################
 #
 # This script simplifies the user interaction with Azure to create a fencing
@@ -30,8 +30,6 @@ function main()
 	check_command_line_arguments "$@"
 
 	local SID="$1"
-
-
 
 	create_service_principal_script "${SID}"
 }
