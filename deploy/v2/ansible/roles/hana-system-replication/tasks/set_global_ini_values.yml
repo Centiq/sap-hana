@@ -8,10 +8,4 @@
       state: present
       option: "{{ item.option }}"
       value: "{{ item.value }}"
-    with_items:
-      - option: enable
-        value: true
-      - option: interval
-        value: 3600
-      - option: replication
-        value: true
+    with_items: global_ini_inifile_checker_list
