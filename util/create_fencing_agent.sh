@@ -94,7 +94,7 @@ EOF
     local sp_prefix='http://'
     role_list=$(az role definition list --name "Linux Fence Agent Role")
     role_status=$(echo "${role_list}" | grep roleName | sed -e 's/.*roleName.:.\(.*\),/\1/')
-    if role_status == "$fencing_template"; then
+    if ${role_status} == "$fencing_template"; then
         echo 'Linux Fence Agent Role exists'
     else az role definition create --role-definition "${template_file}"
     fi
