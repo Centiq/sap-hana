@@ -3,20 +3,53 @@
 - name: Ensure ssh keys on both nodes
   become: "{{ sid_admin_user }}"
   block:
-    - name: Check for existence of id_rsa_trust file
+    - name: Check for existence of id_rsa file
       file:
-        path: ~/.ssh/id_rsa_trust
+        path: ~/.ssh/id_rsa
         state: file
       check_mode: true
-      register: id_rsa_trust_file_status
+      register: id_rsa_file_status
 
-    - name: Check for existence of id_rsa_trust.pub file
+    - name: Check for existence of id_rsa.pub file
       file:
-        path: ~/.ssh/id_rsa_trust.pub
+        path: ~/.ssh/id_rsa.pub
         state: file
       check_mode: true
-      register: id_rsa_trust_file_pub_status
+      register: id_rsa_file_pub_status
 
     - name: Ensure key pair exists
+      when: id_rsa_file_status.failed and id_rsa_file_pub_status.failed
       shell: >
-        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa_trust -q -N ""
+        ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -q -N ""
+
+    - name: Ensure the Public SSH key is stored in a variable
+      shell: cat /root/.ssh/id_rsa.pub
+      register: cluster_public_ssh_key
+
+    - name: Ensure the Primary Node public key is on the Secondary node
+      when: ansible_hostname == hana_database.nodes[1].dbname
+      authorized_key:
+        user: root
+        key: "{{ hostvars[hana_database.nodes[0]].cluster_public_ssh_key.stdout }}"
+
+    - name: Ensure the Secondary Node public key is on the Primary node
+      when: ansible_hostname == hana_database.nodes[0].dbname
+      authorized_key:
+        user: root
+        key: "{{ hostvars[hana_database.nodes[1]].cluster_public_ssh_key.stdout }}"
+
+    - name: Ensure trust relationship is working from primary to secondary
+      when: ansible_hostname == hana_database.nodes[0].dbname
+      shell: >
+        ssh -oStrictHostKeyChecking=no {{ hostvars[hana_database.nodes[1]].ansible_default_ipv4.address] }} hostname
+      register: primary_to_secondary_ssh_result
+      changed_when: false
+      failed_when: primary_to_secondary_ssh_result != hana_database.nodes[1].dbname
+
+    - name: Ensure trust relationship is working from secondary to primary
+      when: ansible_hostname == hana_database.nodes[1].dbname
+      shell: >
+        ssh -oStrictHostKeyChecking=no {{ hostvars[hana_database.nodes[0]].ansible_default_ipv4.address] }} hostname
+      register: secondary_to_primary_ssh_result
+      changed_when: false
+      failed_when: primary_to_secondary_ssh_result != hana_database.nodes[0].dbname
