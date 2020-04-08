@@ -41,7 +41,7 @@
     - name: Ensure trust relationship is working from primary to secondary
       when: ansible_hostname == hana_database.nodes[0].dbname
       shell: >
-        ssh -oStrictHostKeyChecking=no {{ hostvars[hana_database.nodes[1]].ansible_default_ipv4.address] }} hostname
+        ssh -oStrictHostKeyChecking=no {{ hostvars[hana_database.nodes[1]].ansible_default_ipv4.address] }} "hostname -s"
       register: primary_to_secondary_ssh_result
       changed_when: false
       failed_when: primary_to_secondary_ssh_result != hana_database.nodes[1].dbname
@@ -49,7 +49,7 @@
     - name: Ensure trust relationship is working from secondary to primary
       when: ansible_hostname == hana_database.nodes[1].dbname
       shell: >
-        ssh -oStrictHostKeyChecking=no {{ hostvars[hana_database.nodes[0]].ansible_default_ipv4.address] }} hostname
+        ssh -oStrictHostKeyChecking=no {{ hostvars[hana_database.nodes[0]].ansible_default_ipv4.address] }} "hostname -s"
       register: secondary_to_primary_ssh_result
       changed_when: false
       failed_when: primary_to_secondary_ssh_result != hana_database.nodes[0].dbname
