@@ -84,16 +84,27 @@ function create_service_principal_script()
     export ARM_CLIENT_SECRET=${client_secret}
 EOF
 
-    # create custom role for fencing agent
-
-    local fencing_template='Linux Fence Agent Role'
-    local sp_prefix='http://'
+    # Define subscription id in json role template
     az_subscription_id=$(echo "${subscription_id}" | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
     sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" util/fencing_agent_role.json
-    az role definition create --role-definition "${fencing_template}.json"
+
+    # check role definition exsits
+    local fencing_template='Linux Fence Agent Role'
+    local template_file='util/fencing_agent_role.json'
+    local sp_prefix='http://'
+    role_list=$(az role definition list --name "Linux Fence Agent Role")
+    role_status=$(echo "${role_list}" | grep roleName | sed -e 's/.*roleName.:.\(.*\),/\1/')
+    if role_status == "$fencing_template"; then
+        echo 'Linux Fence Agent Role exists'
+    else az role definition create --role-definition "${template_file}"
+    fi
+    # assign role to fencing service principle
     az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
 
-    # restore to previous value
+    # revert json template back to original state
+    sed -i -e "s/${az_subscription_id}/SUBSCRIPTION_ID/" util/fencing_agent_role.json
+
+
     IFS="${ifs_backup}"
 
     echo "A service principal has been created in Azure > App registrations, with the name: ${service_principal_name}"
@@ -102,7 +113,6 @@ EOF
 
 }
 
-
 function check_auth_script_does_not_exist()
 {
     [ ! -f "${auth_script}" ]
@@ -110,9 +120,5 @@ function check_auth_script_does_not_exist()
     continue_or_error_and_exit "$auth_exists" "Authorization file already exists: ${auth_script}. Please reuse, move, or remove it."
 }
 
-
 # Execute the main program flow with all arguments
 main "$@"
-
-# revert json template back to original state
-sed -i -e "s/${az_subscription_id}/SUBSCRIPTION_ID/" util/fencing_agent_role.json
