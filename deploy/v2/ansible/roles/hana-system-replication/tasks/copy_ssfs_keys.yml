@@ -3,8 +3,8 @@
 - name: Ensure key files are in place
   # If HSR is already enabled, we don't need to do this
   when: not hana_system_replication_enabled
-  become_user: "{{ sid_admin_user }}"
   block:
+
     - name: Ensure the Primary node SSFS files are placed on the Secondary node
       when: ansible_hostname != hana_database.nodes[0].dbname
       block:
@@ -45,16 +45,16 @@
 
         - name: Ensure the Primary node SSFS_{{ sid | upper }}.DAT file is placed on the Secondary node
           synchronize:
-            delegate_to: "{{ hana_database.nodes[1].dbname }}"
-            archive: true
-            mode: pull
-            src: "{{ hana_database.nodes[0].dbname }}:{{ path_ssfs_dat }}"
+            src: "{{ hana_database.nodes[0].ip_admin_nic }}:{{ path_ssfs_dat }}"
             dest: "{{ path_ssfs_dat }}"
+            mode: pull
+            archive: true
+          delegate_to: "{{ hana_database.nodes[1].ip_admin_nic }}"
 
         - name: Ensure the Primary node SSFS_{{ sid | upper }}.KEY file is placed on the Secondary node
           synchronize:
-            delegate_to: "{{ hana_database.nodes[1].dbname }}"
-            archive: true
-            mode: pull
-            src: "{{ hana_database.nodes[0].dbname }}:{{ path_ssfs_key }}"
+            src: "{{ hana_database.nodes[0].ip_admin_nic }}:{{ path_ssfs_key }}"
             dest: "{{ path_ssfs_key }}"
+            mode: pull
+            archive: true
+          delegate_to: "{{ hana_database.nodes[1].ip_admin_nic }}"
