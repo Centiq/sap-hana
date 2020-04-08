@@ -181,7 +181,7 @@
       shell: >
         crm configure clone cln_SAPHanaTopology_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
         rsc_SAPHanaTopology_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
-        meta is-managed="true" clone-node-max="1" target-role="Started" interleave="true"
+        meta clone-node-max="1" interleave="true"
 
     - name: Ensure SAP HANA primitive resource is configured
       shell: >
@@ -204,13 +204,12 @@
       shell: >
         crm configure ms msl_SAPHana_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
         rsc_SAPHana_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
-        meta is-managed="true" notify="true" clone-max="2" clone-node-max="1"
-        target-role="Started" interleave="true"
+        meta notify="true" clone-max="2" clone-node-max="1"
+        interleave="true"
 
     - name: Ensure SAP HANA Heartbeat resource is configured
       shell: >
         crm configure primitive rsc_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }} ocf:heartbeat:IPaddr2
-        meta target-role="Started" is-managed="true"
         operations \$id="rsc_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}-operations"
         op monitor interval="10s" timeout="20s"
         params ip="{{ hana_database.loadbalancer.frontend_ip }}"
