@@ -88,16 +88,14 @@ EOF
     az_subscription_id=$(echo "${subscription_id}" | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
     sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" util/fencing_agent_role.json
 
-    # sheck role definition exsits
+    # check role definition exsits
     local fencing_template='Linux Fence Agent Role'
     local template_file='util/fencing_agent_role.json'
     local sp_prefix='http://'
-    role_list=$(az role definition list --name "Linux Fence Agent Role" | grep roleName | sed -e 's/.*roleName.:.\(.*\),/\1/' | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
-
-    if [[ ${role_list} == ${fencing_template} ]]; then
-        echo 'Linux Fence Agent Role exists'
-    else
-         az role definition create --role-definition "${template_file}"
+    role_list=$(az role definition list --name "Linux Fence Agent Role" | grep roleName | sed -e 's/.*roleName.:.\(.*\),/\1/')
+    if [[ ${role_list} == "[]" ]]; then
+       az role definition create --role-definition "${template_file}"
+    else echo "role definition already exsits"
     fi
     # assign role to fencing service principle
     az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
