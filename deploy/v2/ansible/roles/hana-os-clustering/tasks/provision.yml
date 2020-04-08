@@ -140,7 +140,7 @@
 
     - name: Ensure the Operation Defaults are configured
       shell: >
-        op_defaults \$id="op-options"
+        crm configure op_defaults \$id="op-options"
         timeout="600"
 
     # 3. Create service Principal                    - @TODO in terraform/shell script
@@ -210,7 +210,7 @@
         meta notify="true" clone-max="2" clone-node-max="1"
         interleave="true"
 
-    - name: Ensure SAP HANA Heartbeat resource is configured
+    - name: Ensure SAP HANA Virtual IP resource is configured
       shell: >
         crm configure primitive rsc_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }} ocf:heartbeat:IPaddr2
         operations \$id="rsc_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}-operations"
