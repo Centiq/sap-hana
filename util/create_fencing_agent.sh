@@ -92,12 +92,7 @@ EOF
     local fencing_template='Linux Fence Agent Role'
     local template_file='util/fencing_agent_role.json'
     local sp_prefix='http://'
-    role_list=$(az role definition list --name "Linux Fence Agent Role")
-    role_status=$(echo "${role_list}" | grep roleName | sed -e 's/.*roleName.:.\(.*\),/\1/')
-    if ${role_status} == "$fencing_template"; then
-        echo 'Linux Fence Agent Role exists'
-    else az role definition create --role-definition "${template_file}"
-    fi
+    az role definition create --role-definition "${template_file}" 2> /dev/null
     # assign role to fencing service principle
     az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
 
