@@ -83,11 +83,11 @@
 #   1. SSH keys for passwordless - @TODO?
 #   2. csync2 config
     - name: Ensure csync2 is configured
-      shell: crm cluster init -y csync2
+      shell: crm cluster init -y csync2 --interface eth1
 
 #   3. corosync config
     - name: Ensure corosync is configured
-      shell: crm cluster init -y -u corosync
+      shell: crm cluster init -y -u corosync --interface eth1
 
 #   4. Start Cluster # @TODO is this the right interface?
     - name: Ensure cluster (hdb_{{ sid | upper }}) is configured
@@ -97,10 +97,10 @@
   when: ansible_hostname == hana_database.nodes[1].dbname
   block:
     - name: Ensure the configuration files are synchronised
-      shell: "crm cluster join -y -c {{ hana_database.nodes[0].ip_db_nic }} csync2"
+      shell: "crm cluster join -y -c {{ hana_database.nodes[0].ip_db_nic }} csync2 --interface eth1"
 
     - name: Ensure the cluster is joined
-      shell: "crm cluster join -y -c {{ hana_database.nodes[0].ip_db_nic }} cluster"
+      shell: "crm cluster join -y -c {{ hana_database.nodes[0].ip_db_nic }} cluster --interface eth1"
 
 - name: Ensure HA Cluster password is set to something secure
   user:
