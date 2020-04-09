@@ -83,20 +83,33 @@ function create_service_principal_script()
 EOF
 
     # Define subscription id in json role template
+    template_file='util/fencing_agent_role.json'
     az_subscription_id=$(echo "${subscription_id}" | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
-    sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" util/fencing_agent_role.json
+    # use temp file method to avoid BSD sed issues on Mac/OSX
+	# See: https://stackoverflow.com/questions/5694228/sed-in-place-flag-that-works-both-on-mac-bsd-and-linux/5694430#5694430
+	local temp_template_json="${template_file}.tmp"
 
-    # check role definition exsits
+	# filter JSON template file contents and write to temp file
+	sed -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" \
+		"${template_file}" > "${temp_template_json}"
+
+    # replace original JSON template file with temporary filtered one
+    mv "${temp_template_json}" "${template_file}"
+
+    # ensure role definition exsits
     local fencing_template='Linux Fence Agent Role'
-    local template_file='util/fencing_agent_role.json'
     local sp_prefix='http://'
     role_list="$(az role definition list --name 'Linux Fence Agent Role')"
     if [[ "${role_list}" == "[]" ]]; then
         az role definition create --role-definition "${template_file}"
-    else echo "Role definition already exits"
+    else echo "Role definition already exists"
     fi
-    # assign role to fencing service principal
-    az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
+    # ensure role is assigned to fencing service principal
+    assignment_list="$(az role assignment list --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}")"
+    if [[ "${assignment_list}" == "[]" ]]; then
+        az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
+    else echo "Role assignment already exists"
+    fi
 
     IFS="${ifs_backup}"
 
@@ -117,4 +130,4 @@ function check_auth_script_does_not_exist()
 main "$@"
 
 # revert json template back to original state
-    sed -i -e "s/${az_subscription_id}/SUBSCRIPTION_ID/" util/fencing_agent_role.json
+git checkout util/fencing_agent_role.json
