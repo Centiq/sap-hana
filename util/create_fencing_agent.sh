@@ -84,7 +84,7 @@ function create_service_principal_script()
     export ARM_CLIENT_SECRET=${client_secret}
 EOF
 
-    # define subscription id in json role template
+    # Define subscription id in json role template
     az_subscription_id=$(echo "${subscription_id}" | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
     sed -i -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" util/fencing_agent_role.json
 
@@ -92,17 +92,13 @@ EOF
     local fencing_template='Linux Fence Agent Role'
     local template_file='util/fencing_agent_role.json'
     local sp_prefix='http://'
-    role_list=$(az role definition list --name "Linux Fence Agent Role" | grep roleName | sed -e 's/.*roleName.:.\(.*\),/\1/')
-    if [[ ${role_list} == "[]" ]]; then
-       az role definition create --role-definition "${template_file}"
-    else echo "role definition already exsits"
+    role_list="$(az role definition list --name 'Linux Fence Agent Role')"
+    if [[ "${role_list}" == "[]" ]]; then
+        az role definition create --role-definition "${template_file}"
+    else echo "Role definition already exits"
     fi
     # assign role to fencing service principle
     az role assignment create --assignee "${sp_prefix}${service_principal_name}" --role "${fencing_template}"
-
-    # revert json template back to original state
-    sed -i -e "s/${az_subscription_id}/SUBSCRIPTION_ID/" util/fencing_agent_role.json
-
 
     IFS="${ifs_backup}"
 
@@ -121,3 +117,6 @@ function check_auth_script_does_not_exist()
 
 # Execute the main program flow with all arguments
 main "$@"
+
+# revert json template back to original state
+    sed -i -e "s/${az_subscription_id}/SUBSCRIPTION_ID/" util/fencing_agent_role.json
