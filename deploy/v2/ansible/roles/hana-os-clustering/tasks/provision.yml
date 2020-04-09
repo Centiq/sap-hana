@@ -134,7 +134,7 @@
 
     - name: Ensure the Resource Defaults are configured
       shell: >
-        crm configure rsc_defaults \$id="rsc-defaults"
+        crm configure rsc_defaults \$id="rsc-options"
         resource-stickiness="1000"
         migration-threshold="5000"
 
