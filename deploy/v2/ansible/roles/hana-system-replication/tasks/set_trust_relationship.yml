@@ -1,7 +1,6 @@
 ---
 
 - name: Ensure ssh keys on both nodes
-  # become_user: "{{ ansible_user }}"
   block:
     - name: Check for existence of id_rsa file
       stat:

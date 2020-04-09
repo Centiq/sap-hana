@@ -44,7 +44,6 @@
             state: absent
 
     - name: Ensure the primary node SSFS files are placed on the secondary node
-      # become_user: "{{ ansible_user }}"
       when: ansible_hostname == hana_database.nodes[1].dbname
       block:
 
