@@ -121,7 +121,7 @@ EOF
 
 function check_auth_script_does_not_exist()
 {
-    [ ! -f "${auth_script}" ]
+    [ ! -f "util/${auth_script}" ]
     auth_exists=$?
     continue_or_error_and_exit "$auth_exists" "Authorization file already exists: ${auth_script}. Please reuse, move, or remove it."
 }
