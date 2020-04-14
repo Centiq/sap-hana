@@ -73,8 +73,8 @@
         ha_cluster_password: "ASecurePa55w0rd"   # @TODO Determine source of truth for this value
         subscription_id: "{{ output.client_config.subscription_id }}"
         tenant_id: "{{ output.client_config.tenant_id }}"
-        stonith_service_principal_application_id: "{{ lookup('env', 'ARM_CLIENT_ID') }}"
-        stonith_service_principal_application_password: "{{ lookup('env', 'ARM_CLIENT_SECRET') }}"
+        stonith_service_principal_application_id: "{{ lookup('env', 'CLUSTERING_SP_ID') }}"
+        stonith_service_principal_application_password: "{{ lookup('env', 'CLUSTERING_SP_SECRET') }}"
 
 # Linux jumpboxes components install
 - hosts: jumpboxes_linux
