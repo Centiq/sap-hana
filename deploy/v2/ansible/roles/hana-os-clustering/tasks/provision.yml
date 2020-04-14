@@ -151,7 +151,7 @@
         crm configure primitive rsc_st_azure_1 stonith:fence_azure_arm params
         subscriptionId="{{ subscription_id }}"
         resourceGroup="{{ output.infrastructure.resource_group.name }}"
-        tenantId="{{ azure_active_directory_id }}"
+        tenantId="{{ tenant_id }}"
         login="{{ stonith_service_principal_application_id }}"
         passwd="{{ stonith_service_principal_application_password }}"
         action="off"
@@ -161,7 +161,7 @@
         crm configure primitive rsc_st_azure_2 stonith:fence_azure_arm params
         subscriptionId="{{ subscription_id }}"
         resourceGroup="{{ output.infrastructure.resource_group.name }}"
-        tenantId="{{ azure_active_directory_id }}"
+        tenantId="{{ tenant_id }}"
         login="{{ stonith_service_principal_application_id }}"
         passwd="{{ stonith_service_principal_application_password }}"
         action="off"
