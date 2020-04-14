@@ -70,7 +70,7 @@
       vars:
         sid: "{{ hana_database.instance.sid }}"
         instance_number: "{{ hana_database.instance.instance_number }}"
-        ha_cluster_password: "{{ lookup('env', 'HA_CLUSTER_PASS') }}"
+        ha_cluster_password: "ASecurePa55w0rd"   # @TODO Determine source of truth for this value
         subscription_id: "{{ output.client_config.subscription_id }}"
         tenant_id: "{{ output.client_config.tenant_id }}"
         stonith_service_principal_application_id: "{{ lookup('env', 'ARM_CLIENT_ID') }}"
