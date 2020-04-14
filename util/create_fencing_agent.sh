@@ -76,10 +76,8 @@ function create_service_principal_script()
 
     # create new script for authorization
     cat <<- EOF > util/${auth_script}
-    export ARM_SUBSCRIPTION_ID=${subscription_id}
-    export ARM_TENANT_ID=${tenant_id}
-    export ARM_CLIENT_ID=${client_id}
-    export ARM_CLIENT_SECRET=${client_secret}
+    export CLUSTERING_SP_ID=${client_id}
+    export CLUSTERING_SP_SECRET=${client_secret}
 EOF
 
     # Define subscription id in json role template
