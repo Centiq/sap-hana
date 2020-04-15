@@ -25,7 +25,7 @@ function main()
 {
     check_command_line_arguments "$@"
 
-    local SID="${1^^}"
+    local SID="${1-}"
 
     create_service_principal_script "${SID}"
 }
@@ -75,23 +75,23 @@ function create_service_principal_script()
     client_secret=$(echo "${sp_details}" | grep password | sed -e 's/.*password.:.\(.*\),/\1/')
 
     # create new script for authorization
-    cat <<- EOF > util/${auth_script}
+    cat <<- EOF > ${auth_script}
       export SAP_HANA_FENCING_AGENT_SUBSCRIPTION_ID=${subscription_id}
-	export SAP_HANA_FENCING_AGENT_TENANT_ID=${tenant_id}
-	export SAP_HANA_FENCING_AGENT_CLIENT_ID=${client_id}
-	export SAP_HANA_FENCING_AGENT_CLIENT_SECRET=${client_secret}
+      export SAP_HANA_FENCING_AGENT_TENANT_ID=${tenant_id}
+      export SAP_HANA_FENCING_AGENT_CLIENT_ID=${client_id}
+      export SAP_HANA_FENCING_AGENT_CLIENT_SECRET=${client_secret}
 EOF
 
     # Define subscription id in json role template
     template_file='util/fencing_agent_role.json'
     az_subscription_id=$(echo "${subscription_id}" | sed 's/.\(.*\)/\1/' | sed 's/\(.*\)./\1/')
     # use temp file method to avoid BSD sed issues on Mac/OSX
-	# See: https://stackoverflow.com/questions/5694228/sed-in-place-flag-that-works-both-on-mac-bsd-and-linux/5694430#5694430
-	local temp_template_json="${template_file}.tmp"
+    # See: https://stackoverflow.com/questions/5694228/sed-in-place-flag-that-works-both-on-mac-bsd-and-linux/5694430#5694430
+    local temp_template_json="${template_file}.tmp"
 
-	# filter JSON template file contents and write to temp file
-	sed -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" \
-		"${template_file}" > "${temp_template_json}"
+    # filter JSON template file contents and write to temp file
+    sed -e "s/SUBSCRIPTION_ID/${az_subscription_id}/" \
+        "${template_file}" > "${temp_template_json}"
 
     # replace original JSON template file with temporary filtered one
     mv "${temp_template_json}" "${template_file}"
@@ -115,7 +115,7 @@ EOF
 
     echo "A service principal has been created in Azure > App registrations, with the name: ${service_principal_name}"
     echo "Azure authorization details can be found within the script: ${auth_script}"
-    echo "The Azure authorization details are automatically used by the utility scripts if present."
+    echo "The Azure authorization details are copied to the RTI during Terraform provisioning for usage by Ansible."
 
 }
 
