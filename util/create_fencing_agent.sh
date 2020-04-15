@@ -76,8 +76,10 @@ function create_service_principal_script()
 
     # create new script for authorization
     cat <<- EOF > util/${auth_script}
-    export CLUSTERING_SP_ID=${client_id}
-    export CLUSTERING_SP_SECRET=${client_secret}
+    export SAP_HANA_FENCING_AGENT_SUBSCRIPTION_ID=${subscription_id}
+	export SAP_HANA_FENCING_AGENT_TENANT_ID=${tenant_id}
+	export SAP_HANA_FENCING_AGENT_CLIENT_ID=${client_id}
+	export SAP_HANA_FENCING_AGENT_CLIENT_SECRET=${client_secret}
 EOF
 
     # Define subscription id in json role template
