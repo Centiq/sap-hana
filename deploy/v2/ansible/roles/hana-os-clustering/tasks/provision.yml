@@ -49,11 +49,6 @@
     user: root
     key: "{{ hostvars[hana_database.nodes[1].ip_admin_nic].cluster_public_ssh_key.stdout }}"
 
-#########
-# Load balancer details? The IP should be retrieved from the output.json details
-#
-# @TODO Add Load Balancer front end IP to output JSON file.
-
 # SLES Clustering
 # Ref: https://documentation.suse.com/sle-ha/12-SP4/html/SLE-HA-install-quick/index.html
 
@@ -80,16 +75,12 @@
 - name: Ensure Primary node initiates the Cluster
   when: ansible_hostname == hana_database.nodes[0].dbname
   block:
-#   1. SSH keys for passwordless - @TODO?
-#   2. csync2 config
     - name: Ensure csync2 is configured
       shell: crm cluster init -y csync2 --interface eth1
 
-#   3. corosync config
     - name: Ensure corosync is configured
       shell: crm cluster init -y -u corosync --interface eth1
 
-#   4. Start Cluster # @TODO is this the right interface?
     - name: Ensure cluster (hdb_{{ hana_database.instance.sid | upper }}) is configured
       shell: "crm cluster init -y cluster --name 'hdb_{{ hana_database.instance.sid | upper }}' --interface eth1"
 
