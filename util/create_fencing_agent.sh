@@ -76,7 +76,7 @@ function create_service_principal_script()
 
     # create new script for authorization
     cat <<- EOF > util/${auth_script}
-    export SAP_HANA_FENCING_AGENT_SUBSCRIPTION_ID=${subscription_id}
+      export SAP_HANA_FENCING_AGENT_SUBSCRIPTION_ID=${subscription_id}
 	export SAP_HANA_FENCING_AGENT_TENANT_ID=${tenant_id}
 	export SAP_HANA_FENCING_AGENT_CLIENT_ID=${client_id}
 	export SAP_HANA_FENCING_AGENT_CLIENT_SECRET=${client_secret}
