@@ -75,7 +75,7 @@ function create_service_principal_script()
     client_secret=$(echo "${sp_details}" | grep password | sed -e 's/.*password.:.\(.*\),/\1/')
 
     # create new script for authorization
-    cat <<- EOF > ${auth_script}
+    cat <<- EOF > "${auth_script}"
       export SAP_HANA_FENCING_AGENT_SUBSCRIPTION_ID=${subscription_id}
       export SAP_HANA_FENCING_AGENT_TENANT_ID=${tenant_id}
       export SAP_HANA_FENCING_AGENT_CLIENT_ID=${client_id}
