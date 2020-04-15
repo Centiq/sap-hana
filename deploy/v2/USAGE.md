@@ -132,11 +132,7 @@ This script can then be used (_sourced_) to configure the required environment v
    The Azure authorization details are automatically used by the utility scripts if present.
    ```
 
-   **Note:** The generated authorization script contains secret information, which you should store and secure appropriately.
-
-When a high availability system is being provisioned the _Azure Fencing Agent_ requires a _Service Principal_ with the required permissions to manage resources.
-The following process creates a new service principal in Azure, and stores the details required in an authorization script on the local workstation.
-The Azure authorization details are copied to the RTI during Terraform provisioning for usage by Ansible.
+   **Note:** If you are provisioning a clustered system, then you also need to create a fencing agent service principal
 
 2. To easily create the service principal and authorization script, run the following command providing the HANA SID you wish to be included in the service principal name as the only command line argument (here the SID `T0D` is used):
 
