@@ -90,8 +90,8 @@
       shell: crm cluster init -y -u corosync --interface eth1
 
 #   4. Start Cluster # @TODO is this the right interface?
-    - name: Ensure cluster (hdb_{{ sid | upper }}) is configured
-      shell: "crm cluster init -y cluster --name 'hdb_{{ sid | upper }}' --interface eth1"
+    - name: Ensure cluster (hdb_{{ hana_database.instance.sid | upper }}) is configured
+      shell: "crm cluster init -y cluster --name 'hdb_{{ hana_database.instance.sid | upper }}' --interface eth1"
 
 - name: Ensure Secondary node joins the Cluster
   when: ansible_hostname == hana_database.nodes[1].dbname
