@@ -16,7 +16,7 @@ set -o nounset
 source util/common_utils.sh
 
 # name of the script where the auth info will be saved
-readonly auth_script="set-clustering-auth-${1-}.sh"
+readonly auth_script="set-clustering-auth-${1}.sh"
 
 # link for service principal help
 readonly sp_link='https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli'
@@ -44,9 +44,7 @@ function check_command_line_arguments()
 
 function create_service_principal_script()
 {
-    local SID=$1
     local service_principal_name="fencing-agent-${SID}"
-
 
     check_auth_script_does_not_exist
 
@@ -75,7 +73,7 @@ function create_service_principal_script()
     client_secret=$(echo "${sp_details}" | grep password | sed -e 's/.*password.:.\(.*\),/\1/')
 
     # create new script for authorization
-    "cat <<- EOF > ${auth_script}"
+    cat <<- EOF > "${auth_script}"
       export SAP_HANA_FENCING_AGENT_SUBSCRIPTION_ID=${subscription_id}
       export SAP_HANA_FENCING_AGENT_TENANT_ID=${tenant_id}
       export SAP_HANA_FENCING_AGENT_CLIENT_ID=${client_id}
@@ -121,7 +119,7 @@ EOF
 
 function check_auth_script_does_not_exist()
 {
-    [ ! -f "util/${auth_script}" ]
+    [ ! -f "${auth_script}" ]
     auth_exists=$?
     continue_or_error_and_exit "$auth_exists" "Authorization file already exists: ${auth_script}. Please reuse, move, or remove it."
 }
