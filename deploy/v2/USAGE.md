@@ -138,7 +138,7 @@ When a high availability system is being provisioned the _Azure Fencing Agent_ r
 The following process creates a new service principal in Azure, and stores the details required in an authorization script on the local workstation.
 The Azure authorization details are copied to the RTI during Terraform provisioning for usage by Ansible.
 
-1. To easily create the service principal and authorization script, run the following command providing the Hana SID you wish to be included in the service principal name as the only command line argument (here the SID `T0D` is used):
+1. To easily create the service principal and authorization script, run the following command providing the HANA SID you wish to be included in the service principal name as the only command line argument (here the SID `T0D` is used):
 
    ```text
    util/create_fencing_agent.sh T0D
@@ -165,7 +165,7 @@ The Azure authorization details are copied to the RTI during Terraform provision
    A service principal has been created in Azure > App registrations, with the name: fencing-agent-T0D
    Azure authorization details can be found within the script: set-clustering-auth-T0D.sh
    The Azure authorization details are copied to the RTI during Terraform provisioning for usage by Ansible.
-   ```
+
  **Note:** The generated authorization script contains secret information, which you should store and secure appropriately.
 
 ### Configuring Deployment Template
