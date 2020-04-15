@@ -134,9 +134,6 @@
         crm configure op_defaults \$id="op-options"
         timeout="600"
 
-    # 3. Create service Principal                    - @TODO in terraform/shell script
-    # 4. Assign service principal as owner of DB VMs - @TODO in terraform/shell script
-
     - name: Ensure the Primary STONITH fencing device is created
       shell: >
         crm configure primitive rsc_st_azure_1 stonith:fence_azure_arm params
