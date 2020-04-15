@@ -165,7 +165,7 @@ The Azure authorization details are copied to the RTI during Terraform provision
    A service principal has been created in Azure > App registrations, with the name: fencing-agent-T0D
    Azure authorization details can be found within the script: set-clustering-auth-T0D.sh
    The Azure authorization details are copied to the RTI during Terraform provisioning for usage by Ansible.
-
+   ```
  **Note:** The generated authorization script contains secret information, which you should store and secure appropriately.
 
 ### Configuring Deployment Template
