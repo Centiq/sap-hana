@@ -134,6 +134,40 @@ This script can then be used (_sourced_) to configure the required environment v
 
    **Note:** The generated authorization script contains secret information, which you should store and secure appropriately.
 
+When a high availability system is being provisioned the _Azure Fencing Agent_ requires a _Service Principal_ with the required permissions to manage resources.
+The following process creates a new service principal in Azure, and stores the details required in an authorization script on the local workstation.
+The Azure authorization details are copied to the RTI during Terraform provisioning for usage by Ansible.
+
+1. To easily create the service principal and authorization script, run the following command providing the Hana SID you wish to be included in the service principal name as the only command line argument (here the SID `T0D` is used):
+
+   ```text
+   util/create_fencing_agent.sh T0D
+   ```
+
+   Exaple output:
+
+   ```text
+   Creating Azure Service Principal: fencing-agent-T0D...
+   Changing "fencing-agent-T0D" to a valid URI of "http://fencing-agent-T0D", which is the required format used for service principal names
+   Creating a role assignment under the scope of "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+     Retrying role assignment creation: 1/36
+   Role definition already exists
+   {
+     "canDelegate": null,
+     "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/providers/Microsoft.Authorization/roleAssignments/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+     "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+     "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+     "principalType": "ServicePrincipal",
+     "roleDefinitionId": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+     "scope": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+     "type": "Microsoft.Authorization/roleAssignments"
+   }
+   A service principal has been created in Azure > App registrations, with the name: fencing-agent-T0D
+   Azure authorization details can be found within the script: set-clustering-auth-T0D.sh
+   The Azure authorization details are copied to the RTI during Terraform provisioning for usage by Ansible.
+
+ **Note:** The generated authorization script contains secret information, which you should store and secure appropriately.
+
 ### Configuring Deployment Template
 
 The SAP environments deployed by this codebase are configured by JSON input files.
