@@ -42,7 +42,7 @@
     user: root
     key: "{{ hostvars[hana_database.nodes[0].ip_admin_nic].cluster_public_ssh_key.stdout }}"
 
-- name: Ensure the Secondary Node public key is all nodes, required for crm_clustering
+- name: Ensure the Secondary Node public key is on all nodes, required for crm_clustering
   authorized_key:
     user: root
     key: "{{ hostvars[hana_database.nodes[1].ip_admin_nic].cluster_public_ssh_key.stdout }}"
@@ -53,7 +53,7 @@
 # @TODO NTP server for datetime sync?
 
 # Set up Hosts entries for the cluster nodes
-- name: Ensure the Primary node hosts entry exits
+- name: Ensure the Primary node hosts entry exists
   lineinfile:
     path: /etc/hosts
     state: present
@@ -61,7 +61,7 @@
     regexp: "{{ hana_database.nodes[0].dbname }}"
     line: "{{ hana_database.nodes[0].ip_db_nic }} {{ hana_database.nodes[0].dbname }}"
 
-- name: Ensure the Secondary node hosts entry exits
+- name: Ensure the Secondary node hosts entry exists
   lineinfile:
     path: /etc/hosts
     state: present
