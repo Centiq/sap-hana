@@ -28,4 +28,5 @@
 - name: Check if a cluster has already been prepared
   shell: crm status
   register: cluster_existence_check_result
+  changed_when: false
   failed_when: false
