@@ -1,7 +1,7 @@
 ---
 
 
-- name: Check the required variables are set
+- name: Check the required Clustering configuration variables are set
   assert:
     that:
       - "ha_cluster_password is defined"
