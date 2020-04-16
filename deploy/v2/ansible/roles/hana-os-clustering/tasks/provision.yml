@@ -188,7 +188,7 @@
         InstanceNumber="{{ hana_database.instance.instance_number }}"
         PREFER_SITE_TAKEOVER="true"
         DUPLICATE_PRIMARY_TIMEOUT="7200"
-        AUTOMATED_REGISTER="true"
+        AUTOMATED_REGISTER="false"
 
     - name: Ensure SAP HANA master-slave resource is configured
       shell: >
