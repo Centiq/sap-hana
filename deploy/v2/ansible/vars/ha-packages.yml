@@ -1,10 +1,8 @@
 ---
 
 ha_packages:
-    RedHat: []
-
-    Suse:
-      - socat
-      - corosync
-      - resource-agents
-      - fence-agents
+  Suse:
+    - socat
+    - corosync
+    - resource-agents
+    - fence-agents
