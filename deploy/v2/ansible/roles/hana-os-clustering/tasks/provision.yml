@@ -20,6 +20,7 @@
   systemd:
     daemon_reload: True
 
+# eth1 is the "db" NIC
 - name: Ensure clustering can manage Virtual IPs on the Database Interface
   lineinfile:
     path: /etc/sysconfig/network/ifcfg-eth1
@@ -33,16 +34,16 @@
   args:
     creates: /root/.ssh/id_rsa
 
-- name: Ensure the Public SSH keys is stored in a variable
+- name: Ensure the Public SSH keys are available for exchanging SSH key trust between nodes
   shell: cat /root/.ssh/id_rsa.pub
   register: cluster_public_ssh_key
 
-- name: Ensure the Primary Node public key is on all nodes, required for crm_clustering
+- name: Ensure the Primary Node public key is authorized on all nodes, required for crm_clustering
   authorized_key:
     user: root
     key: "{{ hostvars[hana_database.nodes[0].ip_admin_nic].cluster_public_ssh_key.stdout }}"
 
-- name: Ensure the Secondary Node public key is on all nodes, required for crm_clustering
+- name: Ensure the Secondary Node public key is authorized on all nodes, required for crm_clustering
   authorized_key:
     user: root
     key: "{{ hostvars[hana_database.nodes[1].ip_admin_nic].cluster_public_ssh_key.stdout }}"
@@ -94,7 +95,7 @@
 - name: Ensure HA Cluster password is set to something secure
   user:
     name: hacluster
-    password: "{{ ha_cluster_password | password_hash('sha512') }}" # @TODO set variable
+    password: "{{ ha_cluster_password | password_hash('sha512') }}" # @TODO Process for creating/storing ha cluster password needs to be defined
 
 - name: Ensure cluster configuration contains correct details
   template:
