@@ -22,5 +22,5 @@
   with_items:
     - "/usr/sbin/ha-cluster-init"
     - "/usr/sbin/ha-cluster-join"
-  register: p
-  failed_when: not p.stat.exists
+  register: cluster_scripts_status_results
+  failed_when: not cluster_scripts_status_results.stat.exists
