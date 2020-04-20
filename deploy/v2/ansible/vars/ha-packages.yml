@@ -1,6 +1,11 @@
 ---
 
 ha_packages:
+  RedHat:
+    - pcs
+    - pacemaker
+    - fence-agents-azure-arm
+    - nmap-ncat
   Suse:
     - socat
     - corosync
