@@ -53,6 +53,9 @@ function edit_json_template_for_sap_os()
 {
 	local sap_os="$1"
 	local json_template_name="$2"
+	local target_json="${target_template_dir}/${json_template_name}.json"
+	local temp_template_json="${target_json}.tmp"
+
 
   local sap_os_publisher
   local sap_os_offer
@@ -73,17 +76,19 @@ function edit_json_template_for_sap_os()
 		error_and_exit "You must specify one of the above values (case not significant) and the template name as parameters"
   fi
 
-	# these are the JSON path in jq format
-	local sap_os_publisher_json_path='"databases", "os", "publisher"'
-	local sap_os_offer_json_path='"databases", "os", "offer"'
-	local sap_os_sku_json_path='"databases", "os", "sku"'
+	# We need the jq "walk" method from v1.6 - build it by hand if jq is pre-1.6
+	local jq_version=$(jq --version | cut -f2 -d-)
+	if [[ ${jq_version} == "1.6" ]]; then
+		jq_def_walk=""
+	else
+	  jq_def_walk="def walk(f): . as \$in | if type == \"object\" then reduce keys_unsorted[] as \$key ( {}; . + { (\$key): (\$in[\$key] | walk(f)) } ) | f elif type == \"array\" then map( walk(f) ) | f else f end;"
+  fi
 
-	# Always set, regardless of any values already present
-  edit_json_template_for_path "${sap_os_publisher_json_path}" "${sap_os_publisher}" "${json_template_name}"
-  edit_json_template_for_path "${sap_os_offer_json_path}" "${sap_os_offer}" "${json_template_name}"
-  edit_json_template_for_path "${sap_os_sku_json_path}" "${sap_os_sku}" "${json_template_name}"
+	# Always set new values, regardless of any values already present
+	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.publisher=\"${sap_os_publisher}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.offer=\"${sap_os_offer}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.sku=\"${sap_os_sku}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
 }
-
 
 # Execute the main program flow with all arguments
 main "$@"
