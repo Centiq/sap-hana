@@ -1,6 +1,8 @@
 ---
 
-# Pre-provisioning tasks
+#############################################################################################
+# This file runs common pre-provisioning tasks before the OS specific clustering is performed
+#############################################################################################
 - name: Ensure clustering software is installed
   package:
     name: "{{ item }}"
@@ -33,6 +35,11 @@
   shell: crm cluster init -y ssh
   args:
     creates: /root/.ssh/id_rsa
+
+- name: Ensure there is a public key for the root user SSH key
+  shell: ssh-keygen -f /root/.ssh/id_rsa -y > /root/.ssh/id_rsa.pub
+  args:
+    creates: /root/.ssh/id_rsa.pub
 
 - name: Ensure the Public SSH keys are available for exchanging SSH key trust between nodes
   shell: cat /root/.ssh/id_rsa.pub
