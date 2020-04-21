@@ -18,78 +18,88 @@ set -o nounset
 # import common functions that are reused across scripts
 source util/common_utils.sh
 
+readonly list_of_offers=$(dirname $0)/sap_os_offers.json
 
 function main()
 {
-	check_command_line_arguments "$@"
+  check_command_line_arguments "$@"
 
-	local sap_os="$1"
-	local template_name="$2"
+  local sap_os="$1"
+  local template_name="$2"
 
-	edit_json_template_for_sap_os "${sap_os}" "${template_name}"
+  edit_json_template_for_sap_os "${sap_os}" "${template_name}"
 }
 
 
 function check_command_line_arguments()
 {
-	local args_count=$#
+  local args_count=$#
 
-	# Check there are just two arguments provided
-	if [[ ${args_count} -ne 2 ]]; then
-		echo "Available Templates:"
-		list_available_templates
-		error_and_exit "You must specify 2 command line arguments: the SAP OS (RedHat or SLES), and the template name"
-	fi
+  # Check there are just two arguments provided
+  if [[ ${args_count} -ne 2 ]]; then
+    echo "Available SAP OS offers:"
+    list_available_offers
+    echo
+    echo "Available Templates:"
+    list_available_templates
+    error_and_exit "You must specify 2 command line arguments: the SAP OS (RedHat or SLES), and the template name"
+  fi
 }
 
 
 function list_available_templates()
 {
-	print_allowed_json_template_names "${target_template_dir}" | grep 'hana'
+  print_allowed_json_template_names "${target_template_dir}" | grep 'hana'
+}
+
+
+function list_available_offers()
+{
+  jq 'keys' ${list_of_offers} | sed -n -e '/[a-zA-Z]/s/^[^"]*"\([^"]*\).*/  - \1/gp'
 }
 
 
 function edit_json_template_for_sap_os()
 {
-	local sap_os="$1"
-	local json_template_name="$2"
-	local target_json="${target_template_dir}/${json_template_name}.json"
-	local temp_template_json="${target_json}.tmp"
+  local sap_os="$1"
+  local json_template_name="$2"
+  local target_json="${target_template_dir}/${json_template_name}.json"
+  local temp_template_json="${target_json}.tmp"
 
-
-  local sap_os_publisher
-  local sap_os_offer
-  local sap_os_sku
-
-  if [[ ${sap_os,,} == 'sles' ]]; then
-    sap_os_publisher="suse"
-    sap_os_offer="sles-sap-12-sp5"
-    sap_os_sku="gen1"
-
-  elif [[ ${sap_os,,} == 'redhat' ]]; then
-    sap_os_publisher="RedHat"
-    sap_os_offer="RHEL-SAP-HA"
-    sap_os_sku="76sapha-gen2"
+  # This sets stored values from the sap_os_offers.json
+  # Check if the passed in value is known
+  if echo "$(list_available_offers)" | grep -q "^  - ${sap_os,,}$" 2>/dev/null; then
+    local sap_os_publisher=$(jq .${sap_os,,}.publisher ${list_of_offers})
+    local sap_os_offer=$(jq .${sap_os,,}.offer ${list_of_offers})
+    local sap_os_sku=$(jq .${sap_os,,}.sku ${list_of_offers})
 
   else
-		echo "Available SAP OS values:"
-		echo "  SLES"
-    echo "  RedHat"
-		error_and_exit "You must specify one of the above values (case not significant) and the template name as parameters"
+    # Passed in value is unknown
+    echo "Available SAP OS offers:"
+    echo "$(list_available_offers)"
+    error_and_exit "${sap_os} is not a recognised SAP OS offer. You must specify one of the above values and the template name as parameters"
   fi
 
-	# We need the jq "walk" method from v1.6 - build it by hand if jq is pre-1.6
-	local jq_version=$(jq --version | cut -f2 -d-)
-	if [[ ${jq_version} == "1.6" ]]; then
-		jq_def_walk=""
-	else
-	  jq_def_walk="def walk(f): . as \$in | if type == \"object\" then reduce keys_unsorted[] as \$key ( {}; . + { (\$key): (\$in[\$key] | walk(f)) } ) | f elif type == \"array\" then map( walk(f) ) | f else f end;"
+  # We need the jq "walk" function from v1.6: https://stedolan.github.io/jq/manual/#walk(f)
+  local jq_version=$(jq --version | cut -f2 -d-)
+  local jq_def_walk
+  if [[ ${jq_version} == "1.6" ]]; then
+    jq_def_walk=""
+  else
+    # Build it by hand if jq is pre-1.6
+    # https://github.com/stedolan/jq/blob/ccc79e592cfe1172db5f2def5a24c2f7cfd418bf/src/builtin.jq#L255-L262
+    jq_def_walk="def walk(f): . as \$in | if type == \"object\" then reduce keys_unsorted[] as \$key ( {}; . + { (\$key): (\$in[\$key] | walk(f)) } ) | f elif type == \"array\" then map( walk(f) ) | f else f end;"
   fi
 
-	# Always set new values, regardless of any values already present
-	jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.publisher?=\"${sap_os_publisher}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
-	jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.offer?=\"${sap_os_offer}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
-	jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.sku?=\"${sap_os_sku}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+  # Always set new values, regardless of any values already present
+  # Using the "walk" function, follow the JSON tree looking for arrays
+  # When an array is found, map each element. For each element:
+  #   If it contains a "platform" property with the value "HANA", then:
+  #    If it has an "os" property having a "publisher"/"offer"/"sku" property, then:
+  #      Replace the value of the appropriate property.
+  jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.publisher?=${sap_os_publisher}) else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+  jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.offer?=${sap_os_offer}) else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+  jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.sku?=${sap_os_sku}) else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
 }
 
 # Execute the main program flow with all arguments

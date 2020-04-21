@@ -1,0 +1,12 @@
+{
+  "sles12sp5": {
+    "publisher": "suse",
+    "offer": "sles-sap-12-sp5",
+    "sku": "gen1"
+  },
+  "redhat76": {
+    "publisher": "RedHat",
+    "offer": "RHEL-SAP-HA",
+    "sku": "76sapha-gen2"
+  }
+}
