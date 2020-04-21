@@ -22,17 +22,9 @@
   systemd:
     daemon_reload: True
 
-# eth1 is the "db" NIC
-- name: Ensure clustering can manage Virtual IPs on the Database Interface
-  lineinfile:
-    path: /etc/sysconfig/network/ifcfg-eth1
-    state: present
-    regexp: "^#?\\s*CLOUD_NETCONFIG_MANAGE="
-    line: "CLOUD_NETCONFIG_MANAGE='no'"
-
 # Configure SSH Keys for inter-node communication as root
 - name: Ensure there are SSH keys for the root user to communicate between nodes
-  shell: crm cluster init -y ssh
+  shell: ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -q -N ""
   args:
     creates: /root/.ssh/id_rsa
 
