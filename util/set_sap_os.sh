@@ -65,10 +65,12 @@ function edit_json_template_for_sap_os()
     sap_os_publisher="suse"
     sap_os_offer="sles-sap-12-sp5"
     sap_os_sku="gen1"
+
   elif [[ ${sap_os,,} == 'redhat' ]]; then
     sap_os_publisher="RedHat"
     sap_os_offer="RHEL-SAP-HA"
     sap_os_sku="76sapha-gen2"
+
   else
 		echo "Available SAP OS values:"
 		echo "  SLES"
@@ -85,9 +87,9 @@ function edit_json_template_for_sap_os()
   fi
 
 	# Always set new values, regardless of any values already present
-	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.publisher=\"${sap_os_publisher}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
-	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.offer=\"${sap_os_offer}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
-	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.sku=\"${sap_os_sku}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.publisher?=\"${sap_os_publisher}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.offer?=\"${sap_os_offer}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+	jq "${jq_def_walk}walk(if type == \"array\" then map(.os?.sku?=\"${sap_os_sku}\") else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
 }
 
 # Execute the main program flow with all arguments
