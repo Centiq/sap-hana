@@ -19,7 +19,7 @@
   when: ansible_os_family == 'Suse'
   stat:
     path: "{{ item }}"
-  with_items:
+  loop:
     - "/usr/sbin/ha-cluster-init"
     - "/usr/sbin/ha-cluster-join"
   register: cluster_scripts_status_results

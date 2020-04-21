@@ -7,7 +7,7 @@
   package:
     name: "{{ item }}"
     state: present
-  with_items: "{{ ha_packages[ansible_os_family] }}"
+  loop: "{{ ha_packages[ansible_os_family] | flatten(levels=1) }}"
 
 # Pacemaker can create a large number of processes
 - name: Ensure Process limit is raised
