@@ -18,7 +18,7 @@ set -o nounset
 # import common functions that are reused across scripts
 source util/common_utils.sh
 
-readonly list_of_offers=$(dirname $0)/sap_os_offers.json
+readonly list_of_offers=$(dirname "$0")/sap_os_offers.json
 
 function main()
 {
@@ -55,7 +55,7 @@ function list_available_templates()
 
 function list_available_offers()
 {
-  jq 'keys' ${list_of_offers} | sed -n -e '/[a-zA-Z]/s/^[^"]*"\([^"]*\).*/  - \1/gp'
+  jq 'keys' "${list_of_offers}" | sed -n -e '/[a-zA-Z]/s/^[^"]*"\([^"]*\).*/  - \1/gp'
 }
 
 
@@ -68,10 +68,10 @@ function edit_json_template_for_sap_os()
 
   # This sets stored values from the sap_os_offers.json
   # Check if the passed in value is known
-  if echo "$(list_available_offers)" | grep -q "^  - ${sap_os,,}$" 2>/dev/null; then
-    local sap_os_publisher=$(jq .${sap_os,,}.publisher ${list_of_offers})
-    local sap_os_offer=$(jq .${sap_os,,}.offer ${list_of_offers})
-    local sap_os_sku=$(jq .${sap_os,,}.sku ${list_of_offers})
+  if list_available_offers | grep -q "^  - ${sap_os,,}$" 2>/dev/null; then
+    local sap_os_publisher=$(jq ".${sap_os,,}.publisher" "${list_of_offers}")
+    local sap_os_offer=$(jq ".${sap_os,,}.offer" "${list_of_offers}")
+    local sap_os_sku=$(jq ".${sap_os,,}.sku" "${list_of_offers}")
 
   else
     # Passed in value is unknown
