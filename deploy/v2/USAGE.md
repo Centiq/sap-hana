@@ -210,6 +210,18 @@ In the following steps you will need to substitute a `<template_name>` for the t
    util/terraform_v2.sh plan <template_name>
    ```
 
+1. To easily discover which operating systems can be used to build HANA VMs, run the following utility script withput parameters:
+
+   ```text
+   util/set_sap_os.sh
+   ```
+
+1. To easily choose which operating system will be used to build HANA VMs, run the following utility script with the required SAP OS chosen from the above list:
+
+   ```text
+   util/set_sap_os.sh <SAP OS> <template name>
+   ```
+
 1. To easily deploy the system, run the following utility script with an input template name (e.g. `single_node_hana`):
 
    ```text
