@@ -27,7 +27,7 @@
   when: ansible_hostname == hana_database.nodes[0].dbname
   block:
     - name: Ensure the cluster can authenticate nodes as hacluster
-      shell: "pcs cluster auth {{ hana_database.nodes[0].dbname }} {{ hana_database.nodes[1].dbname }} -u hacluster -p {{ ha_cluster_password }}}}"
+      shell: "pcs cluster auth {{ hana_database.nodes[0].dbname }} {{ hana_database.nodes[1].dbname }} -u hacluster -p {{ ha_cluster_password }}"
 
     # Ref https://docs.microsoft.com/en-us/azure/virtual-machines/maintenance-and-updates#maintenance-that-doesnt-require-a-reboot
     - name: Ensure the cluster is created with a token large enough to allow memory preserving maintenance
