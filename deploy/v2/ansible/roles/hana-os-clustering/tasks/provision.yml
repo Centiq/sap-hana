@@ -36,6 +36,7 @@
 - name: Ensure the Public SSH keys are available for exchanging SSH key trust between nodes
   shell: cat /root/.ssh/id_rsa.pub
   register: cluster_public_ssh_key
+  changed_when: False
 
 - name: Ensure the Primary Node public key is authorized on all nodes, required for crm_clustering
   authorized_key:
