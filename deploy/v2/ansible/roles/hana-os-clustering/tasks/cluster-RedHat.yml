@@ -67,6 +67,9 @@
         power_timeout=240
         pcmk_reboot_timeout=900
 
+    - name: Ensure the STONITH action is set to reboot
+      shell: pcs property set stonith-action=reboot
+
     - name: Ensure the STONITH device is enabled
       shell: pcs property set stonith-enabled=true
 
