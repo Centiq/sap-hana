@@ -84,7 +84,7 @@
         SID={{ hana_database.instance.sid | upper }} InstanceNumber={{ hana_database.instance.instance_number }}
         op start timeout=600
         op stop timeout=300
-        p monitor interval=10 timeout=600
+        op monitor interval=10 timeout=600
         --clone clone-max=2 clone-node-max=1 interleave=true
 
     - name: Ensure the SAP HANA resource is created
