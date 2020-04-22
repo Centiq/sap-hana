@@ -88,11 +88,11 @@ function edit_json_template_for_sap_os()
   else
     # Build it by hand if jq is pre-1.6
     # https://github.com/stedolan/jq/blob/ccc79e592cfe1172db5f2def5a24c2f7cfd418bf/src/builtin.jq#L255-L262
-    jq_def_walk="def walk(f):
-      . as \$in | if type == \"object\" then
-        reduce keys_unsorted[] as \$key ( {}; . + { (\$key): (\$in[\$key] | walk(f)) } ) | f
-      elif type == \"array\" then map( walk(f) ) | f
-      else f end;"
+    jq_def_walk='def walk(f):
+      . as $in | if type == "object" then
+        reduce keys_unsorted[] as $key ( {}; . + { ($key): ($in[$key] | walk(f)) } ) | f
+      elif type == "array" then map( walk(f) ) | f
+      else f end;'
   fi
 
   # Always set new values, regardless of any values already present
