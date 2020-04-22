@@ -55,7 +55,7 @@ function edit_json_template_for_ha_cluster_pass()
 	local json_template_name="$2"
 
 	# the JSON path to update in jq format
-	local ha_cluster_pass_path='"databases", 0, "credentials", "ha_cluster_pass"'
+	local ha_cluster_pass_path='"databases", ( .databases | map(.platform) | index("HANA") ), "credentials", "ha_cluster_pass"'
 
 	# Only attempt to set for non-empty password values
 	if [[ "${ha_cluster_pass}" != "" ]]; then
