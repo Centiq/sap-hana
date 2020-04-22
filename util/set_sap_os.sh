@@ -88,7 +88,11 @@ function edit_json_template_for_sap_os()
   else
     # Build it by hand if jq is pre-1.6
     # https://github.com/stedolan/jq/blob/ccc79e592cfe1172db5f2def5a24c2f7cfd418bf/src/builtin.jq#L255-L262
-    jq_def_walk="def walk(f): . as \$in | if type == \"object\" then reduce keys_unsorted[] as \$key ( {}; . + { (\$key): (\$in[\$key] | walk(f)) } ) | f elif type == \"array\" then map( walk(f) ) | f else f end;"
+    jq_def_walk="def walk(f):
+      . as \$in | if type == \"object\" then
+        reduce keys_unsorted[] as \$key ( {}; . + { (\$key): (\$in[\$key] | walk(f)) } ) | f
+      elif type == \"array\" then map( walk(f) ) | f
+      else f end;"
   fi
 
   # Always set new values, regardless of any values already present
@@ -97,9 +101,13 @@ function edit_json_template_for_sap_os()
   #   If it contains a "platform" property with the value "HANA", then:
   #    If it has an "os" property having a "publisher"/"offer"/"sku" property, then:
   #      Replace the value of the appropriate property.
-  jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.publisher?=${sap_os_publisher}) else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
-  jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.offer?=${sap_os_offer}) else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
-  jq "${jq_def_walk}walk(if type == \"array\" then map(select(.platform? == \"HANA\") .os?.sku?=${sap_os_sku}) else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
+  jq "${jq_def_walk}
+      walk(if type == \"array\" then
+        map(select(.platform? == \"HANA\") .os?={
+            publisher: ${sap_os_publisher},
+            offer: ${sap_os_offer},
+            sku: ${sap_os_sku} } )
+        else . end)" ${target_json} >${temp_template_json} && mv ${temp_template_json} ${target_json}
 }
 
 # Execute the main program flow with all arguments
