@@ -9,7 +9,7 @@
 - name: Ensure HA Cluster password is set to something secure
   user:
     name: hacluster
-    password: "{{ ha_cluster_password | password_hash('sha512') }}" # @TODO Process for creating/storing ha cluster password needs to be defined
+    password: "{{ ha_cluster_password }}"
 
 - name: Ensure the firewall service is configured to allow High Availability traffic
   firewalld:
