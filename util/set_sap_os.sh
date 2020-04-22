@@ -16,6 +16,7 @@ set -o errexit
 set -o nounset
 
 # import common functions that are reused across scripts
+# shellcheck disable=SC1091
 source util/common_utils.sh
 
 readonly list_of_offers=$(dirname "$0")/sap_os_offers.json
@@ -34,21 +35,32 @@ function main()
 function check_command_line_arguments()
 {
   local args_count=$#
+  local usage="Usage: ${0} \"<SAP OS offer>\" \"<template name>\""
 
   # Check there are just two arguments provided
   if [[ ${args_count} -ne 2 ]]; then
+    echo "${usage}"
+    echo
     echo "Available SAP OS offers:"
     list_available_offers
     echo
     echo "Available Templates:"
     list_available_templates
-    error_and_exit "You must specify 2 command line arguments: the SAP OS (RedHat or SLES), and the template name"
+    echo
+    if [[ ${args_count} -eq 0 ]]; then
+      # No arguments: just show the help and exit gracefully
+      exit
+    else
+      # Incorrect number of arguments
+      error_and_exit "${usage}"
+    fi
   fi
 }
 
 
 function list_available_templates()
 {
+  # shellcheck disable=SC2154
   print_allowed_json_template_names "${target_template_dir}" | grep 'hana'
 }
 
@@ -76,8 +88,16 @@ function edit_json_template_for_sap_os()
   else
     # Passed in value is unknown
     echo "Available SAP OS offers:"
-    echo "$(list_available_offers)"
-    error_and_exit "${sap_os} is not a recognised SAP OS offer. You must specify one of the above values and the template name as parameters"
+    list_available_offers
+    error_and_exit "${sap_os} is not a recognised SAP OS offer"
+  fi
+
+  # Ensure the template name is known
+  if ! list_available_templates | grep -q "^  - ${json_template_name}$" 2>/dev/null; then
+    echo "Available Templates:"
+    list_available_templates
+    echo
+    error_and_exit "${json_template_name} is not a recognised template"
   fi
 
   # We need the jq "walk" function from v1.6: https://stedolan.github.io/jq/manual/#walk(f)
