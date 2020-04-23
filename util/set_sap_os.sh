@@ -67,7 +67,7 @@ function list_available_templates()
 
 function list_available_offers()
 {
-  jq 'keys' "${list_of_offers}" | sed -n -e '/[a-zA-Z]/s/^[^"]*"\([^"]*\).*/  - \1/gp'
+  jq 'keys_unsorted' "${list_of_offers}" | sed -n -e '/[a-zA-Z]/s/^[^"]*"\([^"]*\).*/  - \1/gp'
 }
 
 
