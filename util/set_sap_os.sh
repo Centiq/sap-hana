@@ -103,9 +103,7 @@ function edit_json_template_for_sap_os()
   # We need the jq "walk" function from v1.6: https://stedolan.github.io/jq/manual/#walk(f)
   local jq_version=$(jq --version | cut -f2 -d-)
   local jq_def_walk
-  if [[ ${jq_version} == "1.6" ]]; then
-    jq_def_walk=""
-  else
+  if [[ $(test_semver "${jq_version}" "1.6") == "<" ]]; then
     # Build it by hand if jq is pre-1.6
     # https://github.com/stedolan/jq/blob/ccc79e592cfe1172db5f2def5a24c2f7cfd418bf/src/builtin.jq#L255-L262
     jq_def_walk='def walk(f):
@@ -113,6 +111,8 @@ function edit_json_template_for_sap_os()
         reduce keys_unsorted[] as $key ( {}; . + { ($key): ($in[$key] | walk(f)) } ) | f
       elif type == "array" then map( walk(f) ) | f
       else f end;'
+  else
+    jq_def_walk=""
   fi
 
   # Always set new values, regardless of any values already present
