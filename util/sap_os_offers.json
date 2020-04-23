@@ -7,6 +7,6 @@
   "redhat76": {
     "publisher": "RedHat",
     "offer": "RHEL-SAP-HA",
-    "sku": "76sapha-gen2"
+    "sku": "7.6"
   }
 }
