@@ -127,7 +127,8 @@ function check_json_value_is_not_empty()
 
 	check_command_installed 'jq' 'Try: https://stedolan.github.io/jq/download/'
 
-	local json_value="$(jq ${json_path} ${target_json})"
+	local json_value=
+	json_value=$(jq "${json_path}" "${target_json}")
 
 	if [ "${json_value}" == '""' ]; then
 		return 1
