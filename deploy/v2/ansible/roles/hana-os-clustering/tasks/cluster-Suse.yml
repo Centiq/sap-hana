@@ -83,7 +83,6 @@
         tenantId="{{ sap_hana_fencing_agent_tenant_id }}"
         login="{{ sap_hana_fencing_agent_client_id }}"
         passwd="{{ sap_hana_fencing_agent_client_password }}"
-        action="off"
 
     - name: Ensure SAP HANA Topology resource is configured
       shell: >
@@ -99,7 +98,7 @@
       shell: >
         crm configure clone cln_SAPHanaTopology_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
         rsc_SAPHanaTopology_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
-        meta clone-node-max="1" interleave="true"
+        meta clone-node-max="1" target-role="Started" interleave="true"
 
     - name: Ensure SAP HANA primitive resource is configured
       shell: >
@@ -123,11 +122,12 @@
         crm configure ms msl_SAPHana_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
         rsc_SAPHana_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
         meta notify="true" clone-max="2" clone-node-max="1"
-        interleave="true"
+        target-role="Started" interleave="true"
 
     - name: Ensure SAP HANA Virtual IP resource is configured
       shell: >
         crm configure primitive rsc_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }} ocf:heartbeat:IPaddr2
+        meta target-role="Started"
         operations \$id="rsc_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}-operations"
         op monitor interval="10s" timeout="20s"
         params ip="{{ hana_database.loadbalancer.frontend_ip }}"
@@ -148,14 +148,14 @@
     - name: Ensure Co-Location constraint is configured
       shell: >
         crm configure colocation col_saphana_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
-        2000:
+        4000:
         g_ip_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}:Started
         msl_SAPHana_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}:Master
 
     - name: Ensure Resource order is configured
       shell: >
         crm configure order ord_SAPHana_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
-        2000:
+        Optional:
         cln_SAPHanaTopology_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
         msl_SAPHana_{{ hana_database.instance.sid | upper }}_HDB{{ hana_database.instance.instance_number }}
 
