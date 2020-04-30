@@ -4,10 +4,9 @@
 
 # Due to the file permission limitation with blob (always 770), we currently only support using azure files.
 - name: Install unzip
-  apt: 
+  package: 
     name: unzip
-    state: latest
-    force_apt_get: yes
+    state: present
 
 # Explicitly install bs4 with python3
 - name: Install beautifulsoup4
@@ -20,7 +19,7 @@
   register: extract_path_status
 
 - name: Download installation media
-  shell: "python3 {{ playbook_dir }}/../python/downloader/basket.py --config /home/{{ ansible_user}}/output.json --dir {{ azure_files_mount_path }}"
+  shell: "python3 {{ playbook_dir }}/../python/downloader/basket.py --config {{ inventory_dir }}/output.json --dir {{ azure_files_mount_path }}"
   when: extract_path_status.stat.exists == false
 
 - name: Identify media archive
