@@ -1,0 +1,8 @@
+---
+
+# Default parameters for the cluster test role.
+#
+# These will often be overridden when the role is used.
+
+check_mode: "configuration"  # configuration | standby | unstandby | fence | kill_interface | kill_pacemaker
+node: "hdb1-0"
