@@ -1,0 +1,8 @@
+---
+
+- import_tasks: pre_checks.yml
+
+- import_tasks: check_configuration.{{ ansible_os_family | lower }}.yml
+  when: check_mode == "configuration"
+
+- import_tasks: post_checks.yml

@@ -3,7 +3,7 @@
     "region": "eastus",
     "resource_group": {
       "is_existing": "false",
-      "name": "test-rg"
+      "name": "rf-test35-rg"
     },
     "vnets": {
       "management": {
@@ -62,8 +62,8 @@
         },
         "authentication": {
           "type": "password",
-          "username": "azureadm",
-          "password": "Sap@hana2019!"
+          "username": "rfallows",
+          "password": "Passw0rd"
         },
         "components": [
           "hana_studio_windows"
@@ -82,9 +82,8 @@
           "sku": "16.04-LTS"
         },
         "authentication": {
-          "type": "password",
-          "username": "azureadm",
-          "password": "Sap@hana2019!"
+          "type": "key",
+          "username": "rfallows"
         },
         "components": [
           "hana_studio_linux"
@@ -102,7 +101,7 @@
         },
         "authentication": {
           "type": "key",
-          "username": "azureadm"
+          "username": "rfallows"
         },
         "components": [
           "ansible"
@@ -124,19 +123,19 @@
       "high_availability": true,
       "authentication": {
         "type": "key",
-        "username": "azureadm"
+        "username": "rfallows"
       },
       "instance": {
         "sid": "HN1",
         "instance_number": "00"
       },
       "credentials": {
-        "db_systemdb_password": "Manager1",
-        "db_tenant_password": "Manager1",
-        "os_sidadm_password": "Help4you",
-        "os_sapadm_password": "Help4you",
-        "xsa_admin_password": "Manager1",
-        "cockpit_admin_password": "Manager1"
+        "db_systemdb_password": "Passw0rd",
+        "db_tenant_password": "Passw0rd",
+        "os_sidadm_password": "Passw0rd",
+        "os_sapadm_password": "Passw0rd",
+        "xsa_admin_password": "Passw0rd",
+        "cockpit_admin_password": "Passw0rd"
       },
       "components": {
         "hana_database": [],
@@ -176,8 +175,8 @@
     },
     "downloader": {
       "credentials": {
-        "sap_user": "",
-        "sap_password": ""
+        "sap_user": "rfallows@centiq.co.uk",
+        "sap_password": "Mad0ucxX@sa.c"
       },
       "scenarios": [
         {
@@ -215,12 +214,12 @@
     }
   },
   "sshkey": {
-    "path_to_public_key": "~/.ssh/id_rsa.pub",
-    "path_to_private_key": "~/.ssh/id_rsa"
+    "path_to_public_key": "~/id_rsa.pub",
+    "path_to_private_key": "~/id_rsa"
   },
   "options": {
     "ansible_execution": false,
     "enable_secure_transfer": true,
-    "enable_prometheus": true
+    "enable_prometheus": false
   }
 }
