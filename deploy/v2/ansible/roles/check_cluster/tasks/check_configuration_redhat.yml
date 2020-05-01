@@ -1,1 +1,8 @@
 ---
+
+- name: Capture cluster resources
+  become: true
+  shell: >
+    pcs resource --full
+  register: cluster_resource_status
+  changed_when: false

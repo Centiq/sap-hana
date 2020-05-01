@@ -1,1 +1,5 @@
 ---
+
+- name: Check cluster software is installed
+
+- name: Check cluster is running normally
