@@ -21,7 +21,7 @@
                stop interval=0s timeout=3600 (SAPHana_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
  Group: g_ip_{{ sid | upper }}_{{ instance_number }}
   Resource: nc_{{ sid | upper }}_{{ instance_number }} (class=ocf provider=heartbeat type=azure-lb)
-   Attributes: port=62500
+   Attributes: port=625{{ instance_number }}
    Operations: monitor interval=10s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-monitor-interval-10s)
                start interval=0s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-start-interval-0s)
                stop interval=0s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
