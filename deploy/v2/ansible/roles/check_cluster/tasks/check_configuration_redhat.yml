@@ -1,31 +1,36 @@
 ---
 
-- name: Ensure cluster resources can be captured
-  tempfile:
-    state: file
-    suffix: tmp
-  register: actual_cluster_resource_temp_file
+- name: Ensure checks run on primary node only
+  when: ansible_hostname == hana_database.nodes[0].dbname
+  block:
 
-- name: Ensure cluster resources are captured
-  become: true
-  shell: >
-    pcs resource --full >{{ actual_cluster_resource_temp_file.path }}
-  register: cluster_resource_status
-  changed_when: false
+    - name: Ensure cluster resources can be captured
+      tempfile:
+        state: file
+        suffix: tmp
+      register: actual_cluster_resource_temp_file
 
-- name: Ensure expected cluster resources can be captured
-  tempfile:
-    state: file
-    suffix: tmp
-  register: expected_cluster_resource_temp_file
+    - name: Ensure cluster resources are captured
+      become: true
+      shell: >
+        pcs resource --full >{{ actual_cluster_resource_temp_file.path }}
+      register: cluster_resource_status
+      changed_when: false
 
-- name: Ensure expected cluster resources are captured
-  template:
-    dest: "{{ expected_cluster_resource_temp_file.path }}"
-    src: "templates/cluster_resources_redhat.txt.j2"
+    - name: Ensure expected cluster resources can be captured
+      tempfile:
+        state: file
+        suffix: tmp
+      register: expected_cluster_resource_temp_file
 
-- name: Check actual vs expected cluster resources
-  copy:
-    src: "{{ actual_cluster_resource_temp_file.path }}"
-    dest: "{{ expected_cluster_resource_temp_file.path }}"
-  check_mode: true
+    - name: Ensure expected cluster resources are captured
+      template:
+        dest: "{{ expected_cluster_resource_temp_file.path }}"
+        src: "templates/cluster_resources_redhat.txt.j2"
+
+    - name: Check actual vs expected cluster resources
+      copy:
+        src: "{{ actual_cluster_resource_temp_file.path }}"
+        dest: "{{ expected_cluster_resource_temp_file.path }}"
+      check_mode: true
+      delegate_to: "{{ hana_database.nodes[0].dbname }}"
