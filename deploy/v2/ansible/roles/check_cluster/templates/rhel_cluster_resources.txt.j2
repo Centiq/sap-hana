@@ -26,7 +26,7 @@
                start interval=0s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-start-interval-0s)
                stop interval=0s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
   Resource: vip_{{ sid | upper }}_{{ instance_number }} (class=ocf provider=heartbeat type=IPaddr2)
-   Attributes: ip=10.1.2.6
+   Attributes: ip={{ hana_vip }}
    Operations: monitor interval=10s timeout=20s (vip_{{ sid | upper }}_{{ instance_number }}-monitor-interval-10s)
                start interval=0s timeout=20s (vip_{{ sid | upper }}_{{ instance_number }}-start-interval-0s)
                stop interval=0s timeout=20s (vip_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
