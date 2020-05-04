@@ -45,4 +45,4 @@
     - name: Ensure changes from expected configuration are reported
       fail:
         msg: "Cluster configuration does not match expected configuration"
-      when: actual_vs_expected_status.rc == 0
+      when: actual_vs_expected_status.rc != 0
