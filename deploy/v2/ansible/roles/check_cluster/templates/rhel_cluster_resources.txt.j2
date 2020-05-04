@@ -1,0 +1,32 @@
+ Clone: SAPHanaTopology_{{ sid | upper }}_{{ instance_number }}-clone
+  Meta Attrs: clone-max=2 clone-node-max=1 interleave=true
+  Resource: SAPHanaTopology_{{ sid | upper }}_{{ instance_number }} (class=ocf provider=heartbeat type=SAPHanaTopology)
+   Attributes: InstanceNumber={{ instance_number }} SID={{ sid | upper }}
+   Operations: methods interval=0s timeout=5 (SAPHanaTopology_{{ sid | upper }}_{{ instance_number }}-methods-interval-0s)
+               monitor interval=10 timeout=600 (SAPHanaTopology_{{ sid | upper }}_{{ instance_number }}-monitor-interval-10)
+               reload interval=0s timeout=5 (SAPHanaTopology_{{ sid | upper }}_{{ instance_number }}-reload-interval-0s)
+               start interval=0s timeout=600 (SAPHanaTopology_{{ sid | upper }}_{{ instance_number }}-start-interval-0s)
+               stop interval=0s timeout=300 (SAPHanaTopology_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
+ Master: SAPHana_{{ sid | upper }}_{{ instance_number }}-master
+  Meta Attrs: clone-max=2 clone-node-max=1 interleave=true notify=true
+  Resource: SAPHana_{{ sid | upper }}_{{ instance_number }} (class=ocf provider=heartbeat type=SAPHana)
+   Attributes: AUTOMATED_REGISTER=false DUPLICATE_PRIMARY_TIMEOUT=7200 InstanceNumber={{ instance_number }} PREFER_SITE_TAKEOVER=true SID={{ sid | upper }}
+   Operations: demote interval=0s timeout=3600 (SAPHana_{{ sid | upper }}_{{ instance_number }}-demote-interval-0s)
+               methods interval=0s timeout=5 (SAPHana_{{ sid | upper }}_{{ instance_number }}-methods-interval-0s)
+               monitor interval=61 role=Slave timeout=700 (SAPHana_{{ sid | upper }}_{{ instance_number }}-monitor-interval-61)
+               monitor interval=59 role=Master timeout=700 (SAPHana_{{ sid | upper }}_{{ instance_number }}-monitor-interval-59)
+               promote interval=0s timeout=3600 (SAPHana_{{ sid | upper }}_{{ instance_number }}-promote-interval-0s)
+               reload interval=0s timeout=5 (SAPHana_{{ sid | upper }}_{{ instance_number }}-reload-interval-0s)
+               start interval=0s timeout=3600 (SAPHana_{{ sid | upper }}_{{ instance_number }}-start-interval-0s)
+               stop interval=0s timeout=3600 (SAPHana_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
+ Group: g_ip_{{ sid | upper }}_{{ instance_number }}
+  Resource: nc_{{ sid | upper }}_{{ instance_number }} (class=ocf provider=heartbeat type=azure-lb)
+   Attributes: port=62500
+   Operations: monitor interval=10s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-monitor-interval-10s)
+               start interval=0s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-start-interval-0s)
+               stop interval=0s timeout=20s (nc_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
+  Resource: vip_{{ sid | upper }}_{{ instance_number }} (class=ocf provider=heartbeat type=IPaddr2)
+   Attributes: ip=10.1.2.6
+   Operations: monitor interval=10s timeout=20s (vip_{{ sid | upper }}_{{ instance_number }}-monitor-interval-10s)
+               start interval=0s timeout=20s (vip_{{ sid | upper }}_{{ instance_number }}-start-interval-0s)
+               stop interval=0s timeout=20s (vip_{{ sid | upper }}_{{ instance_number }}-stop-interval-0s)
