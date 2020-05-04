@@ -33,3 +33,11 @@
       register: actual_vs_expected_status
       changed_when: actual_vs_expected_status == 1
       failed_when: actual_vs_expected_status.rc== 2
+
+    - name: Ensure temporary files are absent
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ actual_cluster_resource_temp_file.path }}"
+        - "{{ expected_cluster_resource_temp_file.path }}"
