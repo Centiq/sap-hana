@@ -9,7 +9,7 @@
 - name: Ensure cluster resources are captured
   become: true
   shell: >
-    pcs resource --full >{{ actual_cluster_resource_temp_file }}
+    pcs resource --full >{{ actual_cluster_resource_temp_file.path }}
   register: cluster_resource_status
   changed_when: false
 
@@ -21,11 +21,11 @@
 
 - name: Ensure expected cluster resources are captured
   template:
-    dest: "{{ expected_cluster_resource_temp_file }}"
+    dest: "{{ expected_cluster_resource_temp_file.path }}"
     src: "templates/cluster_resources_redhat.txt.j2"
 
 - name: Check actual vs expected cluster resources
   copy:
-    src: "{{ actual_cluster_resource_temp_file }}"
-    dest: "{{ expected_cluster_resource_temp_file }}"
+    src: "{{ actual_cluster_resource_temp_file.path }}"
+    dest: "{{ expected_cluster_resource_temp_file.path }}"
   check_mode: true
