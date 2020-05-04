@@ -6,3 +6,5 @@
 
 check_mode: "configuration"  # configuration | standby | unstandby | fence | kill_interface | kill_pacemaker
 node: "hdb1-0"
+sid: "HN1"
+instance_number: "00"
