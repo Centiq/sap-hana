@@ -46,3 +46,46 @@
       fail:
         msg: "Cluster configuration does not match expected configuration"
       when: actual_vs_expected_status.rc != 0
+
+    - name: Ensure stonith resources can be captured
+      tempfile:
+        state: file
+        suffix: tmp
+      register: actual_stonith_resource_temp_file
+
+    - name: Ensure stonith resources are captured
+      become: true
+      shell: >
+        pcs stonith --full >{{ actual_stonith_resource_temp_file.path }}
+      register: stonith_resource_status
+      changed_when: false
+
+    - name: Ensure expected stonith resources can be captured
+      tempfile:
+        state: file
+        suffix: tmp
+      register: expected_stonith_resource_temp_file
+
+    - name: Ensure expected stonith resources are captured
+      template:
+        dest: "{{ expected_stonith_resource_temp_file.path }}"
+        src: "templates/stonith_resources_redhat.txt.j2"
+
+    - name: Check actual vs expected stonith resources
+      command: diff "{{ actual_stonith_resource_temp_file.path }}" "{{ expected_stonith_resource_temp_file.path }}"
+      register: actual_vs_expected_status
+      changed_when: actual_vs_expected_status.rc == 1
+      failed_when: actual_vs_expected_status.rc== 2
+
+    - name: Ensure temporary files are not left behind
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ actual_stonith_resource_temp_file.path }}"
+        - "{{ expected_stonith_resource_temp_file.path }}"
+
+    - name: Ensure changes from expected configuration are reported
+      fail:
+        msg: "Stonith configuration does not match expected configuration"
+      when: actual_vs_expected_status.rc != 0
