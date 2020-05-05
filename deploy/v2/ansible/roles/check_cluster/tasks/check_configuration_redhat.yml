@@ -29,7 +29,7 @@
         src: "templates/cluster_resources_redhat.txt.j2"
 
     - name: Check actual vs expected cluster resources
-      command: diff "{{ actual_cluster_resource_temp_file.path }}" "{{ expected_cluster_resource_temp_file.path }}"
+      command: diff -Z "{{ actual_cluster_resource_temp_file.path }}" "{{ expected_cluster_resource_temp_file.path }}"
       register: actual_vs_expected_status
       changed_when: actual_vs_expected_status.rc == 1
       failed_when: actual_vs_expected_status.rc== 2
@@ -72,7 +72,7 @@
         src: "templates/stonith_resources_redhat.txt.j2"
 
     - name: Check actual vs expected stonith resources
-      command: diff "{{ actual_stonith_resource_temp_file.path }}" "{{ expected_stonith_resource_temp_file.path }}"
+      command: diff -Z "{{ actual_stonith_resource_temp_file.path }}" "{{ expected_stonith_resource_temp_file.path }}"
       register: actual_vs_expected_status
       changed_when: actual_vs_expected_status.rc == 1
       failed_when: actual_vs_expected_status.rc== 2
