@@ -1,0 +1,55 @@
+---
+
+#####################################################################################################################
+#
+# This playbook will check if it can test the migration of the Master/Slave set, and if possible, migrate it.
+# This playbook assumes the SAP HANA cluster was built using https://github.com/Azure/sap-hana
+#
+# https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/sap-hana-high-availability#test-the-migration
+#
+#####################################################################################################################
+
+- hosts: hanadbnodes
+  become: yes
+  tasks:
+
+    - name: Check a cluster is available
+      shell: crm status
+      changed_when: false
+      failed_when: false
+      register: check_cluster_available
+
+    - name: Check cluster configuration is ready for a migration test
+      when: check_cluster_available.rc == 0
+      block:
+        - name: Check which node is master (PROMOTED)
+          shell: "SAPHanaSR-showAttr | grep PRIM | cut -d' ' -f1"
+          changed_when: false
+          failed_when: false
+          register: check_primary_node
+
+        - name: Check the secondary (DEMOTED) node has status SOK
+          shell: "SAPHanaSR-showAttr | grep DEMOTED | grep SOK"
+          changed_when: false
+          failed_when: false
+          register: check_secondary_status_sok
+
+    - name: Perform actions on the primary node
+      when: ansible_hostname in check_primary_node.stdout and check_secondary_status_sok.rc == 0
+      block:
+        - name: Dynamically get the secondary node hostname
+          shell: "SAPHanaSR-showAttr | grep DEMOTED | cut -d' ' -f1"
+          changed_when: false
+          register: check_secondary_hostname
+
+        - name: Dynamically get the Master Slave set name
+          shell: "crm status | grep '^ Master' | cut -d' ' -f4"
+          changed_when: false
+          register: get_msl_name
+
+        - name: Trigger a migration on the primary node
+          shell: "crm resource migrate {{ get_msl_name.stdout_lines[0] }} {{ check_secondary_hostname.stdout_lines[0] }}"
+
+        - name: Inform user
+          debug:
+            msg: "Failover migration test in progress, monitor on {{ check_secondary_hostname.stdout_lines[0] }} as root with crm_mon"
