@@ -57,3 +57,7 @@ cluster_recovery_cmds:
     fence_agent: "./net_breaker.sh FixCommCmd {{ failover_db_ip }}" # IP Address for eth1
     service: "pcs cluster start"
     cleanup: "pcs resource cleanup {{ failover_msl_name }}"
+
+cluster_monitoring_cmds:
+  Suse: "crm_mon -r"
+  RedHat: "watch -n 10 pcs status --full"
