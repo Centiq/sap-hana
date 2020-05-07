@@ -74,9 +74,11 @@
             - "SID: {{ get_sid.stdout_lines[0] }}"
             - "Instance Number: {{ get_instance_number.stdout_lines[0] }}"
 
-    - name: Take down the DB NIC on the primary node
+    - name: Stop the Pacemaker Service on the primary node
       when: ansible_hostname in get_master_hostname.stdout and check_secondary_status_sok.rc == 0
-      shell: "sleep 3 ; ifdown eth1"
+      systemd:
+        name: pacemaker
+        state: stopped
 
     - name: Wait for user confirmation of desired state
       when: check_secondary_status_sok.rc == 0
@@ -86,6 +88,13 @@
     - name: Perform recovery actions on the original primary node
       when: ansible_hostname in get_master_hostname.stdout and check_secondary_status_sok.rc == 0
       block:
+
+        - name: Restart the Pacemaker Service on the primary node
+          when: ansible_hostname in get_master_hostname.stdout and check_secondary_status_sok.rc == 0
+          systemd:
+            name: pacemaker
+            state: started
+
         - name: Ensure the SAP instance is stopped
           become_user: "{{ get_sid.stdout_lines[0] | lower }}adm"
           shell: >

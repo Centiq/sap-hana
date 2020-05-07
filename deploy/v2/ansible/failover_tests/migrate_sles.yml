@@ -114,4 +114,4 @@
 
         - name: Wait for user confirmation of desired state
           pause:
-            prompt: "Expect to see 'Masters: [ {{ get_secondary_hostname.stdout_lines[0] }} ]' and 'Stopped: [ {{ get_master_hostname.stdout_lines[0] }} ]'"
+            prompt: "Expect to see 'Masters: [ {{ get_secondary_hostname.stdout_lines[0] }} ]' and 'Slaves: [ {{ get_master_hostname.stdout_lines[0] }} ]'"
