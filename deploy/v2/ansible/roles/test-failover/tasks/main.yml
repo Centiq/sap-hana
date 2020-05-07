@@ -17,5 +17,7 @@
   block:
     - include_tasks: 2_gather_cluster_facts.yml
     - include_tasks: 3_trigger_failover.yml
+      when: ansible_hostname == failover_master_hostname
     - include_tasks: 4_wait_for_failover.yml
     - include_tasks: 5_recover_from_test.yml
+      when: ansible_hostname == failover_master_hostname
