@@ -13,12 +13,12 @@
   vars:
     cluster_status_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs status', 'crm status') }}"
     cluster_get_master_node_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs status --full | grep -B1 PROMOTED | head -n 1 | cut -f3 -d\\' \\'', 'SAPHanaSR-showAttr | grep PROMOTED | cut -d\\' \\' -f1') }}"
-    cluster_get_secondary_node_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs status --full | sed -e :a -e \\'$!N;s/\\n  */ /;ta\\' -e \\'P;D\\' | sed -e \\'s/[\\t ][\\t ]*/ /g\\' | grep DEMOTED | grep SOK', 'SAPHanaSR-showAttr | grep DEMOTED | grep SOK') }}"
+    cluster_get_attributes_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs status --full | sed -e :a -e \\'$!N;s/\\n  */ /;ta\\' -e \\'P;D\\' | sed -e \\'s/[\\t ][\\t ]*/ /g\\'', 'SAPHanaSR-showAttr') }}"
   become: yes
   tasks:
 
     - name: Check a cluster is available
-      shell: set -o pipefail && {{ cluster_status_cmd }}
+      shell: "set -o pipefail && {{ cluster_status_cmd }}"
       changed_when: false
       failed_when: false
       register: check_cluster_available
@@ -27,13 +27,13 @@
       when: check_cluster_available.rc == 0
       block:
         - name: Dynamically get the Master node (PROMOTED) hostname
-          shell: set -o pipefail && {{ cluster_get_master_node_cmd }}
+          shell: "set -o pipefail && {{ cluster_get_master_node_cmd }}"
           changed_when: false
           failed_when: false
           register: get_master_hostname
 
         - name: Check the secondary (DEMOTED) node has status SOK
-          shell: set -o pipefail && {{ cluster_get_secondary_node_cmd }}
+          shell: "set -o pipefail && {{ cluster_get_attributes_cmd }} | grep DEMOTED | grep SOK"
           changed_when: false
           failed_when: false
           register: check_secondary_status_sok
@@ -42,13 +42,13 @@
       when: check_secondary_status_sok.rc == 0
       block:
         - name: Dynamically get the Master node site name
-          shell: "SAPHanaSR-showAttr | grep PROMOTED | tr -s ' ' | cut -d' ' -f9"
+          shell: "set -o pipefail && {{ cluster_get_attributes_cmd }} | grep PROMOTED | tr -s ' ' | cut -d' ' -f9"  # TODO
           changed_when: false
           failed_when: false
           register: get_master_site_name
 
         - name: Dynamically get the secondary node hostname
-          shell: "SAPHanaSR-showAttr | grep DEMOTED | cut -d' ' -f1"
+          shell: "set -o pipefail && {{ cluster_get_attributes_cmd }} | grep DEMOTED | cut -d' ' -f1"  # TODO
           changed_when: false
           register: get_secondary_hostname
 
