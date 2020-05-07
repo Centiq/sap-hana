@@ -1,0 +1,31 @@
+---
+
+- name: Ensure the SAP instance is stopped
+  become_user: "{{ failover_sid | lower }}adm"
+  shell: >
+    source ~/.bashrc ;
+    sapcontrol -nr {{ failover_instance_number }} -function StopWait 600 10
+
+- name: Ensure the Stopped node is registered as a secondary
+  become_user: "{{ failover_sid | lower }}adm"
+  shell: >
+    source ~/.bashrc ;
+    hdbnsutil -sr_register
+    --remoteHost={{ failover_secondary_hostname }}
+    --remoteInstance={{ failover_instance_number }}
+    --replicationMode=sync
+    --name={{ failover_master_site_name }}
+
+- name: Remove the migration constraint
+  shell: "crm resource unmigrate {{ failover_msl_name }}"
+
+- name: Clean up the Master/Slave resource on the restarted node
+  shell: "crm resource cleanup {{ failover_msl_name }} {{ failover_master_hostname }}"
+
+- name: Inform user of eventual test expectation
+  debug:
+    msg: "Cleaning up resources after migration test, monitor on {{ failover_secondary_hostname }} as root with 'crm_mon -r' - expecting to see 'Slaves: [ {{ failover_master_hostname }} ]'"
+
+- name: Wait for user confirmation of desired state
+  pause:
+    prompt: "Expect to see 'Masters: [ {{ failover_secondary_hostname }} ]' and 'Slaves: [ {{ failover_master_hostname }} ]'"

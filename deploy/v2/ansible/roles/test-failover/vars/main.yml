@@ -1,0 +1,35 @@
+---
+
+allowed_failover_types:
+  - "migrate"
+  - "network"
+  - "service"
+
+failover_wait_times_mins:
+  migrate: 3
+  network: 10
+  service: 10
+
+cluster_avilability_cmds:
+  Suse:
+    status: "crm status"
+    secondary_sok: "SAPHanaSR-showAttr | grep DEMOTED | grep SOK"
+  RedHat:
+    status: "pcs status"
+    secondary_sok: "pcs status --full | grep -A10 DEMOTED | grep _sync_state | grep SOK"
+
+cluster_detail_cmds:
+  Suse:
+    master_hostname: "SAPHanaSR-showAttr | grep PROMOTED | cut -d' ' -f1"
+    master_site_name: "SAPHanaSR-showAttr | grep PROMOTED | tr -s ' ' | cut -d' ' -f9"
+    secondary_hostname: "SAPHanaSR-showAttr | grep DEMOTED | cut -d' ' -f1"
+    msl_name: "crm status | grep '^ Master' | cut -d' ' -f4"
+    sid: "crm configure show | grep -m1 SID= | grep -oP 'SID=\\K([a-zA-Z0-9]{3})'"
+    instance_number: "crm configure show | grep -m1 InstanceNumber= | grep -oP 'InstanceNumber=\\K(\\d{2})'"
+  RedHat:
+    master_hostname: "pcs status --full | grep -B1 PROMOTED | grep -oP '^\\* Node \\K([a-zA-Z0-9\\-\\.]*)'"
+    master_site_name: "pcs status --full | grep -A10 PROMOTED | grep -m1 _site | grep -oP ': \\K([a-zA-Z0-9\\-\\.\\_]+)'"
+    secondary_hostname: "pcs status --full | grep -B1 DEMOTED | grep -oP '^\\* Node \\K([a-zA-Z0-9\\-\\.]*)'"
+    msl_name: "pcs resource show --full | grep -oP '^ Master: \\K.*'"
+    sid: "pcs resource show --full | grep -m1 SID | grep -oP 'SID=\\K([a-zA-Z0-9]{3})'"
+    instance_number: "pcs resource show --full | grep -m1 InstanceNumber | grep -oP 'InstanceNumber=\\K(\\d{2})'"
