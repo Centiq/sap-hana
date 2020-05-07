@@ -13,7 +13,7 @@
   vars:
     cluster_status_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs status', 'crm status') }}"
     cluster_get_master_node_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs status --full | grep -B1 PROMOTED | head -n 1 | cut -f3 -d\\' \\'', 'SAPHanaSR-showAttr | grep PROMOTED | cut -d\\' \\' -f1') }}"
-    cluster_get_attributes_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs status --full | sed -e :a -e \\'$!N;s/\\n  */ /;ta\\' -e \\'P;D\\' | sed -e \\'s/[\\t ][\\t ]*/ /g\\'', 'SAPHanaSR-showAttr') }}"
+    cluster_get_attributes_cmd: "{{ ternary(ansible_os_family | lower == 'redhat', 'pcs config | grep -A2 \\'^Node Attributes:\\'', 'SAPHanaSR-showAttr') }}"
   become: yes
   tasks:
 
@@ -38,7 +38,7 @@
           failed_when: false
           register: check_secondary_status_sok
 
-    # TODO from here on down
+    # TODO from here on down. Note SAPHanaSR-showAttr can sort of be replaced with pcs config | grep -A2 '^Node Attributes:'
     - name: Gather Cluster information
       when: check_secondary_status_sok.rc == 0
       block:
