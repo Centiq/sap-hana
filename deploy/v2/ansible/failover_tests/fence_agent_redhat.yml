@@ -38,17 +38,18 @@
           failed_when: false
           register: check_secondary_status_sok
 
+    # TODO from here on down
     - name: Gather Cluster information
       when: check_secondary_status_sok.rc == 0
       block:
         - name: Dynamically get the Master node site name
-          shell: "set -o pipefail && {{ cluster_get_attributes_cmd }} | grep PROMOTED | tr -s ' ' | cut -d' ' -f9"  # TODO
+          shell: "SAPHanaSR-showAttr | grep PROMOTED | tr -s ' ' | cut -d' ' -f9"
           changed_when: false
           failed_when: false
           register: get_master_site_name
 
         - name: Dynamically get the secondary node hostname
-          shell: "set -o pipefail && {{ cluster_get_attributes_cmd }} | grep DEMOTED | cut -d' ' -f1"  # TODO
+          shell: "SAPHanaSR-showAttr | grep DEMOTED | cut -d' ' -f1"
           changed_when: false
           register: get_secondary_hostname
 
