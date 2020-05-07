@@ -7,8 +7,8 @@ allowed_failover_types:
 
 failover_wait_times_mins:
   migrate: 3
-  fence_agent: 10
-  service: 10
+  fence_agent: 15
+  service: 15
 
 cluster_avilability_cmds:
   Suse:
@@ -45,3 +45,15 @@ cluster_failover_cmds:
     migrate: "pcs resource move {{ failover_msl_name }}"
     fence_agent: "./net_breaker.sh BreakCommCmd {{ failover_db_ip }}" # IP Address for eth1
     service: "pcs cluster stop"
+
+cluster_recovery_cmds:
+  Suse:
+    migrate: "crm resource migrate {{ failover_msl_name }} {{ failover_secondary_hostname }}"
+    fence_agent: "ifup eth1" # Interface should be up after restart, just in case
+    service: "service pacemaker start"
+    cleanup: "crm resource cleanup {{ failover_msl_name }} {{ failover_master_hostname }}"
+  RedHat:
+    migrate: "pcs resource clear {{ failover_msl_name }}"
+    fence_agent: "./net_breaker.sh FixCommCmd {{ failover_db_ip }}" # IP Address for eth1
+    service: "pcs cluster start"
+    cleanup: "pcs resource cleanup {{ failover_msl_name }}"

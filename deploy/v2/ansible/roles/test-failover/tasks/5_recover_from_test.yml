@@ -1,5 +1,13 @@
 ---
 
+- name: Ensure the service is restarted (service failover test)
+  when: failover_type == 'service'
+  shell: "{{ cluster_recovery_cmds[ansible_os_family].service }}"
+
+- name: Ensure network interface is available (fence_agent failover test)
+  when: failover_type == 'fence_agent'
+  shell: "{{ cluster_recovery_cmds[ansible_os_family].fence_agent }}"
+
 - name: Ensure the SAP instance is stopped
   become_user: "{{ failover_sid | lower }}adm"
   shell: >
@@ -16,15 +24,16 @@
     --replicationMode=sync
     --name={{ failover_master_site_name }}
 
-- name: Remove the migration constraint
-  shell: "crm resource unmigrate {{ failover_msl_name }}"
+- name: Remove the migration constraint (migrate failover test)
+  when: failover_type == 'migrate'
+  shell: "{{ cluster_recovery_cmds[ansible_os_family].migrate }}"
 
 - name: Clean up the Master/Slave resource on the restarted node
-  shell: "crm resource cleanup {{ failover_msl_name }} {{ failover_master_hostname }}"
+  shell: "{{ cluster_recovery_cmds[ansible_os_family].cleanup }}"
 
 - name: Inform user of eventual test expectation
   debug:
-    msg: "Cleaning up resources after migration test, monitor on {{ failover_secondary_hostname }} as root with 'crm_mon -r' - expecting to see 'Slaves: [ {{ failover_master_hostname }} ]'"
+    msg: "Cleaning up resources after migration test, monitor on {{ failover_secondary_hostname }} as root with '{{ cluster_monitoring_cmds[ansible_os_family] }}'"
 
 - name: Wait for user confirmation of desired state
   pause:

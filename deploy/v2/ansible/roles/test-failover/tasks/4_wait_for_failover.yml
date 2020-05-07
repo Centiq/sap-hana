@@ -1,5 +1,9 @@
 ---
 
+- name: Inform user of eventual test expectation
+  debug:
+    msg: "To monitor failover progress, on {{ failover_secondary_hostname }} as root run '{{ cluster_monitoring_cmds[ansible_os_family] }}'"
+
 - name: Wait for user confirmation of desired state
   pause:
     prompt: >
