@@ -1,13 +1,13 @@
 ---
 
-#####################################################################################################################
+#######################################################################################################################################
 #
-# This playbook will check if it can test the migration of the Master/Slave set, and if possible, migrate it.
+# This playbook will test the Azure ARM fencing agent's response to the Database NIC being taken offline.
 # This playbook assumes the SAP HANA cluster was built using https://github.com/Azure/sap-hana
 #
-# https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/sap-hana-high-availability#test-the-migration
+# https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/sap-hana-high-availability#test-the-azure-fencing-agent-not-sbd
 #
-#####################################################################################################################
+#######################################################################################################################################
 
 - hosts: hanadbnodes
   become: yes
@@ -74,14 +74,14 @@
             - "SID: {{ get_sid.stdout_lines[0] }}"
             - "Instance Number: {{ get_instance_number.stdout_lines[0] }}"
 
-    - name: Trigger a migration on the primary node
+    - name: Take down the DB NIC on the primary node
       when: ansible_hostname in get_master_hostname.stdout and check_secondary_status_sok.rc == 0
-      shell: "crm resource migrate {{ get_msl_name.stdout_lines[0] }} {{ get_secondary_hostname.stdout_lines[0] }}"
+      shell: "sleep 3 ; ifdown eth1"
 
     - name: Wait for user confirmation of desired state
       when: check_secondary_status_sok.rc == 0
       pause:
-        prompt: "Failover migration test in progress, approx 2 minutes. Expect to see 'Masters: [ {{ get_secondary_hostname.stdout_lines[0] }} ]' and 'Stopped: [ {{ get_master_hostname.stdout_lines[0] }} ]'. Press Enter to reestablish the cluster, or CTRL+C to abort"
+        prompt: "Failover migration test in progress, approx 10 minutes. Expect to see 'Masters: [ {{ get_secondary_hostname.stdout_lines[0] }} ]' and 'Stopped: [ {{ get_master_hostname.stdout_lines[0] }} ]'. Press Enter to reestablish the cluster, or CTRL+C to abort"
 
     - name: Perform recovery actions on the original primary node
       when: ansible_hostname in get_master_hostname.stdout and check_secondary_status_sok.rc == 0
@@ -101,9 +101,6 @@
             --remoteInstance={{ get_instance_number.stdout_lines[0] }}
             --replicationMode=sync
             --name={{ get_master_site_name.stdout_lines[0] }}
-
-        - name: Remove the migration constraint
-          shell: "crm resource unmigrate {{ get_msl_name.stdout_lines[0] }}"
 
         - name: Clean up the Master/Slave resource on the restarted node
           shell: "crm resource cleanup {{ get_msl_name.stdout_lines[0] }} {{ get_master_hostname.stdout_lines[0] }}"
