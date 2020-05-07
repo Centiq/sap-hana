@@ -1,0 +1,117 @@
+---
+
+#####################################################################################################################
+#
+# This playbook will check if it can test the migration of the Master/Slave set, and if possible, migrate it.
+# This playbook assumes the SAP HANA cluster was built using https://github.com/Azure/sap-hana
+#
+# https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/sap-hana-high-availability#test-the-migration
+#
+#####################################################################################################################
+
+- hosts: hanadbnodes
+  become: yes
+  tasks:
+
+    - name: Check a cluster is available
+      shell: crm status
+      changed_when: false
+      failed_when: false
+      register: check_cluster_available
+
+    - name: Check cluster configuration is ready for a migration test
+      when: check_cluster_available.rc == 0
+      block:
+        - name: Dynamically get the Master node (PROMOTED) hostname
+          shell: "SAPHanaSR-showAttr | grep PROMOTED | cut -d' ' -f1"
+          changed_when: false
+          failed_when: false
+          register: get_master_hostname
+
+        - name: Check the secondary (DEMOTED) node has status SOK
+          shell: "SAPHanaSR-showAttr | grep DEMOTED | grep SOK"
+          changed_when: false
+          failed_when: false
+          register: check_secondary_status_sok
+
+    - name: Gather Cluster information
+      when: check_secondary_status_sok.rc == 0
+      block:
+        - name: Dynamically get the Master node site name
+          shell: "SAPHanaSR-showAttr | grep PROMOTED | tr -s ' ' | cut -d' ' -f9"
+          changed_when: false
+          failed_when: false
+          register: get_master_site_name
+
+        - name: Dynamically get the secondary node hostname
+          shell: "SAPHanaSR-showAttr | grep DEMOTED | cut -d' ' -f1"
+          changed_when: false
+          register: get_secondary_hostname
+
+        - name: Dynamically get the Master/Slave set name
+          shell: "crm status | grep '^ Master' | cut -d' ' -f4"
+          changed_when: false
+          register: get_msl_name
+
+        - name: Dynamically get the SID
+          shell: "crm configure show | grep -m1 SID= | grep -oP 'SID=\\K([a-zA-Z0-9]{3})'"
+          changed_when: false
+          register: get_sid
+
+        - name: Dynamically get the Instance Number
+          shell: "crm configure show | grep -m1 InstanceNumber= | grep -oP 'InstanceNumber=\\K(\\d{2})'"
+          changed_when: false
+          register: get_instance_number
+
+        - name: Debug information being used
+          debug:
+            msg: "{{ item }}"
+          loop:
+            - "Master host: {{ get_master_hostname.stdout_lines[0] }}"
+            - "Slave host: {{ get_secondary_hostname.stdout_lines[0] }}"
+            - "Master site name: {{ get_master_site_name.stdout_lines[0] }}"
+            - "Master/Slave set name: {{ get_msl_name.stdout_lines[0] }}"
+            - "SID: {{ get_sid.stdout_lines[0] }}"
+            - "Instance Number: {{ get_instance_number.stdout_lines[0] }}"
+
+    - name: Trigger a migration on the primary node
+      when: ansible_hostname in get_master_hostname.stdout and check_secondary_status_sok.rc == 0
+      shell: "crm resource migrate {{ get_msl_name.stdout_lines[0] }} {{ get_secondary_hostname.stdout_lines[0] }}"
+
+    - name: Wait for user confirmation of desired state
+      when: check_secondary_status_sok.rc == 0
+      pause:
+        prompt: "Failover migration test in progress, approx 2 minutes. Expect to see 'Masters: [ {{ get_secondary_hostname.stdout_lines[0] }} ]' and 'Stopped: [ {{ get_master_hostname.stdout_lines[0] }} ]'. Press Enter to reestablish the cluster, or CTRL+C to abort"
+
+    - name: Perform recovery actions on the original primary node
+      when: ansible_hostname in get_master_hostname.stdout and check_secondary_status_sok.rc == 0
+      block:
+        - name: Ensure the SAP instance is stopped
+          become_user: "{{ get_sid.stdout_lines[0] | lower }}adm"
+          shell: >
+            source ~/.bashrc ;
+            sapcontrol -nr {{ get_instance_number.stdout_lines[0] }} -function StopWait 600 10
+
+        - name: Ensure the Stopped node is registered as a secondary
+          become_user: "{{ get_sid.stdout_lines[0] | lower }}adm"
+          shell: >
+            source ~/.bashrc ;
+            hdbnsutil -sr_register
+            --remoteHost={{ get_secondary_hostname.stdout_lines[0] }}
+            --remoteInstance={{ get_instance_number.stdout_lines[0] }}
+            --replicationMode=sync
+            --name={{ get_master_site_name.stdout_lines[0] }}
+
+        - name: Remove the migration constraint
+          shell: "crm resource unmigrate {{ get_msl_name.stdout_lines[0] }}"
+
+        - name: Clean up the Master/Slave resource on the restarted node
+          shell: "crm resource cleanup {{ get_msl_name.stdout_lines[0] }} {{ get_master_hostname.stdout_lines[0] }}"
+
+        - name: Inform user of eventual test expectation
+          debug:
+            msg: "Cleaning up resources after migration test, monitor on {{ get_secondary_hostname.stdout_lines[0] }} as root with 'crm_mon -r' - expecting to see 'Slaves: [ {{ get_master_hostname.stdout_lines[0] }} ]'"
+
+        - name: Wait for user confirmation of desired state
+          pause:
+            prompt: "Expect to see 'Masters: [ {{ get_secondary_hostname.stdout_lines[0] }} ]' and 'Stopped: [ {{ get_master_hostname.stdout_lines[0] }} ]'"
