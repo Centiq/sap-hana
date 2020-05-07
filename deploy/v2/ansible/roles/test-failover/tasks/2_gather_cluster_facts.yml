@@ -32,6 +32,11 @@
   changed_when: false
   register: get_instance_number
 
+- name: Dynamically get the DB NIC IP address
+  shell: "{{ cluster_detail_commands[ansible_os_family].db_ip }}"
+  changed_when: false
+  register: get_db_ip
+
 - set_fact:
     failover_master_hostname: get_master_hostname.stdout_lines[0]
     failover_slave_hostname: get_slave_hostname.stdout_lines[0]
@@ -39,6 +44,7 @@
     failover_msl_name: get_msl_name.stdout_lines[0]
     failover_sid: get_sid.stdout_lines[0]
     failover_instance_number: get_instance_number.stdout_lines[0]
+    failover_db_ip: "get_db_ip.stdout_lines[0]"
 
 - name: Debug information being used
   debug:
@@ -50,3 +56,4 @@
     - "Master/Slave set name: {{ failover_msl_name }}"
     - "SID: {{ failover_sid }}"
     - "Instance Number: {{ failover_instance_number }}"
+    - "DB NIC IP: {{ failover_db_ip }}"

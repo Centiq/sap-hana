@@ -2,12 +2,12 @@
 
 allowed_failover_types:
   - "migrate"
-  - "network"
+  - "fence_agent"
   - "service"
 
 failover_wait_times_mins:
   migrate: 3
-  network: 10
+  fence_agent: 10
   service: 10
 
 cluster_avilability_cmds:
@@ -26,6 +26,7 @@ cluster_detail_cmds:
     msl_name: "crm status | grep '^ Master' | cut -d' ' -f4"
     sid: "crm configure show | grep -m1 SID= | grep -oP 'SID=\\K([a-zA-Z0-9]{3})'"
     instance_number: "crm configure show | grep -m1 InstanceNumber= | grep -oP 'InstanceNumber=\\K(\\d{2})'"
+    db_ip: "ip addr show eth1 | grep -m1 inet | grep -oP 'inet \K([0-9]+\.){3}[0-9]+'"
   RedHat:
     master_hostname: "pcs status --full | grep -B1 PROMOTED | grep -oP '^\\* Node \\K([a-zA-Z0-9\\-\\.]*)'"
     master_site_name: "pcs status --full | grep -A10 PROMOTED | grep -m1 _site | grep -oP ': \\K([a-zA-Z0-9\\-\\.\\_]+)'"
@@ -33,3 +34,14 @@ cluster_detail_cmds:
     msl_name: "pcs resource show --full | grep -oP '^ Master: \\K.*'"
     sid: "pcs resource show --full | grep -m1 SID | grep -oP 'SID=\\K([a-zA-Z0-9]{3})'"
     instance_number: "pcs resource show --full | grep -m1 InstanceNumber | grep -oP 'InstanceNumber=\\K(\\d{2})'"
+    db_ip: "ip addr show eth1 | grep -m1 inet | grep -oP 'inet \K([0-9]+\.){3}[0-9]+'"
+
+cluster_failover_cmds:
+  Suse:
+    migrate: "crm resource migrate {{ failover_msl_name }} {{ failover_secondary_hostname }}"
+    fence_agent: "sleep 3 ; ifdown eth1" # eth1 is the DB NIC motitored by the cluster configuration
+    service: "service pacemaker stop"
+  RedHat:
+    migrate: "pcs resource move {{ failover_msl_name }}"
+    fence_agent: "./net_breaker.sh BreakCommCmd {{ failover_db_ip }}" # IP Address for eth1
+    service: "pcs cluster stop"

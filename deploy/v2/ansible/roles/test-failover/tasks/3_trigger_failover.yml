@@ -1,0 +1,4 @@
+---
+
+- name: "Trigger failover of type: {{ failover_type }}"
+  shell: "{{ cluster_failover_cmds[ansible_os_family][failover_type] }}"
