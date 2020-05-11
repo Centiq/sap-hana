@@ -48,7 +48,7 @@ cluster_failover_cmds:
 
 cluster_recovery_cmds:
   Suse:
-    migrate: "crm resource migrate {{ failover_msl_name }} {{ failover_secondary_hostname }}"
+    migrate: "crm resource unmigrate {{ failover_msl_name }}"
     fence_agent: "ifup eth1" # Interface should be up after restart, just in case
     service: "service pacemaker start"
     cleanup: "crm resource cleanup {{ failover_msl_name }} {{ failover_master_hostname }}"
