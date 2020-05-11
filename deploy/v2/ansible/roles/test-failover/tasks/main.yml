@@ -13,7 +13,7 @@
 - include_tasks: 1_check_cluster_available.yml
 
 - name: Further failover tests
-  when: failover_cluster_available
+  when: failover_cluster_available | bool
   block:
     - include_tasks: 2_gather_cluster_facts.yml
     - include_tasks: 3_trigger_failover.yml

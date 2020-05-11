@@ -12,5 +12,6 @@
   failed_when: false
   register: check_secondary_status_sok
 
-- set_fact:
-    failover_cluster_available: check_cluster_available.rc == 0 and check_secondary_status_sok.rc == 0
+- name: Set fact for cluster availability
+  set_fact:
+    failover_cluster_available: "{{ check_cluster_available.rc == 0) and check_secondary_status_sok.rc == 0) }}"
