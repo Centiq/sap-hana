@@ -33,7 +33,7 @@
   register: get_instance_number
 
 - name: Dynamically get the DB NIC IP address
-  shell: "{{ cluster_detail_commands[ansible_os_family].db_ip }}"
+  shell: "{{ cluster_detail_cmds[ansible_os_family].db_ip }}"
   changed_when: false
   register: get_db_ip
 
