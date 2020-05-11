@@ -39,7 +39,7 @@
 
 - set_fact:
     failover_master_hostname: get_master_hostname.stdout_lines[0]
-    failover_slave_hostname: get_slave_hostname.stdout_lines[0]
+    failover_secondary_hostname: get_secondary_hostname.stdout_lines[0]
     failover_master_site_name: get_master_site_name.stdout_lines[0]
     failover_msl_name: get_msl_name.stdout_lines[0]
     failover_sid: get_sid.stdout_lines[0]
