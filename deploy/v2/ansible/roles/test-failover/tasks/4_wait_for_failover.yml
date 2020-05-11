@@ -1,6 +1,7 @@
 ---
 
-- name: Inform user of eventual test expectation
+- name: Inform user of how and where to monitor failover progress
+  run_once: True
   debug:
     msg: "To monitor failover progress, on {{ failover_secondary_hostname }} as root run '{{ cluster_monitoring_cmds[ansible_os_family] }}'"
 
