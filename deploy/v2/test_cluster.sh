@@ -19,7 +19,7 @@ function main()
 	local FAILOVER_TYPE="$1"
 
 	# Playbook converts failover_test_type to lower case
-	ansible-playbook -i ~/hosts ~/deploy/v2/ansible/test_failover.yml -e "failover_test_type=${FAILOVER_TYPE}"
+	ansible-playbook -i ~/hosts ~/sap-hana/deploy/v2/ansible/test_failover.yml -e "failover_test_type=${FAILOVER_TYPE}"
 }
 
 
