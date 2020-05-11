@@ -26,7 +26,7 @@ cluster_detail_cmds:
     msl_name: "crm status | grep '^ Master' | cut -d' ' -f4"
     sid: "crm configure show | grep -m1 SID= | grep -oP 'SID=\\K([a-zA-Z0-9]{3})'"
     instance_number: "crm configure show | grep -m1 InstanceNumber= | grep -oP 'InstanceNumber=\\K(\\d{2})'"
-    db_ip: "ip addr show eth1 | grep -m1 inet | grep -oP 'inet \K([0-9]+\.){3}[0-9]+'"
+    db_ip: "ip addr show eth1 | grep -m1 inet | grep -oP 'inet \\K([0-9]+\\.){3}[0-9]+'"
   RedHat:
     master_hostname: "pcs status --full | grep -B1 PROMOTED | grep -oP '^\\* Node \\K([a-zA-Z0-9\\-\\.]*)'"
     master_site_name: "pcs status --full | grep -A10 PROMOTED | grep -m1 _site | grep -oP ': \\K([a-zA-Z0-9\\-\\.\\_]+)'"
@@ -34,7 +34,7 @@ cluster_detail_cmds:
     msl_name: "pcs resource show --full | grep -oP '^ Master: \\K.*'"
     sid: "pcs resource show --full | grep -m1 SID | grep -oP 'SID=\\K([a-zA-Z0-9]{3})'"
     instance_number: "pcs resource show --full | grep -m1 InstanceNumber | grep -oP 'InstanceNumber=\\K(\\d{2})'"
-    db_ip: "ip addr show eth1 | grep -m1 inet | grep -oP 'inet \K([0-9]+\.){3}[0-9]+'"
+    db_ip: "ip addr show eth1 | grep -m1 inet | grep -oP 'inet \\K([0-9]+\\.){3}[0-9]+'"
 
 cluster_failover_cmds:
   Suse:
