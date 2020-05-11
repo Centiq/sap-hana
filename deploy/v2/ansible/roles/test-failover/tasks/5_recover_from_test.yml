@@ -1,7 +1,8 @@
 ---
 
+# Note: The cluster is started after every test, as if the VM has been rebooted, the cluster
+# requires starting on RHEL, but not SLES. Starting when already running has no issues.
 - name: Ensure the service is restarted (service failover test)
-  when: failover_type == 'service'
   shell: "{{ cluster_recovery_cmds[ansible_os_family].service }}"
 
 - name: Ensure network interface is available (fence_agent failover test)
