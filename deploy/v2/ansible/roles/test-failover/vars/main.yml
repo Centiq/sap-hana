@@ -43,7 +43,7 @@ cluster_failover_cmds:
     service: "service pacemaker stop"
   RedHat:
     migrate: "pcs resource move {{ failover_msl_name }}"
-    fence_agent: "./net_breaker.sh BreakCommCmd {{ failover_db_ip }}" # IP Address for eth1
+    fence_agent: "/root/net_breaker.sh BreakCommCmd {{ failover_db_ip }}" # IP Address for eth1
     service: "pcs cluster stop"
 
 cluster_recovery_cmds:
@@ -54,7 +54,7 @@ cluster_recovery_cmds:
     cleanup: "crm resource cleanup {{ failover_msl_name }} {{ failover_master_hostname }}"
   RedHat:
     migrate: "pcs resource clear {{ failover_msl_name }}"
-    fence_agent: "./net_breaker.sh FixCommCmd {{ failover_db_ip }}" # IP Address for eth1
+    fence_agent: "/root/net_breaker.sh FixCommCmd {{ failover_db_ip }}" # IP Address for eth1
     service: "pcs cluster start"
     cleanup: "pcs resource cleanup {{ failover_msl_name }}"
 
