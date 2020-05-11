@@ -37,14 +37,15 @@
   changed_when: false
   register: get_db_ip
 
-- set_fact:
-    failover_master_hostname: get_master_hostname.stdout_lines[0]
-    failover_secondary_hostname: get_secondary_hostname.stdout_lines[0]
-    failover_master_site_name: get_master_site_name.stdout_lines[0]
-    failover_msl_name: get_msl_name.stdout_lines[0]
-    failover_sid: get_sid.stdout_lines[0]
-    failover_instance_number: get_instance_number.stdout_lines[0]
-    failover_db_ip: "get_db_ip.stdout_lines[0]"
+- name: Set facts for failover variables
+  set_fact:
+    failover_master_hostname: "{{ get_master_hostname.stdout_lines[0] }}"
+    failover_secondary_hostname: "{{ get_secondary_hostname.stdout_lines[0] }}"
+    failover_master_site_name: "{{ get_master_site_name.stdout_lines[0] }}"
+    failover_msl_name: "{{ get_msl_name.stdout_lines[0] }}"
+    failover_sid: "{{ get_sid.stdout_lines[0] }}"
+    failover_instance_number: "{{ get_instance_number.stdout_lines[0] }}"
+    failover_db_ip: "{{ get_db_ip.stdout_lines[0] }}"
 
 - name: Debug information being used
   debug:
