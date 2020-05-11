@@ -10,7 +10,7 @@ failover_wait_times_mins:
   fence_agent: 15
   service: 15
 
-cluster_avilability_cmds:
+cluster_availability_cmds:
   Suse:
     status: "crm status"
     secondary_sok: "SAPHanaSR-showAttr | grep DEMOTED | grep SOK"
