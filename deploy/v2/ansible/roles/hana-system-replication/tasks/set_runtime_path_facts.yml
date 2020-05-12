@@ -7,11 +7,11 @@
   register: global_path_status
   changed_when: false
 
-- name: Set SAP global directory fact
+- name: Ensure SAP global directory fact is set
   set_fact:
     hana_global_dir: "{{ global_path_status.stdout_lines[0] }}"
 
-- name: Set associated SAP global directory facts
+- name: Ensure associated SAP global directory facts are set
   set_fact:
     path_global_ini: "{{ hana_global_dir }}/hdb/custom/config/global.ini"
     path_ssfs_dat: "{{ hana_global_dir }}/security/rsecssfs/data/SSFS_{{ sid | upper }}.DAT"
@@ -26,7 +26,7 @@
   register: cdpy_path_status
   changed_when: false
 
-- name: Set associated SAP replication status command path
+- name: Ensure associated SAP replication status command path is set
   set_fact:
     path_sys_rep_status: "{{ cdpy_path_status.stdout_lines[0] }}/python_support/systemReplicationStatus.py"
 
