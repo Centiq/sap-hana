@@ -1,43 +1,43 @@
 ---
 
-- name: Dynamically get the Master node (PROMOTED) hostname
+- name: Determine the Master node (PROMOTED) hostname
   shell: "{{ cluster_detail_cmds[ansible_os_family].master_hostname }}"
   changed_when: false
   failed_when: false
   register: get_master_hostname
 
-- name: Dynamically get the Master node site name
+- name: Determine the Master node site name
   shell: "{{ cluster_detail_cmds[ansible_os_family].master_site_name }}"
   changed_when: false
   failed_when: false
   register: get_master_site_name
 
-- name: Dynamically get the secondary node hostname
+- name: Determine the secondary node hostname
   shell: "{{ cluster_detail_cmds[ansible_os_family].secondary_hostname }}"
   changed_when: false
   register: get_secondary_hostname
 
-- name: Dynamically get the Master/Slave set name
+- name: Determine the Master/Slave set name
   shell: "{{ cluster_detail_cmds[ansible_os_family].msl_name }}"
   changed_when: false
   register: get_msl_name
 
-- name: Dynamically get the SID
+- name: Determine the SID
   shell: "{{ cluster_detail_cmds[ansible_os_family].sid }}"
   changed_when: false
   register: get_sid
 
-- name: Dynamically get the Instance Number
+- name: Determine the Instance Number
   shell: "{{ cluster_detail_cmds[ansible_os_family].instance_number }}"
   changed_when: false
   register: get_instance_number
 
-- name: Dynamically get the DB NIC IP address
+- name: Determine the DB NIC IP address
   shell: "{{ cluster_detail_cmds[ansible_os_family].db_ip }}"
   changed_when: false
   register: get_db_ip
 
-- name: Set facts for failover variables
+- name: Ensure facts for failover variables are set
   set_fact:
     failover_master_hostname: "{{ get_master_hostname.stdout_lines[0] }}"
     failover_secondary_hostname: "{{ get_secondary_hostname.stdout_lines[0] }}"

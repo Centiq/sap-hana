@@ -11,5 +11,5 @@
     group: "root"
     mode: "0744"
 
-- name: "Trigger failover of type: {{ failover_type }}"
+- name: "Ensure the failover is triggered for type: {{ failover_type }}"
   shell: "{{ cluster_failover_cmds[ansible_os_family][failover_type] }}"

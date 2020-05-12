@@ -25,14 +25,14 @@
     --replicationMode=sync
     --name={{ failover_master_site_name }}
 
-- name: Remove the migration constraint (migrate failover test)
+- name: Ensure the migration constraint is removed (migrate failover test)
   when: failover_type == 'migrate'
   shell: "{{ cluster_recovery_cmds[ansible_os_family].migrate }}"
 
-- name: Clean up the Master/Slave resource on the restarted node
+- name: Ensure the Master/Slave resource is cleaned up on the restarted node
   shell: "{{ cluster_recovery_cmds[ansible_os_family].cleanup }}"
 
-- name: Inform user of eventual test expectation
+- name: Ensure the user understands the clean resource locations
   debug:
     msg: "Cleaning up resources after migration test, monitor on {{ failover_secondary_hostname }} as root with '{{ cluster_monitoring_cmds[ansible_os_family] }}'"
 
