@@ -26,7 +26,7 @@
   register: cdpy_path_status
   changed_when: false
 
-- name: Set associated SAP replication status command
+- name: Set associated SAP replication status command path
   set_fact:
     path_sys_rep_status: "{{ cdpy_path_status.stdout_lines[0] }}/python_support/systemReplicationStatus.py"
 
