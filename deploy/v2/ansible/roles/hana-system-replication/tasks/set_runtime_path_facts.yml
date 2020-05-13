@@ -32,7 +32,7 @@
   loop: "{{ hdb_sizes[hana_database.size].storage }}"
   when: item.name == "backup"
 
-- name: Ensure HANA backup file names are defined
+- name: Ensure HANA backup file names are set
   set_fact:
     backup_file_for_systemdb_full_path: "{{ sid_backup_dir }}/INITIAL_SYSTEMDB_BACKUP"
     backup_file_for_tenant_full_path: "{{ sid_backup_dir }}/INITIAL_{{ hana_tenant_database_name }}_BACKUP"
