@@ -22,7 +22,12 @@
 - name: Determine runtime value of SAP replication status path
   become_user: "{{ sid_admin_user }}"
   shell: >
-    set -o pipefail && grep '^alias cdpy=' ~/.sapenv.sh | sed -e 's/^.* //' -e 's/$SAPSYSTEMNAME/{{ sid | upper }}/' -e "s/'//"
+    set -o pipefail && grep '^alias cdpy=' ~/.sapenv.sh |
+    sed -e 's/^.* //' \
+      -e 's/$SAPSYSTEMNAME/{{ sid | upper }}/' \
+      -e "s/'//" \
+      -e 's/\\[0-9\\]\\[0-9\\]/{{ instance_number }}/'
+
   register: cdpy_path_status
   changed_when: false
 
