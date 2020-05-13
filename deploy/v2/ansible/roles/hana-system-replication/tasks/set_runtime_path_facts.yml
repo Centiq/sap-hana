@@ -37,7 +37,6 @@
     backup_file_for_systemdb_full_path: "{{ sid_backup_dir }}/INITIAL_SYSTEMDB_BACKUP"
     backup_file_for_tenant_full_path: "{{ sid_backup_dir }}/INITIAL_{{ hana_tenant_database_name }}_BACKUP"
 
-
 - name: Ensure associated SAP replication status command path is set
   set_fact:
     path_sys_rep_status: "{{ cdpy_path_status.stdout_lines[0] }}/python_support/systemReplicationStatus.py"
