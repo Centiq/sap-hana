@@ -47,7 +47,7 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
-    {{ hdbsql_command }} -n {{ hana_container_address }} '{{ dummy_cmd }}'
+    {{ hdbsql_systemdb_command }} '{{ dummy_cmd }}'
   changed_when: false
 
 - name: Check that HANA DB SYSTEM user can access the tenant database {{ hana_tenant_database_name }}
@@ -56,7 +56,7 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
-    {{ hdbsql_command }} -n {{ hana_tenant_address }} '{{ dummy_cmd }}'
+    {{ hdbsql_tenant_command }} '{{ dummy_cmd }}'
   changed_when: false
 
 - name: Check HANA log mode is set to normal
@@ -65,7 +65,7 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
-    {{ hdbsql_command }} -n {{ hana_container_address }} "{{ get_log_mode_cmd }}"
+    {{ hdbsql_systemdb_command }} "{{ get_log_mode_cmd }}"
   register: log_mode_status
   failed_when: log_mode_status.rc != 0 or ("normal" not in log_mode_status.stdout)
   changed_when: false
