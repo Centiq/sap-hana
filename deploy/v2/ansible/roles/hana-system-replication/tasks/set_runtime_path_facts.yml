@@ -30,22 +30,6 @@
     backup_file_for_systemdb_full_path: "{{ sid_backup_dir }}/INITIAL_SYSTEMDB_BACKUP"
     backup_file_for_tenant_full_path: "{{ sid_backup_dir }}/INITIAL_{{ hana_tenant_database_name }}_BACKUP"
 
-- name: Determine runtime value of SAP replication status path
-  become_user: "{{ sid_admin_user }}"
-  shell: >
-    set -o pipefail && grep '^alias cdpy=' ~/.sapenv.sh |
-    sed -e 's/^.* //' \
-      -e 's/$SAPSYSTEMNAME/{{ sid | upper }}/' \
-      -e "s/'//" \
-      -e 's/\\[0-9\\]\\[0-9\\]/{{ instance_number }}/'
-
-  register: cdpy_path_status
-  changed_when: false
-
-- name: Ensure associated SAP replication status command path is set
-  set_fact:
-    path_sys_rep_status: "{{ cdpy_path_status.stdout_lines[0] }}/python_support/systemReplicationStatus.py"
-
 - name: Ensure the Primary node SSFS files are present on the primary node
   when: ansible_hostname == hana_database.nodes[0].dbname
   block:
