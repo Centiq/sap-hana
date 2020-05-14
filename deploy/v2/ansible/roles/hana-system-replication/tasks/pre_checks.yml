@@ -28,6 +28,20 @@
   failed_when: hana_process_list_result.rc != 3
   changed_when: false
 
+- name: Check whether HANA has been installed as a single container (no SYSTEMDB)
+  become_user: "{{ sid_admin_user }}"
+  shell: >
+    source ~/.bashrc ;
+    set -o pipefail && {{ hdbsql_systemdb_command }} "SELECT * FROM SYS.M_DATABASES" | grep -q SYSTEMDB
+  register: hana_container_status
+  changed_when: false
+  failed_when: false
+
+- name: Ensure failure with meaningful message if no SYSTEMDB
+  fail:
+    msg: "Automated HANA System Replication configuration is not supported for single container systems at the moment"
+  when: hana_container_status.rc != 0
+
 - name: Check whether replication has already been set up
   become_user: "{{ sid_admin_user }}"
   shell: >
