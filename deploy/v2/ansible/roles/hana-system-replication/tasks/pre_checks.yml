@@ -32,10 +32,13 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
-    set -o pipefail && {{ hdbsql_systemdb_command }} "SELECT * FROM SYS.M_DATABASES" | grep -q SYSTEMDB
+    {{ hdbsql_systemdb_command }} "SELECT * FROM SYS.M_DATABASES" | grep -q SYSTEMDB
   register: hana_container_status
   changed_when: false
   failed_when: false
+  tags:
+  - skip_ansible_lint
+
 
 - name: Ensure single container fact is set
   set_fact:
