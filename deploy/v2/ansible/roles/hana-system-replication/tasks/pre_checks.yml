@@ -37,7 +37,7 @@
   changed_when: false
   failed_when: false
   tags:
-  - skip_ansible_lint
+    - skip_ansible_lint
 
 
 - name: Ensure single container fact is set
