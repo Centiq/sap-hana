@@ -37,10 +37,16 @@
   changed_when: false
   failed_when: false
 
+- name: Ensure single container fact is set
+  set_fact:
+    hana_single_container: "{{ (hana_container_status.rc != 0) | bool }}"
+
 - name: Ensure failure with meaningful message if no SYSTEMDB
   fail:
-    msg: "Automated HANA System Replication configuration is not supported for single container systems at the moment"
-  when: hana_container_status.rc != 0
+    msg: |
+      Automated HANA System Replication configuration is not supported for single container systems at the moment.
+      If this is a requirement, please raise a GitHub issue: https://github.com/Azure/sap-hana/issues/new/choose
+  when: hana_single_container
 
 - name: Check whether replication has already been set up
   become_user: "{{ sid_admin_user }}"
