@@ -16,7 +16,7 @@ hana_db_tenant_password: "Manager1"
 hana_replication_mode: "sync"
 hana_operation_mode: "logReplay"
 hana_1_hsr_user: "hdbhasync"
-hana_1_hsr_password: "passwd"
+hana_1_hsr_password: "HSRpassw0rd"
 
 # For low spec Dev instances the timeout needs to be high
 # A delay of 2 seconds is also recommended
