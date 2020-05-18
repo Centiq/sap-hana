@@ -1,5 +1,12 @@
 ---
 
+- name: Ensure there is a {{ sid| upper }} tenant db
+  become_user: "{{ sid_admin_user }}"
+  shell: |
+    source ~/.bashrc
+    {{ hdbsql_systemdb_command }} 'CREATE DATABASE {{ sid | upper }} SYSTEM USER PASSWORD {{ hana_db_tenant_password }}'
+  when: needs_tenant_db
+
 - name: Ensure HANA 1.0 is configured for System Replication
   become_user: "{{ sid_admin_user }}"
   when:

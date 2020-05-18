@@ -32,17 +32,18 @@
   become_user: "{{ sid_admin_user }}"
   shell: >
     source ~/.bashrc ;
-    {{ hdbsql_systemdb_command }} "SELECT * FROM SYS.M_DATABASES" | grep -q SYSTEMDB
+    {{ hdbsql_systemdb_command }} "SELECT * FROM SYS.M_DATABASES"
   register: hana_container_status
   changed_when: false
   failed_when: false
-  tags:
-    - skip_ansible_lint
-
 
 - name: Ensure single container fact is set
   set_fact:
-    hana_single_container: "{{ (hana_container_status.rc != 0) | bool }}"
+    hana_single_container: "{{ ('SYSTEMDB' in hana_container_status.stdout) | bool }}"
+
+- name: Ensure needs tenant db fact is set
+  set_fact:
+    needs_tenant_db: "{{ ('{{ sid | upper }}' not in hana_container_status.stdout) | bool }}"
 
 - name: Ensure failure with meaningful message if no SYSTEMDB
   fail:
