@@ -86,6 +86,7 @@
         sid: "{{ hana_database.instance.sid }}"
         instance_number: "{{ hana_database.instance.instance_number }}"
         hana_system_user_password: "{{ hana_database.credentials.db_systemdb_password }}"
+        hana_db_tenant_password: "{{ hana_database.credentials.db_tenant_password }}"
     - role: hana-os-clustering
       when: hana_database.high_availability
       vars:
