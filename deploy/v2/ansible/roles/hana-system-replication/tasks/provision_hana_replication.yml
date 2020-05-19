@@ -4,7 +4,7 @@
   become_user: "{{ sid_admin_user }}"
   when:
     - ansible_hostname == hana_database.nodes[0].dbname
-    - hana_database.db_version is regex("\\.1\\d\\d\\.\\d\\d")  # .1##.##, so e.g. 1.0.122.23 will match
+    - hana_database.db_version[0:2] == "1."  # https://www.blue.works/en/hana-version-numbering-explained/
     - not hana_system_replication_enabled
   block:
 
