@@ -34,7 +34,7 @@
       changed_when: false
 
     - name: Check backup file exists for tenant {{ hana_tenant_database_name }} database for System Identifier {{ sid }}
-      when: has_tenant_db
+      when: hana_has_tenant_db
       stat:
         path: "{{ sid_backup_dir }}/INITIAL_{{ hana_tenant_database_name }}_BACKUP_databackup_0_1"
       register: tenant_backup_file

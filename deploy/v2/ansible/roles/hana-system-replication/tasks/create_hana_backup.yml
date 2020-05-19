@@ -26,7 +26,7 @@
       when: backup_required
 
     - name: Check if there is a tenant db needing backup
-      when: has_tenant_db
+      when: hana_has_tenant_db
       block:
 
         - name: Check whether backup exists for tenant {{ hana_tenant_database_name }} database for System Identifier {{ sid }}
