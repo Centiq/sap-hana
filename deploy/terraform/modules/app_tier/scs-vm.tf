@@ -21,28 +21,37 @@ resource "azurerm_network_interface_security_group_association" "nic-scs-nsg" {
 
 # TODO: Load Balancer
 resource "azurerm_lb" "scs-lb" {
-  name                = "scs-${locals.sid}-lb"
+  name                = "scs-${local.sid}-lb"
   resource_group_name = var.resource-group[0].name
   location            = var.resource-group[0].location
 
-  frontend_ip_configuration {
-    name                          = "scs-${locals.sid}-lb-feip"
-    subnet_id                     = var.subnet-sap-db[0].id
-    private_ip_address_allocation = "Static"
-    private_ip_address            = "10.1.3.5"
-  }
+  frontend_ip_configuration = [
+    {
+      name                          = "scs-${local.sid}-lb-feip"
+      subnet_id                     = var.subnet-sap-db[0].id
+      private_ip_address_allocation = "Static"
+      private_ip_address            = "10.1.3.5"
+    }
+
+    {
+      name                          = "ers-${local.sid}-lb-feip"
+      subnet_id                     = var.subnet-sap-db[0].id
+      private_ip_address_allocation = "Static"
+      private_ip_address            = "10.1.3.6"
+    }
+  ]
 }
 
 resource "azurerm_lb_backend_address_pool" "scs-lb-back-pool" {
   resource_group_name = var.resource-group[0].name
   loadbalancer_id     = azurerm_lb.scs-lb.id
-  name                = "scs-${locals.sid}-lb-bep"
+  name                = "scs-${local.sid}-lb-bep"
 }
 
 resource "azurerm_lb_probe" "scs-lb-health-probe" {
   resource_group_name = var.resource-group[0].name
   loadbalancer_id     = azurerm_lb.scs-lb.id
-  name                = "scs-${locals.sid}-lb-hp"
+  name                = "scs-${local.sid}-lb-hp"
   port                = "620${var.scs_instance_number}"
   protocol            = "Tcp"
   interval_in_seconds = 5
@@ -50,7 +59,33 @@ resource "azurerm_lb_probe" "scs-lb-health-probe" {
 }
 
 # TODO: LB Rules
+resource "azurerm_lb_rule" "scs-lb-rules" {
+  count                          = length(local.lb-ports.scs)
+  resource_group_name            = var.resource-group[0].name
+  loadbalancer_id                = azurerm_lb.scs-lb.id
+  name                           = "SCS_${local.sid}_${local.lb-ports.scs[count.index]}"
+  protocol                       = "Tcp"
+  frontend_port                  = local.lb-ports.scs[count.index]
+  backend_port                   = local.lb-ports.scs[count.index]
+  frontend_ip_configuration_name = "scs-${local.sid}-lb-feip"
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.scs-lb-back-pool[0].id
+  probe_id                       = azurerm_lb_probe.scs-lb-health-probe[0].id
+  enable_floating_ip             = true
+}
 
+resource "azurerm_lb_rule" "ers-lb-rules" {
+  count                          = length(local.lb-ports.ers)
+  resource_group_name            = var.resource-group[0].name
+  loadbalancer_id                = azurerm_lb.scs-lb.id
+  name                           = "ERS_${local.sid}_${local.lb-ports.ers[count.index]}"
+  protocol                       = "Tcp"
+  frontend_port                  = local.lb-ports.ers[count.index]
+  backend_port                   = local.lb-ports.ers[count.index]
+  frontend_ip_configuration_name = "ers-${local.sid}-lb-feip"
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.scs-lb-back-pool[0].id
+  probe_id                       = azurerm_lb_probe.ers-lb-health-probe[0].id
+  enable_floating_ip             = true
+}
 
 # TODO: LB/NIC Association
 
