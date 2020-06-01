@@ -9,7 +9,7 @@ resource "azurerm_network_interface" "nics-scs" {
   ip_configuration {
     name                          = "scs-${local.sid}-nic-${count.index}-ip"
     subnet_id                     = var.subnet-app[0].id
-    private_ip_address            = "10.1.3.10"
+    private_ip_address            = "10.1.3.1${count.index}"
     private_ip_address_allocation = "static"
   }
 }
@@ -88,7 +88,7 @@ resource "azurerm_lb_rule" "ers-lb-rules" {
   backend_port                   = local.lb-ports.ers[count.index]
   frontend_ip_configuration_name = "ers-${local.sid}-lb-feip"
   backend_address_pool_id        = azurerm_lb_backend_address_pool.scs-lb-back-pool[0].id
-  probe_id                       = azurerm_lb_probe.scs-lb-health-probe[0].id
+  probe_id                       = azurerm_lb_probe.scs-lb-health-probe[1].id
   enable_floating_ip             = true
 }
 
