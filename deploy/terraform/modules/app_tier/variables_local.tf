@@ -10,14 +10,16 @@ variable "nsg-app" {
   description = "Details of the SAP Application subnet NSG"
 }
 
-variable "scs-instance-number" {
-  description = "Instance Number for the SCS instance"
-  default = "01"
+variable "app-tier" {
+  description = "Details of the SAP Application Tier"
+  default = [{
+    scs-instance-number = "01"
+    ers-instance-number = "02"
+  }]
 }
 
-variable "ers-instance-number" {
-  description = "Instance Number for the ERS instance in HA deployments"
-  default = "02"
+variable "storage-bootdiag" {
+  description = "Details of the boot diagnostic storage device"
 }
 
 locals {
@@ -27,28 +29,35 @@ locals {
     if database.platform == "HANA"
   ]
 
-  sid = locals.hana-databases[0].instance.sid
+  sid = local.hana-databases[0].instance.sid
 
   # Ports used for specific ASCS and ERS
   lb-ports = {
     "scs" = [
-      3200 + tonumber(var.scs-instance-number),           # e.g. 3201
-      3600 + tonumber(var.scs-instance-number),           # e.g. 3601
-      3900 + tonumber(var.scs-instance-number),           # e.g. 3901
-      8100 + tonumber(var.scs-instance-number),           # e.g. 8101
-      50013 + (tonumber(var.scs-instance-number) * 100),  # e.g. 50113
-      50014 + (tonumber(var.scs-instance-number) * 100),  # e.g. 50114
-      50016 + (tonumber(var.scs-instance-number) * 100),  # e.g. 50116
+      3200 + tonumber(var.app-tier[0].scs-instance-number),           # e.g. 3201
+      3600 + tonumber(var.app-tier[0].scs-instance-number),           # e.g. 3601
+      3900 + tonumber(var.app-tier[0].scs-instance-number),           # e.g. 3901
+      8100 + tonumber(var.app-tier[0].scs-instance-number),           # e.g. 8101
+      50013 + (tonumber(var.app-tier[0].scs-instance-number) * 100),  # e.g. 50113
+      50014 + (tonumber(var.app-tier[0].scs-instance-number) * 100),  # e.g. 50114
+      50016 + (tonumber(var.app-tier[0].scs-instance-number) * 100),  # e.g. 50116
     ]
 
     "ers" = [
-      3200 + tonumber(var.ers-instance-number),          # e.g. 3202
-      3300 + tonumber(var.ers-instance-number),          # e.g. 3302
-      50013 + (tonumber(var.ers-instance-number) * 100), # e.g. 50213
-      50014 + (tonumber(var.ers-instance-number) * 100), # e.g. 50214
-      50016 + (tonumber(var.ers-instance-number) * 100), # e.g. 50216
+      3200 + tonumber(var.app-tier[0].ers-instance-number),          # e.g. 3202
+      3300 + tonumber(var.app-tier[0].ers-instance-number),          # e.g. 3302
+      50013 + (tonumber(var.app-tier[0].ers-instance-number) * 100), # e.g. 50213
+      50014 + (tonumber(var.app-tier[0].ers-instance-number) * 100), # e.g. 50214
+      50016 + (tonumber(var.app-tier[0].ers-instance-number) * 100), # e.g. 50216
     ]
   }
 
-  # TODO: logic for generating instance number specific ports
+  # Ports used for the health probes.
+  # Where Instance Number is nn:
+  # SCS (index 0) - 620nn
+  # ERS (index 1) - 621nn
+  hp-ports = [
+    62000 + tonumber(var.app-tier[0].scs-instance-number),
+    62100 + tonumber(var.app-tier[0].ers-instance-number)
+  ]
 }
