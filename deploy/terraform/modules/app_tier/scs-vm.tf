@@ -145,10 +145,9 @@ resource "azurerm_linux_virtual_machine" "vm-dbnode" {
     public_key = file(var.sshkey.path_to_public_key)
   }
 
-  # TODO: Boot diagnostics?
-  # boot_diagnostics {
-  #   storage_account_uri = var.storage-bootdiag.primary_blob_endpoint
-  # }
+  boot_diagnostics {
+    storage_account_uri = var.storage-bootdiag.primary_blob_endpoint
+  }
 }
 
 # TODO: Disk(s) ?
