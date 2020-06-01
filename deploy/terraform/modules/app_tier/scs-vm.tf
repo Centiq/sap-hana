@@ -112,10 +112,10 @@ resource "azurerm_availability_set" "scs-as" {
 }
 
 # Create the SCS VM(s)
-resource "azurerm_linux_virtual_machine" "vm-dbnode" {
+resource "azurerm_linux_virtual_machine" "vm-scs" {
   count               = 2
-  name                = "${count.index == 0 ? "scs" : "ers"}-${local.sid}-vm"
-  computer_name       = "${count.index == 0 ? "scs" : "ers"}-${local.sid}-vm"
+  name                = "scs${count.index}-${local.sid}-vm"
+  computer_name       = "scs${count.index}-${local.sid}-vm"
   location            = var.resource-group[0].location
   resource_group_name = var.resource-group[0].name
   availability_set_id = azurerm_availability_set.scs-as[0].id
@@ -128,7 +128,7 @@ resource "azurerm_linux_virtual_machine" "vm-dbnode" {
   disable_password_authentication = true
 
   os_disk {
-    name                 = "${count.index == 0 ? "scs" : "ers"}-osdisk"
+    name                 = "scs${count.index}-osdisk"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
