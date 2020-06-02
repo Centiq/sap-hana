@@ -144,7 +144,7 @@ resource "azurerm_subnet_network_security_group_association" "Associate-nsg-db" 
 
 # Associates SAP app nsg to SAP app subnet
 resource "azurerm_subnet_network_security_group_association" "Associate-nsg-app" {
-  count                     = signum((var.infrastructure.vnets.sap.is_existing ? 0 : 1) + (lookup(var.infrastructure.vnets.sap, "subnet_app.nsg.is_existing", false) ? 0 : 1))
+  count                     = signum((var.infrastructure.vnets.sap.is_existing ? 0 : 1) + (var.infrastructure.vnets.sap.subnet_app.nsg.is_existing ? 0 : 1))
   subnet_id                 = var.infrastructure.vnets.sap.subnet_app.is_existing ? data.azurerm_subnet.subnet-sap-app[0].id : azurerm_subnet.subnet-sap-app[0].id
   network_security_group_id = var.infrastructure.vnets.sap.subnet_app.nsg.is_existing ? data.azurerm_network_security_group.nsg-app[0].id : azurerm_network_security_group.nsg-app[0].id
 }
