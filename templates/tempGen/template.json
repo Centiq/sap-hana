@@ -5,6 +5,10 @@
       "is_existing": "false",
       "name": "test-rg"
     },
+    "ppg": {
+      "is_existing": "false",
+      "name": "test-ppg"
+    },
     "vnets": {
       "management": {
         "is_existing": "false",
@@ -18,7 +22,7 @@
             "is_existing": "false",
             "name": "nsg-mgmt",
             "allowed_ips": [
-              "0.0.0.0/0"
+              "var-agent-ip"
             ]
           }
         }
@@ -43,6 +47,15 @@
           "nsg": {
             "is_existing": "false",
             "name": "nsg-db"
+          }
+        },
+        "subnet_app": {
+          "is_existing": "false",
+          "name": "subnet-app",
+          "prefix": "10.1.3.0/24",
+          "nsg": {
+            "is_existing": "false",
+            "name": "nsg-app"
           }
         }
       }
@@ -114,6 +127,21 @@
       "loadbalancer": {}
     }
   ],
+  "application": {
+    "sid": "HN1",
+    "enable_deployment": false,
+    "scs_instance_number": "01",
+    "ers_instance_number": "02",
+    "scs_high_availability": false,
+    "application_server_count": 1,
+    "webdispatcher_count": 1,
+    "vm_sizing": "Default",
+    "authentication": {
+      "type": "key",
+      "username": "azureadm"
+    },
+    "os": {var-os-image}
+  },
   "software": {
     "storage_account_sapbits": {
       "is_existing": true,

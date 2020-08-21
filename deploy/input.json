@@ -6,6 +6,11 @@
       "arm_id": "",
       "name": ""
     },
+    "ppg": {
+      "is_existing": "",
+      "name": "",
+      "arm_id": ""
+    },
     "vnets": {
       "management": {
         "is_existing": "",
@@ -44,6 +49,17 @@
           }
         },
         "subnet_db": {
+          "is_existing": "",
+          "arm_id": "",
+          "name": "",
+          "prefix": "",
+          "nsg": {
+            "is_existing": "",
+            "arm_id": "",
+            "name": ""
+          }
+        },
+        "subnet_app": {
           "is_existing": "",
           "arm_id": "",
           "name": "",
@@ -169,6 +185,31 @@
       }
     }
   ],
+  "application": {
+    "sid": "",
+    "enable_deployment": true,
+    "scs_instance_number": "",
+    "ers_instance_number": "",
+    "scs_high_availability": true,
+    "application_server_count": 1,
+    "webdispatcher_count": 1,
+    "vm_sizing": "",
+    "app_nic_ips": [],
+    "scs_lb_ips": [],
+    "scs_nic_ips": [],
+    "web_lb_ips": [],
+    "web_nic_ips": [],
+    "authentication": {
+      "type": "",
+      "username": ""
+    },
+    "os": {
+      "publisher": "",
+      "offer": "",
+      "sku": "",
+      "version": ""
+    }
+  },
   "software": {
     "storage_account_sapbits": {
       "is_existing": "",
