@@ -2,23 +2,25 @@
 
 ## Contents
 
-1. [Overview](#overview)
-1. [Phase 1: Installation Media and Configuration File Acquisition Process](#phase-1-installation-media-and-configuration-file-acquisition-process)
-   1. [Prerequisites](#phase-1-prerequisites)
-   1. [Inputs](#phase-1-inputs)
-   1. [Process](#phase-1-process)
-   1. [Examples](#phase-1-examples)
-   1. [Outputs](#phase-1-outputs)
-1. [Phase 2: Installation Media Preparation and Configuration File Preparation](#phase-2-installation-media-preparation-and-configuration-file-preparation)
-   1. [Prerequisites](#phase-2-prerequisites)
-   1. [Inputs](#phase-2-inputs)
-   1. [Process](#phase-2-process)
-   1. [Outputs](#phase-2-outputs)
-1. [Phase 3: Installation of SAP System on Target VMs](#phase-3-installation-of-sap-system-on-target-vms)
-   1. [Prerequisites](#phase-3-prerequisites)
-   1. [Inputs](#phase-3-inputs)
-   1. [Process](#phase-3-process)
-   1. [Outputs](#phase-3-outputs)
+- [System Design and Deployment](#system-design-and-deployment)
+  - [Contents](#contents)
+  - [Overview](#overview)
+  - [Phase 1: Installation Media and Configuration File Acquisition Process](#phase-1-installation-media-and-configuration-file-acquisition-process)
+    - [Phase 1 Prerequisites](#phase-1-prerequisites)
+    - [Phase 1 Inputs](#phase-1-inputs)
+    - [Phase 1 Process](#phase-1-process)
+    - [Phase 1 Output](#phase-1-output)
+  - [Phase 2: Installation Media Preparation and Configuration File Preparation](#phase-2-installation-media-preparation-and-configuration-file-preparation)
+    - [Phase 2 Prerequisites](#phase-2-prerequisites)
+    - [Phase 2 Inputs](#phase-2-inputs)
+    - [Phase 2 Process](#phase-2-process)
+    - [Phase 2 Examples](#phase-2-examples)
+    - [Phase 2 Outputs](#phase-2-outputs)
+  - [Phase 3: Installation of SAP System on Target VMs](#phase-3-installation-of-sap-system-on-target-vms)
+    - [Phase 3 Prerequisites](#phase-3-prerequisites)
+    - [Phase 3 Inputs](#phase-3-inputs)
+    - [Phase 3 Process](#phase-3-process)
+    - [Phase 3 Outputs](#phase-3-outputs)
 
 ## Overview
 
@@ -87,8 +89,8 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 ### Phase 2 Process
 
-1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples i.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples) for file structure.
-1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples i.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples).
+1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples 1.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples) for file structure.
+1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples 1.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples).
 1. Open the SAP Library Storage Account in the Azure portal and navigate into the sapbits container.
 1. Click into archives.
 1. Click any file.
@@ -101,7 +103,7 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 1. Select all unattended installation template files (*.j2).
 1. Click Advanced to show the advanced options, and enter “templates” for the Upload Directory.
 1. Create the BoM file and upload it into SAP Library.
-1. Populate BoM with required inputs show in [Examples ii.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples)
+1. Populate BoM with required inputs show in [Examples 2.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples)
 1. Upload BoM files to SAP Library.
 1. Click Upload.
 1. In the panel on the right, click Select a file.
