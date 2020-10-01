@@ -86,8 +86,69 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 ### 3 - Prerequisites
 
+1. Bootstrap infrastructure has been deployed
+1. Bootstrap infrastructure has been configured
+   1. Deployer has been configured with working Ansible
+   1. SAP Library contains all media for the relevant BoM
+1. SAP infrastructure has been deployed
+   1. SAP Library contains all Terraform state files for the environment
+   1. Deployer has Ansible connectivity to SAP Infrastructure (e.g. SSH keys in place/available via key vault)
+   1. Ansible inventory has been created
+
 ### 3 - Inputs
+
+1. BoM (contents and format TBD)
+1. Ansible inventory that details deployed SAP Infrastructure
+   1. Note: Inventory contents and format TBD, but may contain reference to the SAP Library
+1. SID (likely to exist in Ansible inventory in some form)
+1. Unattended install template
 
 ### 3 - Process
 
+1. Run Ansible playbook on SCS VM to configure base-level OS
+1. Run Ansible playbook on SCS VM to configure OS groups and users
+   1. Use defaulted gids/uids
+1. Run Ansible playbook on SCS VM to configure SAP OS prerequisites
+   1. Ensures software dependencies are installed (e.g. those found in SAP notes such as 2361652 )
+      1. `uuidd`
+      1. `nfs-utils`
+      1. `nmap-ncat`
+      1. `resource-agents-sap`
+      1. ... etc
+   1. Configures dependencies (e.g. those found in SAP notes such as #2600030)
+      1. `selinux/apparmor` (permissive)
+      1. `uuid` (started)
+      1. `/etc/sysctl.d/sap.conf` (populated)
+      1. `sysctl` (reloaded)
+      1. `/etc/security/limits.d/99-sap.conf` (populated)
+      1. `/var/sapAutomation/lock` (exists)
+      1. ... etc
+1. Run Ansible playbook on SCS VM to configure LVM
+   1. Ensures correct volumes are created
+1. Run Ansible playbook on SCS VM to configure SAP mounts
+   1. Ensures correct directory structure exists
+      1. `/sapmnt`
+      1. `/usr/sap`
+      1. `/usr/sap/trans`
+      1. `/usr/sap/&lt;SID>`
+      1. `/usr/sap/&lt;SID>/ASCS&lt;ascs_inst_no>`
+      1. `/usr/sap/&lt;SID>/ERS&lt;ers_inst_no>`
+      1. `/usr/sap/&lt;SID>/SYS`
+   1. Ensures file systems are mounted
+      1. `/etc/fstab`
+1. Run Ansible playbook on SCS VM to configure NFS and create/export media directory
+   1. Ensures correct directory structure exists
+      1. `/sapmnt/&lt;SID>`
+      1. `/usr/sap/install`
+   1. Ensures media folders are exported
+1. Run Ansible playbook on SCS VM to unarchive SAP Media and extract to exported media directory
+   1. Iterates over BoM content to:
+      1. Ensure media extracted (sapcar) to correct location(s)
+      1. Ensure unattended install templates are extracted to correct location
+      1. Ensure ini files are extracted to correct location
+1. Run Ansible playbook on SCS VM to deploy SAP product components (swpm)
+
 ### 3 - Outputs
+
+1. SAP product has been deployed and running - ready to handle SAP client requests
+1. Connection details/credentials so the Basis Admin can configure any SAP clients
