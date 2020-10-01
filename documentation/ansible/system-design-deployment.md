@@ -217,7 +217,7 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 - SAP Media has been stored in SAP Library
 - Consolidated SAP Unattended Install Template has been stored in SAP Library
 - BoM has been stored in SAP Library
-- SAP Library file path defined in Ansible inventory or passed in as a perameter to a playbook.
+- SAP Library file path defined in Ansible inventory or passed in as a parameter to a playbook.
 
 ## Phase 3: Installation of SAP System on Target VMs
 
