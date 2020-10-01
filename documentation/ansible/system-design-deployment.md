@@ -4,21 +4,21 @@
 
 1. [Overview](#overview)
 1. [Phase 1: Installation Media and Configuration File Acquisition Process](#phase-1-installation-media-and-configuration-file-acquisition-process)
-   1. [Prerequisites](#1---prerequisites)
-   1. [Inputs](#1---inputs)
-   1. [Process](#1---process)
-   1. [Examples](#1---examples)
-   1. [Outputs](#1---outputs)
+   1. [Prerequisites](#phase-1-prerequisites)
+   1. [Inputs](#phase-1-inputs)
+   1. [Process](#phase-1-process)
+   1. [Examples](#phase-1-examples)
+   1. [Outputs](#phase-1-outputs)
 1. [Phase 2: Installation Media Preparation and Configuration File Preparation](#phase-2-installation-media-preparation-and-configuration-file-preparation)
-   1. [Prerequisites](#2---prerequisites)
-   1. [Inputs](#2---inputs)
-   1. [Process](#2---process)
-   1. [Outputs](#2---outputs)
+   1. [Prerequisites](#phase-2-prerequisites)
+   1. [Inputs](#phase-2-inputs)
+   1. [Process](#phase-2-process)
+   1. [Outputs](#phase-2-outputs)
 1. [Phase 3: Installation of SAP System on Target VMs](#phase-3-installation-of-sap-system-on-target-vms)
-   1. [Prerequisites](#3---prerequisites)
-   1. [Inputs](#3---inputs)
-   1. [Process](#3---process)
-   1. [Outputs](#3---outputs)
+   1. [Prerequisites](#phase-3-prerequisites)
+   1. [Inputs](#phase-3-inputs)
+   1. [Process](#phase-3-process)
+   1. [Outputs](#phase-3-outputs)
 
 ## Overview
 
@@ -36,11 +36,11 @@ This process happens in 3 phases, with Azure Infrastruture Provisioning followin
 
 ## Phase 1: Installation Media and Configuration File Acquisition Process
 
-### 1 - Prerequisites
+### Phase 1 Prerequisites
 
 - User must have an SAP account which has the correct permissions to download software and access Maintenance Planner
 
-### 1 - Inputs
+### Phase 1 Inputs
 
 - SAP account login details (username, password)
 - SAP System Product to deploy e.g. `S/4HANA`
@@ -49,7 +49,7 @@ This process happens in 3 phases, with Azure Infrastruture Provisioning followin
 - OS intended for use on HANA Infrastructure
 - Language pack requirements
 
-### 1 - Process
+### Phase 1 Process
 
 _**Note:** The Preparation and Deployment stages will be independent of each other in the sense that the preparation stage can happen at any time before the user wishes to begin the Deployment stage, however the Deployment cannot happen without Preparation being completed._
 
@@ -67,7 +67,7 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 1. Set download directory to Stack Download Directory created at beginning of Phase 1
 1. Download all files into empty DIR on workstation
 
-### 1 - Output
+### Phase 1 Output
 
 - XML Stack file
 - SAP Installation Media
@@ -75,24 +75,24 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 ## Phase 2: Installation Media Preparation and Configuration File Preparation
 
-### 2 - Prerequisites
+### Phase 2 Prerequisites
 
 - Acquisition process complete
 
-### 2 - Inputs
+### Phase 2 Inputs
 
--  SAP XML Stack file stored on user’s workstation in the Stack Download Directory.
--  SAP Media stored on user’s workstation in the Stack Download Directory.
--  SAP Library to be prepared with the SAP Media.
+- SAP XML Stack file stored on user’s workstation in the Stack Download Directory.
+- SAP Media stored on user’s workstation in the Stack Download Directory.
+- SAP Library to be prepared with the SAP Media.
 
-### 2 - Process
+### Phase 2 Process
 
 1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples i.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples) for file structure.
 1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples i.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples).
 1. Open the SAP Library Storage Account in the Azure portal and navigate into the sapbits container.
 1. Click into archives.
 1. Click any file.
-1. Copy the URL property and make note, the top level domain will be used later in the process, e.g. (https://npeus2saplibef9d.blob.core.windows.net).
+1. Copy the URL property and make note, the top level domain will be used later in the process, e.g. (<https://npeus2saplibef9d.blob.core.windows.net>).
 1. Create SAP Unattended Installation Template(s) (process TBD in Milestone 2).
 1. Upload into SAP Library.
 1. Click Upload.
@@ -108,11 +108,12 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 1. Navigate your workstation to your Stack Download directory.
 1. Select all bom files (bom.yaml).
 1. Click Advanced to show the advanced options, and enter “BoMs” for the Upload Directory.
-1. Define SAP Library path Storage account in Ansible either in the Ansible inventory or passed into a playbook as a parameter i.e sap_lib_root_url: https://<storage_acount_name>.blob.core.windows.net/<container_name>/ . The same applies to the file destination on the target vm as all media will be extracted to one directory.
+1. Define SAP Library path Storage account in Ansible either in the Ansible inventory or passed into a playbook as a parameter i.e sap_lib_root_url: `https://<storage_acount_name>.blob.core.windows.net/<container_name>/`. The same applies to the file destination on the target vm as all media will be extracted to one directory.
 
-### 2 - Examples
+### Phase 2 Examples
 
-   i. Example file structure:
+1. Example file structure:
+
    ```text
    sapbits
    |
@@ -140,102 +141,104 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
    |   |-- BW4HANA_1909_v2/
    |   |   |-- ...
    ```
-**Note:** This process will create a repository of archive files, tools and Stack files to be used with deploying systems.
 
-**Note:** All Installation Media tools and files for all systems designed by the user will be contained within a single flat directory to avoid duplication.
+   **Note:** This process will create a repository of archive files, tools and Stack files to be used with deploying systems.
 
-**Note:** The Bill of Materials directory (BoMs/) will contain a folder for each system the user designs.  The recommended naming convention for these folders will use the product type(e.g. S4HANA), product version (e.g. 1909), and a version marker (e.g. v1). This allows the user to update a particular system BoM and retain an earlier version should it ever be needed.
+   **Note:** All Installation Media tools and files for all systems designed by the user will be contained within a single flat directory to avoid duplication.
 
-**Note:** The Bill of Materials file (bom.yml) and template files (hana.ini, application.ini) will be created following manual steps described later in this process.
+   **Note:** The Bill of Materials directory (BoMs/) will contain a folder for each system the user designs.  The recommended naming convention for these folders will use the product type(e.g. S4HANA), product version (e.g. 1909), and a version marker (e.g. v1). This allows the user to update a particular system BoM and retain an earlier version should it ever be needed.
 
-**Note:** Additional SAP files obtained from SAP Maintenance Planner (the XML Stack file, Text file representation of stack file, the PDF and xls files) will be stored in a subfolder.
+   **Note:** The Bill of Materials file (bom.yml) and template files (hana.ini, application.ini) will be created following manual steps described later in this process.
 
-**Note:** Stack files are made unique by an index, e.g. MP_<type>_<index>_<date>_<???>.<filetype> where <type> is Stack, Plan, or Excel, <index> is a 10 digit integer, <date> is in format yyyymmdd, <???> is SWC for the Excel type and empty for the rest, and <filetype> is xls for type Excel, pdf for type Plan, and txt or xml for type Stack.
+   **Note:** Additional SAP files obtained from SAP Maintenance Planner (the XML Stack file, Text file representation of stack file, the PDF and xls files) will be stored in a subfolder.
 
-ii. Example BoM file:
+   **Note:** Stack files are made unique by an index, e.g. `MP_<type>_<index>_<date>_<???>.<filetype>` where `<type>` is Stack, Plan, or Excel, `<index>` is a 10 digit integer, `<date>` is in format yyyymmdd, <???> is SWC for the Excel type and empty for the rest, and `<filetype>` is xls for type Excel, pdf for type Plan, and txt or xml for type Stack.
 
-```yaml
-### BOM ###
----
-#
-# BOM    :  S/4 - 1909
-# Version:  001
-# Name   :  BoM_S41909v1
+1. Example BoM file:
 
-#
-# Target :  ABAP PLATFORM 1909              01    (02/2020)
-#
+   ```yaml
+   ### BOM ###
+   ---
+   #
+   # BOM    :  S/4 - 1909
+   # Version:  001
+   # Name   :  BoM_S41909v1
 
-#
-# Product ID's
-#
-ProductIdSCS: NW_ABAP_ASCS:S4HANA1909.CORE.HDB.ABAP
+   #
+   # Target :  ABAP PLATFORM 1909              01    (02/2020)
+   #
 
-# Installation Template
-installation_template_path: 'sapbits/stack_files/templates/application.ini'
+   #
+   # Product ID's
+   #
+   ProductIdSCS: NW_ABAP_ASCS:S4HANA1909.CORE.HDB.ABAP
 
-# Stack_file
-stack_file_path: 'sapbits/bom/s4hana_1909_v1/stack_file/MP_Stack_1001034051_20200921.xml'
+   # Installation Template
+   installation_template_path: 'sapbits/stack_files/templates/application.ini'
 
-# BASE INSTALL
+   # Stack_file
+   stack_file_path: 'sapbits/bom/s4hana_1909_v1/stack_file/MP_Stack_1001034051_20200921.xml'
 
-# billOfMaterials:
-# -
-#   fileName:       ''          (Required: Target filename after download; Full path)
-#   permissions:    ''          (Optional: File permissions in octal;         Default: 0644)
-#   creates:        ''          (Optional: Filename to indicate if extract was performed)
-#   include:        ''          (Optional: Install additional components via additional BoM file)
+   # BASE INSTALL
 
-billOfMaterials:
+   # billOfMaterials:
+   # -
+   #   fileName:       ''          (Required: Target filename after download; Full path)
+   #   permissions:    ''          (Optional: File permissions in octal;         Default: 0644)
+   #   creates:        ''          (Optional: Filename to indicate if extract was performed)
+   #   include:        ''          (Optional: Install additional components via additional BoM file)
 
-# Depencies
--   path: BoMs/S4HANA_1909_v1/bom.yml
-    Include: true
+   billOfMaterials:
 
-# SAPCAR 7.21
--   filename: 'SAPCAR_****_********.EXE'
-    permissions: '{{ sap_permission }}'
+   # Depencies
+   -   path: BoMs/S4HANA_1909_v1/bom.yml
+       Include: true
 
-# SWPM 2.0
--   fileName:       'SWPM20SP05_5-80003424.SAR'
-    creates:        'SIGNATURE.SMF'
-    permissions: '{{ sap_permission }}'
+   # SAPCAR 7.21
+   -   filename: 'SAPCAR_****_********.EXE'
+       permissions: '{{ sap_permission }}'
 
-# ABAP_ASCS
--   fileName:       'S4CORE101.SAR.SAR'
-    creates:        'SIGNATURE.SMF'
-```
-**Note:** The configuration for each individual HANA component will be stored in "Sub BoMs" in order to allow for independent installs when required.
+   # SWPM 2.0
+   -   fileName:       'SWPM20SP05_5-80003424.SAR'
+       creates:        'SIGNATURE.SMF'
+       permissions: '{{ sap_permission }}'
 
-### 2 - Outputs
+   # ABAP_ASCS
+   -   fileName:       'S4CORE101.SAR.SAR'
+       creates:        'SIGNATURE.SMF'
+   ```
 
--  SAP Media has been stored in SAP Library
--  Consolidated SAP Unattended Install Template has been stored in SAP Library
--  BoM has been stored in SAP Library
--  SAP Library file path defined in Ansible inventory or passed in as a perameter to a playbook.
+   **Note:** The configuration for each individual HANA component will be stored in "Sub BoMs" in order to allow for independent installs when required.
+
+### Phase 2 Outputs
+
+- SAP Media has been stored in SAP Library
+- Consolidated SAP Unattended Install Template has been stored in SAP Library
+- BoM has been stored in SAP Library
+- SAP Library file path defined in Ansible inventory or passed in as a perameter to a playbook.
 
 ## Phase 3: Installation of SAP System on Target VMs
 
-### 3 - Prerequisites
+### Phase 3 Prerequisites
 
-1. Bootstrap infrastructure has been deployed
-1. Bootstrap infrastructure has been configured
-   1. Deployer has been configured with working Ansible
-   1. SAP Library contains all media for the relevant BoM
-1. SAP infrastructure has been deployed
-   1. SAP Library contains all Terraform state files for the environment
-   1. Deployer has Ansible connectivity to SAP Infrastructure (e.g. SSH keys in place/available via key vault)
-   1. Ansible inventory has been created
+- Bootstrap infrastructure has been deployed
+- Bootstrap infrastructure has been configured
+  - Deployer has been configured with working Ansible
+  - SAP Library contains all media for the relevant BoM
+- SAP infrastructure has been deployed
+  - SAP Library contains all Terraform state files for the environment
+  - Deployer has Ansible connectivity to SAP Infrastructure (e.g. SSH keys in place/available via key vault)
+  - Ansible inventory has been created
 
-### 3 - Inputs
+### Phase 3 Inputs
 
-1. BoM (contents and format TBD)
-1. Ansible inventory that details deployed SAP Infrastructure
-   1. Note: Inventory contents and format TBD, but may contain reference to the SAP Library
-1. SID (likely to exist in Ansible inventory in some form)
-1. Unattended install template
+- BoM (contents and format TBD)
+- Ansible inventory that details deployed SAP Infrastructure
+  - Note: Inventory contents and format TBD, but may contain reference to the SAP Library
+- SID (likely to exist in Ansible inventory in some form)
+- Unattended install template
 
-### 3 - Process
+### Phase 3 Process
 
 1. Run Ansible playbook on SCS VM to configure base-level OS
 1. Run Ansible playbook on SCS VM to configure OS groups and users
@@ -278,7 +281,7 @@ billOfMaterials:
       1. Ensure ini files are extracted to correct location
 1. Run Ansible playbook on SCS VM to deploy SAP product components (swpm)
 
-### 3 - Outputs
+### Phase 3 Outputs
 
-1. SAP product has been deployed and running - ready to handle SAP client requests
-1. Connection details/credentials so the Basis Admin can configure any SAP clients
+- SAP product has been deployed and running - ready to handle SAP client requests
+- Connection details/credentials so the Basis Admin can configure any SAP clients
