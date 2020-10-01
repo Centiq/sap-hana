@@ -89,8 +89,8 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 ### Phase 2 Process
 
-1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples 1.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples) for file structure.
-1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples 1.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples).
+1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples 1.](#phase-2-examples) for file structure.
+1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples 1.](#phase-2-examples).
 1. Open the SAP Library Storage Account in the Azure portal and navigate into the sapbits container.
 1. Click into archives.
 1. Click any file.
@@ -103,7 +103,7 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 1. Select all unattended installation template files (*.j2).
 1. Click Advanced to show the advanced options, and enter “templates” for the Upload Directory.
 1. Create the BoM file and upload it into SAP Library.
-1. Populate BoM with required inputs show in [Examples 2.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples)
+1. Populate BoM with required inputs show in [Examples 2.](#phase-2-examples)
 1. Upload BoM files to SAP Library.
 1. Click Upload.
 1. In the panel on the right, click Select a file.
