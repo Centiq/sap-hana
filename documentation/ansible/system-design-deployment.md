@@ -85,7 +85,7 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 - SAP XML Stack file stored on user’s workstation in the Stack Download Directory.
 - SAP Media stored on user’s workstation in the Stack Download Directory.
-- SAP Library to be prepared with the SAP Media.
+- SAP Library.
 
 ### Phase 2 Process
 
