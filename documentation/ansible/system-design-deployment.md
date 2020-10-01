@@ -7,6 +7,7 @@
    1. [Prerequisites](#1---prerequisites)
    1. [Inputs](#1---inputs)
    1. [Process](#1---process)
+   1. [Examples](#1---examples)
    1. [Outputs](#1---outputs)
 1. [Phase 2: Installation Media Preparation and Configuration File Preparation](#phase-2-installation-media-preparation-and-configuration-file-preparation)
    1. [Prerequisites](#2---prerequisites)
@@ -76,11 +77,142 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 ### 2 - Prerequisites
 
+- Acquisition process complete
+
 ### 2 - Inputs
+
+-  SAP XML Stack file stored on user’s workstation in the Stack Download Directory.
+-  SAP Media stored on user’s workstation in the Stack Download Directory.
+-  SAP Library to be prepared with the SAP Media.
 
 ### 2 - Process
 
+1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples i.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples) for file structure.
+1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples i.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples).
+1. Open the SAP Library Storage Account in the Azure portal and navigate into the sapbits container.
+1. Click into archives.
+1. Click any file.
+1. Copy the URL property and make note, the top level domain will be used later in the process, e.g. (https://npeus2saplibef9d.blob.core.windows.net).
+1. Create SAP Unattended Installation Template(s) (process TBD in Milestone 2).
+1. Upload into SAP Library.
+1. Click Upload.
+1. In the panel on the right, click Select a file.
+1. Navigate your workstation to your download directory.
+1. Select all unattended installation template files (*.j2).
+1. Click Advanced to show the advanced options, and enter “templates” for the Upload Directory.
+1. Create the BoM file and upload it into SAP Library.
+1. Populate BoM with required inputs show in [Examples ii.](https://github.com/Centiq/sap-hana/blob/centiq-automation-process-high-level/documentation/ansible/system-design-deployment.md#2---examples)
+1. Upload BoM files to SAP Library.
+1. Click Upload.
+1. In the panel on the right, click Select a file.
+1. Navigate your workstation to your Stack Download directory.
+1. Select all bom files (bom.yaml).
+1. Click Advanced to show the advanced options, and enter “BoMs” for the Upload Directory.
+1. Define SAP Library path Storage account in Ansible either in the Ansible inventory or passed into a playbook as a parameter i.e sap_lib_root_url: https://<storage_acount_name>.blob.core.windows.net/<container_name>/ . The same applies to the file destination on the target vm as all media will be extracted to one directory.
+
+### 2 - Examples
+
+   i. Example file structure:
+   ```text
+   sapbits
+   |
+   |-- archives/
+   |   |-- igshelper_17-1001245.sar
+   |   |-- KE60870.SAR
+   |   |-- KE60871.SAR
+   |   |-- <id>[.SAR|.sar]
+   |   |-- SAPCAR_1320-80000935.EXE
+   |   |-- <tool>_<id>.EXE
+   |
+   |-- BoMs/
+   |   |-- S4HANA_1909_v1/
+   |   |   |-- bom.yml
+   |   |   |-- stackfiles/
+   |   |   |   |-- MP_Excel_1001034051_20200921_SWC.xls
+   |   |   |   |-- MP_Plan_1001034051_20200921_.pdf
+   |   |   |   |-- MP_Stack_1001034051_20200921_.txt
+   |   |   |   |-- MP_Stack_1001034051_20200921_.xml
+   |   |   |   |-- templates/
+   |   |   |       |-- hana.ini
+   |   |   |       |-- application.ini
+   |   |-- BW4HANA_1909_v1/
+   |   |   |-- ...
+   |   |-- BW4HANA_1909_v2/
+   |   |   |-- ...
+   ```
+**Note:** This process will create a repository of archive files, tools and Stack files to be used with deploying systems.
+
+**Note:** All Installation Media tools and files for all systems designed by the user will be contained within a single flat directory to avoid duplication.
+
+**Note:** The Bill of Materials directory (BoMs/) will contain a folder for each system the user designs.  The recommended naming convention for these folders will use the product type(e.g. S4HANA), product version (e.g. 1909), and a version marker (e.g. v1). This allows the user to update a particular system BoM and retain an earlier version should it ever be needed.
+
+**Note:** The Bill of Materials file (bom.yml) and template files (hana.ini, application.ini) will be created following manual steps described later in this process.
+
+**Note:** Additional SAP files obtained from SAP Maintenance Planner (the XML Stack file, Text file representation of stack file, the PDF and xls files) will be stored in a subfolder.
+
+**Note:** Stack files are made unique by an index, e.g. MP_<type>_<index>_<date>_<???>.<filetype> where <type> is Stack, Plan, or Excel, <index> is a 10 digit integer, <date> is in format yyyymmdd, <???> is SWC for the Excel type and empty for the rest, and <filetype> is xls for type Excel, pdf for type Plan, and txt or xml for type Stack.
+
+ii. Example BoM file:
+
+```yaml
+### BOM ###
+---
+#
+# BOM    :  S/4 - 1909
+# Version:  001
+# Name   :  BoM_S41909v1
+
+#
+# Target :  ABAP PLATFORM 1909              01    (02/2020)
+#
+
+#
+# Product ID's
+#
+ProductIdSCS: NW_ABAP_ASCS:S4HANA1909.CORE.HDB.ABAP
+
+# Installation Template
+installation_template_path: 'sapbits/stack_files/templates/application.ini'
+
+# Stack_file
+stack_file_path: 'sapbits/bom/s4hana_1909_v1/stack_file/MP_Stack_1001034051_20200921.xml'
+
+# BASE INSTALL
+
+# billOfMaterials:
+# -
+#   fileName:       ''          (Required: Target filename after download; Full path)
+#   permissions:    ''          (Optional: File permissions in octal;         Default: 0644)
+#   creates:        ''          (Optional: Filename to indicate if extract was performed)
+#   include:        ''          (Optional: Install additional components via additional BoM file)
+
+billOfMaterials:
+
+# Depencies
+-   path: BoMs/S4HANA_1909_v1/bom.yml
+    Include: true
+
+# SAPCAR 7.21
+-   filename: 'SAPCAR_****_********.EXE'
+    permissions: '{{ sap_permission }}'
+
+# SWPM 2.0
+-   fileName:       'SWPM20SP05_5-80003424.SAR'
+    creates:        'SIGNATURE.SMF'
+    permissions: '{{ sap_permission }}'
+
+# ABAP_ASCS
+-   fileName:       'S4CORE101.SAR.SAR'
+    creates:        'SIGNATURE.SMF'
+```
+**Note:** The configuration for each individual HANA component will be stored in "Sub BoMs" in order to allow for independent installs when required.
+
 ### 2 - Outputs
+
+-  SAP Media has been stored in SAP Library
+-  Consolidated SAP Unattended Install Template has been stored in SAP Library
+-  BoM has been stored in SAP Library
+-  SAP Library file path defined in Ansible inventory or passed in as a perameter to a playbook.
 
 ## Phase 3: Installation of SAP System on Target VMs
 
