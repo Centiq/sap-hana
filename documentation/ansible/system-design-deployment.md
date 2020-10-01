@@ -26,12 +26,12 @@
 
 This document will contain high-level instructions for designing a SAP System, obtaining the installation media and configuration files, generating files required for an automated deployment, and installing the SAP system.
 
-At the current time, the document is aimed at users with experience with deploying SAP systems, and with familiarty and access to tools like SAP Launchpad, Maintenance Planner, and Download Manager.  Users are also expected to have familiarity with Azure deployments and the Azure Portal.
+At the current time, the document is aimed at users with experience with deploying SAP systems, and with familiarity and access to tools like SAP Launchpad, Maintenance Planner, and Download Manager.  Users are also expected to have familiarity with Azure deployments and the Azure Portal.
 
-This process happens in 3 phases, with Azure Infrastruture Provisioning following a separate process:
+This process happens in 3 phases, with Azure Infrastructure Provisioning following a separate process:
 
 1. Installation Media and Configuration File Acquisition
-   - This phase can does not depend on any Azure resources, and can happen before or after the provisioning of the SAP Azure Infrastructure.
+   - This phase does not depend on any Azure resources, and can happen before or after the provisioning of the SAP Azure Infrastructure.
 1. Installation Media Preparation and Configuration File Preparation
    - This and the following phase can only happen once the SAP Azure Infrastructure has been deployed.
 1. Installation of SAP System on Target VMs
@@ -89,9 +89,9 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 ### Phase 2 Process
 
-1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples 1.](#phase-2-examples) for file structure.
-1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples 1.](#phase-2-examples).
-1. Open the SAP Library Storage Account in the Azure portal and navigate into the sapbits container.
+1. Upload SAP Media from workstation to SAP Library. This process will create a repository of archive files, tools and Stack files to be used with deploying systems. See [Examples 1](#phase-2-examples) for file structure.
+1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in [Examples 1](#phase-2-examples).
+1. Open the SAP Library Storage Account in the Azure portal and navigate into the `sapbits` container.
 1. Click into archives.
 1. Click any file.
 1. Copy the URL property and make note, the top level domain will be used later in the process, e.g. (<https://npeus2saplibef9d.blob.core.windows.net>).
@@ -100,10 +100,10 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 1. Click Upload.
 1. In the panel on the right, click Select a file.
 1. Navigate your workstation to your download directory.
-1. Select all unattended installation template files (*.j2).
+1. Select all unattended installation template files (`*.j2`).
 1. Click Advanced to show the advanced options, and enter “templates” for the Upload Directory.
 1. Create the BoM file and upload it into SAP Library.
-1. Populate BoM with required inputs show in [Examples 2.](#phase-2-examples)
+1. Populate BoM with required inputs show in [Examples 2](#phase-2-examples)
 1. Upload BoM files to SAP Library.
 1. Click Upload.
 1. In the panel on the right, click Select a file.
