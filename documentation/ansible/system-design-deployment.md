@@ -109,20 +109,18 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 1. Run Ansible playbook on SCS VM to configure OS groups and users
    1. Use defaulted gids/uids
 1. Run Ansible playbook on SCS VM to configure SAP OS prerequisites
-   1. Ensures software dependencies are installed (e.g. those found in SAP notes such as 2361652 )
+   1. Ensures software dependencies are installed (e.g. those found in SAP notes such as 2361652). For example:
       1. `uuidd`
       1. `nfs-utils`
       1. `nmap-ncat`
       1. `resource-agents-sap`
-      1. ... etc
-   1. Configures dependencies (e.g. those found in SAP notes such as #2600030)
+   1. Configures dependencies (e.g. those found in SAP notes such as #2600030). For example:
       1. `selinux/apparmor` (permissive)
       1. `uuid` (started)
       1. `/etc/sysctl.d/sap.conf` (populated)
       1. `sysctl` (reloaded)
       1. `/etc/security/limits.d/99-sap.conf` (populated)
       1. `/var/sapAutomation/lock` (exists)
-      1. ... etc
 1. Run Ansible playbook on SCS VM to configure LVM
    1. Ensures correct volumes are created
 1. Run Ansible playbook on SCS VM to configure SAP mounts
