@@ -130,15 +130,15 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
       1. `/sapmnt`
       1. `/usr/sap`
       1. `/usr/sap/trans`
-      1. `/usr/sap/&lt;SID>`
-      1. `/usr/sap/&lt;SID>/ASCS&lt;ascs_inst_no>`
-      1. `/usr/sap/&lt;SID>/ERS&lt;ers_inst_no>`
-      1. `/usr/sap/&lt;SID>/SYS`
+      1. `/usr/sap/<SID>`
+      1. `/usr/sap/<SID>/ASCS<ascs_inst_no>`
+      1. `/usr/sap/<SID>/ERS<ers_inst_no>`
+      1. `/usr/sap/<SID>/SYS`
    1. Ensures file systems are mounted
       1. `/etc/fstab`
 1. Run Ansible playbook on SCS VM to configure NFS and create/export media directory
    1. Ensures correct directory structure exists
-      1. `/sapmnt/&lt;SID>`
+      1. `/sapmnt/<SID>`
       1. `/usr/sap/install`
    1. Ensures media folders are exported
 1. Run Ansible playbook on SCS VM to unarchive SAP Media and extract to exported media directory
