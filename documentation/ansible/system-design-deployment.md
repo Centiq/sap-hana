@@ -224,7 +224,7 @@ materials:
 
 ### Phase 3 Inputs
 
-- BoM (contents and format TBD)
+- Populated BoM file
 - Ansible inventory that details deployed SAP Infrastructure
   - Note: Inventory contents and format TBD, but may contain reference to the SAP Library
 - SID (likely to exist in Ansible inventory in some form)
