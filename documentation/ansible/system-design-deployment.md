@@ -21,21 +21,25 @@ Two other phases are involved in the overall end-to-end lifecycle, but these are
 
 ## Contents
 
-- [Phase 1: Acquisition](#phase-1-acquisition)
-  - [Phase 1 Prerequisites](#phase-1-prerequisites)
-  - [Phase 1 Inputs](#phase-1-inputs)
-  - [Phase 1 Process](#phase-1-process)
-  - [Phase 1 Results and Outputs](#phase-1-results-and-outputs)
-- [Phase 2: Preparation](#phase-2-preparation)
-  - [Phase 2 Prerequisites](#phase-2-prerequisites)
-  - [Phase 2 Inputs](#phase-2-inputs)
-  - [Phase 2 Process](#phase-2-process)
-  - [Phase 2 Results and Outputs](#phase-2-results-and-outputs)
-- [Phase 3: Deployment](#phase-3-deployment)
-  - [Phase 3 Prerequisites](#phase-3-prerequisites)
-  - [Phase 3 Inputs](#phase-3-inputs)
-  - [Phase 3 Process](#phase-3-process)
-  - [Phase 3 Results and Outputs](#phase-3-results-and-outputs)
+- [SAP System Design and Deployment](#sap-system-design-and-deployment)
+  - [Contents](#contents)
+  - [Phase 1: Acquisition](#phase-1-acquisition)
+    - [Phase 1 Prerequisites](#phase-1-prerequisites)
+    - [Phase 1 Inputs](#phase-1-inputs)
+    - [Phase 1 Process](#phase-1-process)
+    - [Phase 1 Results and Outputs](#phase-1-results-and-outputs)
+  - [Phase 2: Preparation](#phase-2-preparation)
+    - [Phase 2 Prerequisites](#phase-2-prerequisites)
+    - [Phase 2 Inputs](#phase-2-inputs)
+    - [Phase 2 Process](#phase-2-process)
+      - [Example SAP Library file structure](#example-sap-library-file-structure)
+      - [Example Bill of Materials (BoM) file](#example-bill-of-materials-bom-file)
+    - [Phase 2 Results and Outputs](#phase-2-results-and-outputs)
+  - [Phase 3: Installation of SAP System on Target VMs](#phase-3-installation-of-sap-system-on-target-vms)
+    - [Phase 3 Prerequisites](#phase-3-prerequisites)
+    - [Phase 3 Inputs](#phase-3-inputs)
+    - [Phase 3 Process](#phase-3-process)
+    - [Phase 3 Results and Outputs](#phase-3-results-and-outputs)
 
 ## Phase 1: Acquisition
 
@@ -91,27 +95,13 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 ### Phase 2 Process
 
 1. Upload SAP Media from workstation to SAP Library.
-   This process will create a repository of archive files, tools and Stack files to be used when deploying systems (see [Example SAP Library file structure](#example-sap-library-file-structure).
+   This process will create a repository of archive files, tools and Stack files to be used when deploying systems (see [Example SAP Library file structure](#example-sap-library-file-structure)).
 1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in the [Example SAP Library file structure](#example-sap-library-file-structure).
-1. Open the SAP Library Storage Account in the Azure portal and navigate into the `sapbits` container.
-1. Click into archives.
-1. Click any file.
-1. Copy the URL property and make note, the top level domain will be used later in the process, e.g. (<https://npeus2saplibef9d.blob.core.windows.net>).
 1. Create SAP Unattended Installation Template(s) (process TBD in Milestone 2).
 1. Upload into SAP Library.
-1. Click Upload.
-1. In the panel on the right, click Select a file.
-1. Navigate your workstation to your download directory.
-1. Select all unattended installation template files (`*.j2`).
-1. Click Advanced to show the advanced options, and enter “templates” for the Upload Directory.
-1. Create the BoM file and upload it into SAP Library.
+1. Create the BoM file.
 1. Populate BoM with required inputs shown in the [Example Bill of Materials (BoM) file](#example-bill-of-materials-bom-file).
 1. Upload BoM files to SAP Library.
-1. Click Upload.
-1. In the panel on the right, click Select a file.
-1. Navigate your workstation to your Stack Download directory.
-1. Select all bom files (bom.yaml).
-1. Click Advanced to show the advanced options, and enter “BoMs” for the Upload Directory.
 1. Define SAP Library path Storage account in Ansible either in the Ansible inventory or passed into a playbook as a parameter i.e sap_lib_root_url: `https://<storage_acount_name>.blob.core.windows.net/<container_name>/`. The same applies to the file destination on the target vm as all media will be extracted to one directory.
 
 #### Example SAP Library file structure
