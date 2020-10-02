@@ -60,7 +60,7 @@ Two other phases are involved in the overall end-to-end lifecycle, but these are
 
 _**Note:** The Preparation and Deployment stages will be independent of each other in the sense that the preparation stage can happen at any time before the user wishes to begin the Deployment stage, however the Deployment cannot happen without Preparation being completed._
 
-1. Create unique Stack Download Directory for SAP Downloads on User Workstation, e.g. `~/Downloads/S4HANA_Stack_SID/`
+1. Create unique Stack Download Directory for SAP Downloads on User Workstation, e.g. `~/Downloads/S4HANA_1909_SP2/`
 1. Log in to [SAP Launchpad](https://launchpad.support.sap.com/#)
 1. Navigate to Software Downloads to clear the download basket
 1. Find the SAP HANA Database media (Database and any additional components required) and add to download basket
