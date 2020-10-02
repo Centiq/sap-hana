@@ -92,7 +92,7 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 
 1. Upload SAP Media from workstation to SAP Library.
    This process will create a repository of archive files, tools and Stack files to be used when deploying systems (see [Example SAP Library file structure](#example-sap-library-file-structure).
-1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in the [Example Bill of Materials (BoM) file](#example-bill-of-materials-bom-file).
+1. Upload the downloaded media and stack files to the sapbits container in the Storage Account for the SAP Library, using the directory structure shown in the [Example SAP Library file structure](#example-sap-library-file-structure).
 1. Open the SAP Library Storage Account in the Azure portal and navigate into the `sapbits` container.
 1. Click into archives.
 1. Click any file.
