@@ -125,13 +125,16 @@ sapbits
 |   |   |   |-- MP_Plan_1001034051_20200921_.pdf
 |   |   |   |-- MP_Stack_1001034051_20200921_.txt
 |   |   |   |-- MP_Stack_1001034051_20200921_.xml
-|   |   |-- templates/
-|   |       |-- hana.ini
-|   |       |-- application.ini
+|   |
 |   |-- BW4HANA_1909_v1/
 |   |   |-- ...
+|   |
 |   |-- BW4HANA_1909_v2/
-|   |   |-- ...
+|       |-- ...
+|
+|-- templates/
+    |-- hana.ini
+    |-- application.ini
 ```
 
 **Notes:**
