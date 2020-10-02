@@ -139,11 +139,10 @@ sapbits
 
 **Notes:**
 
-1. This process will create a repository of archive files, tools and Stack files to be used with deploying systems.
 1. All Installation Media tools and files for all systems designed by the user will be contained within a single flat directory to avoid duplication.
 1. The Bill of Materials directory (BoMs/) will contain a folder for each system the user designs. The recommended naming convention for these folders will use the product type(e.g. S4HANA), product version (e.g. 1909), and a version marker (e.g. v1). This allows the user to update a particular system BoM and retain an earlier version should it ever be needed.
-1. The Bill of Materials file (bom.yml) and template files (hana.ini, application.ini) will be created following manual steps described later in this process.
-1. Additional SAP files obtained from SAP Maintenance Planner (the XML Stack file, Text file representation of stack file, the PDF and xls files) will be stored in a subfolder.
+1. The Bill of Materials file (bom.yml) and template files (hana.ini, application.ini) will be created following manual steps (process TBD in Milestone 2).
+1. Additional SAP files obtained from SAP Maintenance Planner (the XML Stack file, Text file representation of stack file, the PDF and xls files) will be stored in a subfolder for a particular BoM.
 1. Stack files are made unique by an index, e.g. `MP_<type>_<index>_<date>_<???>.<filetype>` where `<type>` is Stack, Plan, or Excel, `<index>` is a 10 digit integer, `<date>` is in format yyyymmdd, `<???>` is SWC for the Excel type and empty for the rest, and `<filetype>` is xls for type Excel, pdf for type Plan, and txt or xml for type Stack.
 
 #### Example Bill of Materials (BoM) file
