@@ -133,8 +133,8 @@ sapbits
 |       |-- ...
 |
 |-- templates/
-    |-- hana.ini
-    |-- application.ini
+    |-- abap_ascs_1909_v2.ini
+    |-- abap_hana_1909_v2.ini
 ```
 
 **Notes:**
