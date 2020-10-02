@@ -11,7 +11,7 @@ For example, users should be familiar with: _SAP Launchpad_, _SAP Maintenance Pl
 The process described here consists of 3 distinct phases:
 
 1. **_Acquisition_** of the SAP installation media, configuration files and tools;
-1. **_Preparation_** of the SAP media library, and generation the files required for automated deployments;
+1. **_Preparation_** of the SAP media library, and generation of the files required for automated deployments;
 1. **_Deployment_** of the SAP landscape into Azure.
 
 Two other phases are involved in the overall end-to-end lifecycle, but these are described elsewhere:
