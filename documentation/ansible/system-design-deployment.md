@@ -46,6 +46,7 @@ Two other phases are involved in the overall end-to-end lifecycle, but these are
 ### Phase 1 Prerequisites
 
 - User must have an SAP account which has the correct permissions to download software and access Maintenance Planner
+- User has [SAP Download Manager](https://softwaredownloads.sap.com/file/0030000001316872019) installed on their workstation
 
 ### Phase 1 Inputs
 
@@ -63,16 +64,21 @@ _**Note:** The Preparation and Deployment stages will be independent of each oth
 1. Create unique Stack Download Directory for SAP Downloads on User Workstation, e.g. `~/Downloads/S4HANA_1909_SP2/`
 1. Log in to [SAP Launchpad](https://launchpad.support.sap.com/#)
 1. Navigate to Software Downloads to clear the download basket
-1. Find the SAP HANA Database media (Database and any additional components required) and add to download basket
 1. Log in to [Maintenance Planner](https://support.sap.com/en/alm/solution-manager/processes-72/maintenance-planner.html)
 1. Design System, e.g. `S/4HANA`
 1. Download Stack XML file to Stack Download Directory
 1. Click `Push to Download Basket`
 1. Download additional files (Stack Text File, PDF, Excel export)
-1. Download and install the [SAP Download Manager](https://softwaredownloads.sap.com/file/0030000001316872019)
+1. Download and install the
 1. Log into SAP Download Basket within SAP Download Manager
-1. Set download directory to Stack Download Directory created at beginning of Phase 1
+1. Set download directory to Stack Download Directory created in Phase 1 step 1
 1. Download all files into empty DIR on workstation
+1. If Database Installation media is also required:
+   1. Create unique Stack Download Directory for SAP Downloads on User Workstation, e.g. `~/Downloads/HANA2.0/`
+   1. Find the SAP HANA Database media (Database and any additional components required) and add to download basket
+   1. Log into SAP Download Basket within SAP Download Manager
+   1. Set download directory to Stack Download Directory created in Phase 1 step 13, i
+   1. Download all files into empty DIR on workstation
 
 ### Phase 1 Results and Outputs
 
