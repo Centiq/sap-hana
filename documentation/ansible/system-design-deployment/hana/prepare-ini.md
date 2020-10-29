@@ -21,14 +21,14 @@ Any additional components are not required at this stage as they do not affect t
 
 ## Process
 
-1. On your workstation, locate the SAP HANA Installation Media from Phase 1b, make note of the path as `<HANA_MEDIA>`
+1. On your workstation, locate the SAP HANA Installation Media from Phase 1b and make note of the path as `<HANA_MEDIA>`;
 1. Update the permissions to make `SAPCAR` executable (SAPCAR version may change depending on your downloads):\
    `chmod +x <HANA_MEDIA>/SAPCAR_1311-80000935.EXE`
 1. Make and change to a temporary directory:\
    `mkdir /tmp/hana_template; cd $_`
 1. Extract the HANA Server files (HANA Server SAR file version may change depending on your downloads):
 
-   ```shell
+   ```text
    <HANA_MEDIA>/SAPCAR_1311-80000935.EXE
    -manifest SAP_HANA_DATABASE/SIGNATURE.SMF
    -xf <HANA_MEDIA>/IMDB_SERVER20_037_7-80002031.SAR
@@ -36,7 +36,7 @@ Any additional components are not required at this stage as they do not affect t
 
 1. Use the extracted `hdblcm` tool to generate an empty install template and password file. **_Note:_** These two files will be used in the automated installation of the SAP HANA Database.
 
-   The file name should reflect the Stack version (e.g. `HANA2_00_052_v001`):
+   The file name used in this command should reflect the Stack version (e.g. `HANA2_00_052_v001`):
 
    `SAP_HANA_DATABASE/hdblcm --dump_configfile_template=HANA2_00_052_v001.params`
 

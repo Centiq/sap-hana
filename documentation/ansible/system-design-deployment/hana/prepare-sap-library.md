@@ -32,7 +32,7 @@
       1. Select `myDownloadBasketFiles.txt`;
       1. Click Advanced to show the advanced options, and enter `BoMs/<Stack_Version>/stackfiles` for the Upload Directory.
 
-         _Note: `<Stack_Version>` should consist of Product type (e.g. `HANA2`), Product Release (e.g. `00.052`, and a version of the Stack (e.g. `v001`). For example: `HANA2.00.052_v001`_
+         _Note: `<Stack_Version>` should consist of Product type (e.g. `HANA2`), Product Release (e.g. `00_052`, and a version of the Stack (e.g. `v001`). For example: `HANA2_00_052_v001`_
 
 ### Example SAP Library file structure
 
@@ -48,7 +48,7 @@ sapbits
 |   |-- <tool>_<id>.EXE
 |
 |-- BoMs/
-|   |-- HANA2.00.052_v001/
+|   |-- HANA2_00_052_v001/
 |   |   |-- bom.yml
 |   |   |-- stackfiles/
 |   |   |   |-- myDownloadBasketFiles.txt
