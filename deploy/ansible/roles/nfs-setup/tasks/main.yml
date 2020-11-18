@@ -1,0 +1,7 @@
+---
+
+- name: Ensure Tasks run with root privledge
+  become: true
+  block:
+    - include_tasks: pre_checks.yml
+    - include_tasks: configure.yml
