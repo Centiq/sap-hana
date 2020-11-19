@@ -5,8 +5,16 @@
     name: nfs-utils
     state: present
 
+- name: Check NFS Server Status
+  command: 'yast nfs_server summary'
+  register: result
+  changed_when: false
+
+- name: Ensure NFS Server is enabled
+  command: 'yast nfs_server start'
+  when: "'disabled' in result.stderr"
+
 - name: Ensure expected base directories are present
-  when: application_support_directories
   file:
     path: "{{ item }}"
     state: directory
