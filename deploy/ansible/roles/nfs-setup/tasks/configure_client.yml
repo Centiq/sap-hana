@@ -2,8 +2,15 @@
 
 - name: mount the shared directories
   mount:
-    name: "{{ item.nfs_imports }}"
-    src: "{{ item.server_host }}:{{ item.nfs_imports }}"
+    name: "{{ item }}"
+    src: "{{ server_host }}:{{ item }}"
     state: "mounted"
     fstype: "nfs"
     opts: "rw,hard,rsize=65536,wsize=65536,vers=3,retry=3,tcp,noauto,_netdev"
+  with_items:
+    - "/usr/sap/downloads"
+    - "/usr/sap/install/config"
+    - "/usr/sap/{{ app_sid }}/SYS"
+    - "/tmp/app_templates"
+    - "/sapmnt/{{ app_sid }}/global"
+    - "/sapmnt/{{ app_sid }}/profile"
