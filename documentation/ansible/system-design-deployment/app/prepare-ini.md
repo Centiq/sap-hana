@@ -156,19 +156,29 @@ The directories to be exported for this process are:
 1. `/sapmnt/<SID>/global`
 1. `/sapmnt/<SID>/profile`
 
+1. Update read permissions for files to be accessed by other systems:
+
+   `chmod +r /usr/sap/downloads/* /sapmnt/<SID>/profile/* /usr/sap/install/config/*`
+
 ### Mounting SAP FileSystems on PAS VM
 
-1. On the PAS VM as `root` ensure the mount points exist:
+1. On the PAS VM as `root` ensure the mount points exist and mount the NFS:
+   1. Export a variable for the SID:
 
-   `mkdir -p /usr/sap/{downloads,install/config,<SID>/SYS} /tmp/app_template /sapmnt/<SID>/{global,profile}`
+      `export SID=<SID>`
 
-1. Ensure the exported directories are mounted:
-   1. `mount <scs-vm-IP>:/usr/sap/downloads /usr/sap/downloads`
-   1. `mount <scs-vm-IP>:/usr/sap/install/config /usr/sap/install/config`
-   1. `mount <scs-vm-IP>:/usr/sap/<SID>/SYS /usr/sap/<SID>/SYS`
-   1. `mount <scs-vm-IP>:/tmp/app_template /tmp/app_template`
-   1. `mount <scs-vm-IP>:/sapmnt/<SID>/global /sapmnt/<SID>/global`
-   1. `mount <scs-vm-IP>:/sapmnt/<SID>/profile /sapmnt/<SID>/profile`
+   1. Export a variable for the NFS IP:
+
+      `export NFS_IP=<IP>`
+
+   1. Create mount directories and mount the NFS exports:
+
+      ```shell
+      for i in /usr/sap/{downloads,install/config,${SID}/SYS} /tmp/app_template /sapmnt/${SID}/{global,profile}; do
+      mkdir -p ${i};
+      mount ${NFS_IP}:${i} ${i};
+      done
+      ```
 
 ### Generating unattended installation parameter `inifile` for Database Content Load
 
@@ -289,7 +299,7 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
     1. For PAS "SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "Distributed System" > "Primary Application Server Instance"
     1. For AAS ""SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "High-Availability System" > "Additional Application Server Instance"
 1. On the Parameter Settings Screen Select "Custom" and click "Next"
-1. Ensure the Profile Directory is set to `/sapmnt/<SID>/profile/` or  `/usr/sap/<SID>/SYS/profile` and click "Next"
+1. Ensure the Profile Directory is set to `/sapmnt/<SID>/profile/` or `/usr/sap/<SID>/SYS/profile` and click "Next"
 1. Set the Message Server Port to `36nn` where `nn` is the ASCS Instance number and click "Next"
 1. Set the Master Password for All Users and click "Next"
 1. On the Software Package Browser Screen set the Search Directory to `/usr/sap/downloads` then click "Next"
