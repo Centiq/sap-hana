@@ -1,5 +1,7 @@
 ---
 
+- include_task: configure.yml
+  become: true
 
 - import_tasks: configure_server.yml
   become: true
