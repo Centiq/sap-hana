@@ -1,0 +1,32 @@
+---
+
+- name: Ensure the NFS utils package is installed
+  package:
+    name: nfs-utils
+    state: present
+
+- name: Ensure expected base directories are present
+  when: application_support_directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "/usr/sap/downloads"
+    - "/usr/sap/install/config"
+    - "/tmp/app_template"
+    - "/sapmnt/{{ app_sid }}/global"
+    - "/sapmnt/{{ app_sid }}/profile"
+
+- name: Ensure exports file exists
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nfsd
+
+- name: Ensure nfs is running
+  systemd:
+    state: started
+    name: nfs-utils

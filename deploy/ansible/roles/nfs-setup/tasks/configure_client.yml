@@ -1,0 +1,15 @@
+---
+
+- name: Ensure the NFS utils package is installed
+  package:
+    name: nfs-utils
+    state: present
+
+- name: mount the shared directories
+  mount:
+    name: "{{ item.directories }}"
+    src: "{{ item.server_host }}:{{ item.directories }}"
+    state: "mounted"
+    fstype: "nfs"
+    opts: "rw,hard,rsize=65536,wsize=65536,vers=3,retry=3,tcp,noauto,_netdev"
+  with_items: "{{ nfs_client_imports }}"

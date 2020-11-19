@@ -1,0 +1,4 @@
+---
+
+- name: reload nfsd
+  systemd: name="nfs-utils" state="reloaded"

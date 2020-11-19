@@ -1,0 +1,10 @@
+---
+
+
+- import_tasks: configure_server.yml
+  become: true
+  when: target == "server"
+
+- import_tasks: configure_client.yml
+  become: true
+  when: target == "client"
