@@ -8,6 +8,6 @@ nfs_exports:
 - "/sapmnt/{{ app_sid }}/global      *(rw,no_root_squash,sync,no_subtree_check)"
 - "/sapmnt/{{ app_sid }}/profile     *(rw,no_root_squash,sync,no_subtree_check)"
 
-server_host: "{{hostvars['server']['ansible_default_ipv4']}}"
+scs_ip: "{{hostvars['server']['ansible_default_ipv4']}}"
 
 target: "server"

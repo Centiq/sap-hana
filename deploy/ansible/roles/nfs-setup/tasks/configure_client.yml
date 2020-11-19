@@ -3,7 +3,7 @@
 - name: mount the shared directories
   mount:
     name: "{{ item }}"
-    src: "{{ server_host }}:{{ item }}"
+    src: "{{ scs_ip }}:{{ item }}"
     state: "mounted"
     fstype: "nfs"
     opts: "rw,hard,rsize=65536,wsize=65536,vers=3,retry=3,tcp,noauto,_netdev"
