@@ -8,15 +8,15 @@ nfs_exports:
 - "/sapmnt/{{ app_sid }}/global      *(rw,no_root_squash,sync,no_subtree_check)"
 - "/sapmnt/{{ app_sid }}/profile     *(rw,no_root_squash,sync,no_subtree_check)"
 
-nfs_client_imports:
-  directories:
-    - "/usr/sap/downloads"
-    - "/usr/sap/install/config"
-    - "/usr/sap/{{ app_sid }}/SYS"
-    - "/tmp/app_templates"
-    - "/sapmnt/{{ app_sid }}/global"
-    - "/sapmnt/{{ app_sid }}/profile"
-  server_host: "{{hostvars['server']['ansible_default_ipv4']}}"
-  client_host:
+nfs_imports:
+  - "/usr/sap/downloads"
+  - "/usr/sap/install/config"
+  - "/usr/sap/{{ app_sid }}/SYS"
+  - "/tmp/app_templates"
+  - "/sapmnt/{{ app_sid }}/global"
+  - "/sapmnt/{{ app_sid }}/profile"
 
-  target: "server"
+server_host: "{{hostvars['server']['ansible_default_ipv4']}}"
+client_host:
+
+target: "server"
