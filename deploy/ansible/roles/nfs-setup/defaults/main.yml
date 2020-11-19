@@ -19,4 +19,4 @@ nfs_client_imports:
   server_host: "{{hostvars['server']['ansible_default_ipv4']}}"
   client_host:
 
-  target: server
+  target: "server"
