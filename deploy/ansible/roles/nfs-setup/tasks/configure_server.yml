@@ -20,7 +20,7 @@
     group: root
     mode: 0644
   notify:
-    - reload nfsd
+    - "reload nfsd"
 
 - name: Ensure nfsserver is running
   systemd:
