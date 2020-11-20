@@ -1,12 +1,11 @@
 ---
-
-- import_tasks: configure.yml
+- name: Ensure tasks run with root privledge
   become: true
+  block:
+    - include_tasks: configure.yml
 
-- import_tasks: configure_server.yml
-  become: true
-  when: target == "server"
+    - include_tasks: configure_server.yml
+      when: target == "server"
 
-- import_tasks: configure_client.yml
-  become: true
-  when: target == "client"
+    - include_tasks: configure_client.yml
+      when: target == "client"
