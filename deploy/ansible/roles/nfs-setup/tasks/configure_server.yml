@@ -4,6 +4,7 @@
   file:
     path: "{{ item }}"
     state: directory
+    mode: +r
   with_items:
     - "/usr/sap/downloads"
     - "/usr/sap/install/config"
@@ -20,7 +21,7 @@
     mode: 0644
   notify: reload nfsd
 
-- name: Ensure nfs is running
+- name: Ensure nfsserver is running
   systemd:
     state: started
-    name: nfs-utils
+    name: nfsserver
