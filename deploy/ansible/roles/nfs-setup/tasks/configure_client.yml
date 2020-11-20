@@ -1,5 +1,10 @@
 ---
 
+- name: Ensure NFS Server is enabled
+  systemd:
+    name: nfsserver
+    state: started
+
 - name: mount the shared directories
   mount:
     name: "{{ item }}"
