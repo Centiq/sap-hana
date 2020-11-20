@@ -10,7 +10,7 @@
   with_items:
     - "/usr/sap/downloads"
     - "/usr/sap/install/config"
-    - "/usr/sap/{{ app_sid }}/SYS"
+    - "/usr/sap/{{ app_sid | upper }}/SYS"
     - "/tmp/app_templates"
-    - "/sapmnt/{{ app_sid }}/global"
-    - "/sapmnt/{{ app_sid }}/profile"
+    - "/sapmnt/{{ app_sid | upper }}/global"
+    - "/sapmnt/{{ app_sid | upper }}/profile"
