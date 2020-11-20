@@ -1,13 +1,17 @@
 ---
 
+- name: Ensure NFS is enabled
+  systemd:
+    name: nfs
+    state: started
+
 - name: Ensure expected base directories are present
   file:
     path: "{{ item }}"
     state: directory
     mode: +r
   with_items:
-    - "/usr/sap/downloads"
-    - "/usr/sap/install/config"
+    - "/usr/sap/install"
     - "/tmp/app_template"
     - "/sapmnt/{{ app_sid | upper }}/global"
     - "/sapmnt/{{ app_sid | upper }}/profile"
