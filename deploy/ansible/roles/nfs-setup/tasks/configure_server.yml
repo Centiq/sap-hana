@@ -9,8 +9,8 @@
     - "/usr/sap/downloads"
     - "/usr/sap/install/config"
     - "/tmp/app_template"
-    - "/sapmnt/{{ app_sid }}/global"
-    - "/sapmnt/{{ app_sid }}/profile"
+    - "/sapmnt/{{ app_sid | upper }}/global"
+    - "/sapmnt/{{ app_sid | upper }}/profile"
 
 - name: Ensure exports file exists
   template:
