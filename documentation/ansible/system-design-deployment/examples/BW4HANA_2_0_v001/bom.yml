@@ -1,7 +1,7 @@
 ---
 
-name: "S4HANA_1909_SP2_v001"
-target: "ABAP PLATFORM 1909"
+name: "SAP_BW4HANA_2_0"
+target: "SAP BW/4HANA 2.0"
 version: "001"
 
 defaults:
@@ -231,5 +231,5 @@ materials:
 
   templates:
 
-        - name: "S4HANA_1909_SP2_v001 ini file"
-          file: "S4HANA_S4HANA_1909_SP2_v001.inifile.params"
+    - name: "SAP_BW4HANA_2_0 ini file"
+      file: "SAP_BW4HANA_2_0.inifile.params"
