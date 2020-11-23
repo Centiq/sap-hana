@@ -7,7 +7,7 @@
 
 - name: Ensure NFS Server is running
   systemd:
-    name: nfsservr
+    name: nfsserver
     state: started
 
 - name: Ensure expected base directories are present
