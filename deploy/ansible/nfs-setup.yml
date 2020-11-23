@@ -1,5 +1,0 @@
----
-
-- hosts: ascs
-  roles:
-  - { role: 'nfs-setup'}
