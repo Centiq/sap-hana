@@ -1,7 +1,0 @@
----
-
-- name: reload nfsd
-  systemd:
-    name: nfs-server
-    state: reloaded
-  listen: "reload nfsd"
