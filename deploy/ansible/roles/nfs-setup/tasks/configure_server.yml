@@ -23,6 +23,8 @@
     owner: root
     group: root
     mode: 0644
+  notify:
+    - reload nfsd
 
 - name: Ensure nfsserver is running
   systemd:
