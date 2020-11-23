@@ -1,13 +1,8 @@
 ---
 
 nfs_exports:
-- "/usr/sap/downloads      *(rw,no_root_squash,sync,no_subtree_check)"
-- "/usr/sap/install/config *(rw,no_root_squash,sync,no_subtree_check)"
+- "/usr/sap/install      *(rw,no_root_squash,sync,no_subtree_check)"
 - "/usr/sap/{{ app_sid | upper }}/SYS        *(rw,no_root_squash,sync,no_subtree_check)"
 - "/tmp/app_templates      *(rw,no_root_squash,sync,no_subtree_check)"
 - "/sapmnt/{{ app_sid | upper}}/global      *(rw,no_root_squash,sync,no_subtree_check)"
 - "/sapmnt/{{ app_sid | upper}}/profile     *(rw,no_root_squash,sync,no_subtree_check)"
-
-scs_ip: []
-
-target: "server"

@@ -1,8 +1,13 @@
 ---
 
-- name: Ensure NFS is enabled
+- name: Ensure the NFS utils package is installed
+  package:
+    name: nfs-utils
+    state: present
+
+- name: Ensure NFS Server is running
   systemd:
-    name: nfs
+    name: nfsservr
     state: started
 
 - name: Ensure expected base directories are present
@@ -12,6 +17,7 @@
     mode: +r
   with_items:
     - "/usr/sap/install"
+    - "/usr/sap/{{ app_sid | upper }}/SYS"
     - "/tmp/app_template"
     - "/sapmnt/{{ app_sid | upper }}/global"
     - "/sapmnt/{{ app_sid | upper }}/profile"
