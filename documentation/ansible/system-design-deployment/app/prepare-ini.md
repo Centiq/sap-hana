@@ -350,7 +350,7 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
     /usr/sap/install/SWPM/sapinst                                                                          \
     SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml                                     \
     SAPINST_USE_HOSTNAME=<target vm hostname>                                                              \
-    SAPINST_INPUT_PARAMETERS_URL=/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/DISTRIBUTED/ABAP/APP1/inifile.params   \
+    SAPINST_INPUT_PARAMETERS_URL=/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/DISTRIBUTED/ABAP/APP1/inifile.params    \
     SAPINST_START_GUI=false SAPINST_START_GUISERVER=false
     ```
 
