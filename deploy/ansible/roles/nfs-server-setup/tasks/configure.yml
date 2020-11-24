@@ -13,23 +13,22 @@
 
 - name: Ensure expected base directories are present
   file:
-    path: "{{ item }}"
+    path: "{{ item.path }}"
     state: directory
     mode: +r
-  with_items:
-    - "{{ target_media_location }}"
-    - "/usr/sap/{{ app_sid | upper }}/SYS"
-    - "/tmp/app_template"
-    - "/sapmnt/{{ app_sid | upper }}/global"
-    - "/sapmnt/{{ app_sid | upper }}/profile"
+  loop: "{{ nfs_exports }}"
 
 - name: Ensure exports file exists
-  template:
-    src: exports.j2
+  lineinfile:
     dest: /etc/exports
+    create: yes
+    line: "{{ item.path }}    {{ item.export_settings }}"
+    regexp: '^{{ item.path }}\s+'
     owner: root
     group: root
     mode: 0644
+    state: present
+  loop: "{{ nfs_exports }}"
 
 - name: Ensure nfsserver is running
   systemd:
