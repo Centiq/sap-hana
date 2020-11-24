@@ -35,3 +35,6 @@
     state: started
     name: nfsserver
     daemon_reload: yes
+
+- name: Ensure file systems are exported
+  command: exportfs -a
