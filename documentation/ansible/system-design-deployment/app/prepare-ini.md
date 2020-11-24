@@ -143,7 +143,7 @@ Logon users: [root]
     /usr/sap/install/SWPM/sapinst                                           \
       SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml    \
       SAPINST_USE_HOSTNAME=<target vm hostname>                             \
-      SAPINST_INPUT_PARAMETERS_URL=<path_to_inifile>/inifile.params         \
+      SAPINST_INPUT_PARAMETERS_URL=/tmp/app_template/inifile.params         \
       SAPINST_EXECUTE_PRODUCT_ID=NW_ABAP_ASCS:S4HANA2020.CORE.HDB.ABAPHA    \
       SAPINST_START_GUI=false                                               \
       SAPINST_START_GUISERVER=false
@@ -159,7 +159,6 @@ The directories to be exported for this process are:
 
 1. `/usr/sap/<SID>/SYS` - Where `<SID>` is replaced with the SID from Step 7 of the [Generating unattented installation parameter `inifile` for ASCS](#generating-unattended-installation-inifile-for-ascs)
 1. `/usr/sap/install`
-1. `/usr/sap/install/config`
 1. `/tmp/app_template`
 1. `/sapmnt/<SID>/global`
 1. `/sapmnt/<SID>/profile`
@@ -172,7 +171,6 @@ The directories to be exported for this process are:
 
 1. Ensure the exported directories are mounted:
    1. `mount <scs-vm-IP>:/usr/sap/install /usr/sap/install`
-   1. `mount <scs-vm-IP>:/usr/sap/install/config /usr/sap/install/config`
    1. `mount <scs-vm-IP>:/usr/sap/<SID>/SYS /usr/sap/<SID>/SYS`
    1. `mount <scs-vm-IP>:/tmp/app_template /tmp/app_template`
    1. `mount <scs-vm-IP>:/sapmnt/<SID>/global /sapmnt/<SID>/global`
