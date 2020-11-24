@@ -9,6 +9,7 @@
   systemd:
     name: nfsserver
     state: started
+    enabled: yes
 
 - name: Ensure expected base directories are present
   file:
