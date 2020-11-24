@@ -17,7 +17,7 @@
     state: directory
     mode: +r
   with_items:
-    - "/usr/sap/install"
+    - "{{ target_media_location }}"
     - "/usr/sap/{{ app_sid | upper }}/SYS"
     - "/tmp/app_template"
     - "/sapmnt/{{ app_sid | upper }}/global"

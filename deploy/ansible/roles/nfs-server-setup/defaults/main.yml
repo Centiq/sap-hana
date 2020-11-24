@@ -1,7 +1,7 @@
 ---
 
 nfs_exports:
-- "/usr/sap/install      *(rw,no_root_squash,sync,no_subtree_check)"
+- "{{ target_media_location }}     *(rw,no_root_squash,sync,no_subtree_check)"
 - "/usr/sap/{{ app_sid | upper }}/SYS        *(rw,no_root_squash,sync,no_subtree_check)"
 - "/tmp/app_template      *(rw,no_root_squash,sync,no_subtree_check)"
 - "/sapmnt/{{ app_sid | upper}}/global      *(rw,no_root_squash,sync,no_subtree_check)"
