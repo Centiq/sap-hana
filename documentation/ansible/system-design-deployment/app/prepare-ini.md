@@ -28,6 +28,14 @@
 
    **Note:** The following instructions assume you have mounted the container as `/mnt/sapbits`.
 
+1. Make and change to a temporary directory:
+
+   `mkdir /tmp/workdir; cd $_`
+
+1. Ensure `/tmp/app_template/` exists:
+
+   `mkdir /tmp/app_template/`
+
 1. Ensure `/usr/sap/install/` exists:
 
    `mkdir /usr/sap/install/`
@@ -51,7 +59,7 @@
 
 1. Extract `SWPM20SP07_0-80003424.SAR` via `SAPCAR.EXE`. For example:
 
-   `/usr/sap/downloads/SAPCAR_1311-80000935.EXE -xf /usr/sap/intall/SWPM20SP07_0-80003424.SAR -R /usr/sap/install/SWPM/`
+   `/usr/sap/install/SAPCAR_1311-80000935.EXE -xf /usr/sap/intall/SWPM20SP07_0-80003424.SAR -R /usr/sap/install/SWPM/`
 
 1. Ensure `/usr/sap/install/config` exists and contains the XML Stack file downloaded from the SAP Maintenance Planner:
 
@@ -73,7 +81,7 @@ The following steps show how to begin the manual install of an ASCS instance in 
 1. Establish a connection to the ASCS node using a web browser;
 1. Launch the required URL to access SWPM shown in [Software Provision Manager output](#Example-Software-Provision-Manager-output);
 1. Accept the security risk and authenticate with the system's `root` user credentials;
-1. Navigate through the drop-down menu "SAP S/4HANA Server 2020"> "SAP HANA Database"> "Installation"> "Application Server ABAP"> "Distributed System"> "ASCS Instance";
+1. Navigate through the drop-down menu "SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "Distributed System" > "ASCS Instance";
 1. Select the `Custom` Parameter Mode and click "Next";
 1. The SAP system ID should be prepopulated with {SID} and SAP Mount Directory /sapmnt, click "Next";
 1. The FQDN should be prepopulated.  Ensure "Set FQDN for SAP system" is checked, and click "Next";
@@ -94,9 +102,9 @@ The following steps show how to begin the manual install of an ASCS instance in 
 1. Do not click "Next" on the Parameter Summary Page. At this point the installation configuration is stored in a file named `inifile.params` in the temporary SAP installation directory.
 1. To locate the file, list the files in `/tmp/sapinst_instdir/`.
 1. If the file `.lastInstallationLocation` exists, view the file contents and note the directory listed.
-1. If a directory named for the product you are installing exists, e.g. `S4HANA1809`, navigate into the folders matching the product installation type, for example:
+1. If a directory named for the product you are installing exists, e.g. `S4HANA2020`, navigate into the folders matching the product installation type, for example:
 
-   `/tmp/sapinst_instdir/S4HANA1809/CORE/HDB/INSTALL/HA/ABAP/ASCS/`
+   `/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/HA/ABAP/ASCS/`
 
 1. Click "Cancel" in SWPM, as the SCS install can now be performed via the unattended method;
 1. Copy and rename `inifile.params` to `/tmp/app_template`:
@@ -178,17 +186,18 @@ The directories to be exported for this process are:
 
 1. Ensure SWPM is extracted:
 
-   `/usr/sap/install/SAPCAR_1311-80000935.EXE  -xf /usr/sap/install/SWPM20SP07_0-80003424.SAR -R /usr/sap/install/SWPM/`
+   `/usr/sap/install/SAPCAR_1311-80000935.EXE -xf /usr/sap/install/SWPM20SP07_0-80003424.SAR -R /usr/sap/install/SWPM/`
 
 1. Launch SWPM with the following command:
 
     ```bash
-    root@sid-xxpas-0 ~]$ /usr/sap/install/SWPM/sapinst SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml
+    root@sid-xxpas-0 ~]$ /usr/sap/install/SWPM/sapinst \
+    SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml
     ```
 
 1. Connect to the URL displayed from a browser session on your workstation
 1. Accept the security risk and authenticate with the systems ROOT user credentials
-1. Navigate through the drop-down menu to the "SAP S4/HANA Server 2020"> "SAP HANA Database"> "Installation"> "Application Server ABAP"> Distrubuted System > Database Instance"
+1. Navigate through the drop-down menu to the "SAP S4/HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > Distrubuted System > Database Instance"
 Distributed System" , click on "Database Instance" and click "Next"
 1. Select the `Custom` Parameter Mode and click "Next";
 1. Notice the profile directory which the ASCS instance installation created `/usr/sap/<SID>/SYS/profile` then click "Next"
@@ -258,7 +267,12 @@ Distributed System" , click on "Database Instance" and click "Next"
 1. Launch the DB Load process via SWPM:
 
       ```bash
-      /usr/sap/install/SWPM/sapinst                                           \ SAPINST_INPUT_PARAMETERS_URL=/tmp/app_templates/inifile.params          \ SAPINST_STACK_XML=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml     \ SAPINST_EXECUTE_PRODUCT_ID=NW_ABAP_DB:S4HANA2020.CORE.HDB.ABAP          \ SAPINST_SKIP_DIALOGS=true                                               \ SAPINST_START_GUI=false SAPINST_START_GUISERVER=false
+      /usr/sap/install/SWPM/sapinst                                           \
+      SAPINST_INPUT_PARAMETERS_URL=/tmp/app_templates/inifile.params          \
+      SAPINST_STACK_XML=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml     \
+      SAPINST_EXECUTE_PRODUCT_ID=NW_ABAP_DB:S4HANA2020.CORE.HDB.ABAP          \
+      SAPINST_SKIP_DIALOGS=true                                               \
+      SAPINST_START_GUI=false SAPINST_START_GUISERVER=false
       ```
 
 ### Generating unattended installation parameter `inifile` for PAS/AAS
@@ -278,8 +292,8 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 1. Launch the required URL to access SWPM shown in [Software Provision Manager output](#Example-Software-Provision-Manager-output)
 1. Accept the security risk and authenticate with the systems ROOT user credentials
 1. Navigate through the drop-down menu:
-    1. For PAS "SAP S/4HANA Server 2020"> "SAP HANA Database"> "Installation"> "Application Server ABAP"> "Distributed System"> "Primary Application Server Instance"
-    1. For AAS ""SAP S/4HANA Server 2020"> "SAP HANA Database"> "Installation"> "Application Server ABAP"> "High-Availability System"> "Additional Application Server Instance"
+    1. For PAS "SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "Distributed System" > "Primary Application Server Instance"
+    1. For AAS ""SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "High-Availability System" > "Additional Application Server Instance"
 1. On the Parameter Settings Screen Select "Custom" and click "Next"
 1. Ensure the Profile Directory is set to `/sapmnt/<SID>/profile/` or  `/usr/sap/<SID>/SYS/profile` and click "Next"
 1. Set the Message Server Port to `36nn` where `nn` is the ASCS Instance number and click "Next"
@@ -333,7 +347,11 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 1. For a PAS unattended install run the following:
 
     ```bash
-    /usr/sap/install/SWPM/sapinst                                                                                         \ SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml                                                    \ SAPINST_USE_HOSTNAME=<target vm hostname>                                                                             \ SAPINST_INPUT_PARAMETERS_URL=/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/DISTRIBUTED/ABAP/APP1/inifile.params    \ SAPINST_START_GUI=false SAPINST_START_GUISERVER=false
+    /usr/sap/install/SWPM/sapinst                                                                          \
+    SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml                                     \
+    SAPINST_USE_HOSTNAME=<target vm hostname>                                                              \
+    SAPINST_INPUT_PARAMETERS_URL=/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/AS/APPS/inifile.params   \
+    SAPINST_START_GUI=false SAPINST_START_GUISERVER=false
     ```
 
 ##### AAS Installation
