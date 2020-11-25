@@ -1,0 +1,5 @@
+
+- hosts: scs
+  vars:
+    target_media_location: /usr/sap/install
+    app_sid: []
