@@ -331,7 +331,7 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
    1. PAS inifile path `/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/DISTRIBUTED/ABAP/APP1/inifile.params`
    1. AAS inifile path `/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/AS/APPS/inifile.params`
 1. The inifiles can be used as the basis for unattended deployments
-1. :warning: NOT MOUNTING BLOBS Create a copy of the `inifile.params` to the `sapbits` container  to the `/templates/` directory and rename to `pas.inifile.params` or `aas.inifile.params` as appropriate:
+1. Create a copy of the `inifile.params` to the `sapbits` container  to the `/templates/` directory and rename to `pas.inifile.params` or `aas.inifile.params` as appropriate:
 
    `cp /tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/DISTRIBUTED/ABAP/APP1/inifile.params /mnt/<sapbits fileshare path>/templates/pas.inifile.params`
 
