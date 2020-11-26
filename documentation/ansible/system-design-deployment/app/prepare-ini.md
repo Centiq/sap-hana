@@ -326,7 +326,6 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 1. On the Warning Screen copy the Key ID and Key Value and store these securely and click "Ok"
 1. Ensure Yes, clean up operating system users is checked
 1. click "Next"
-1. :warning: UNFINISHED WORDING On the Parameter Summary Screen On the Parameter Summary Page a copy of the `inifile.params` file is generated in the temporary SAP installation directory, located at
 1. On the PAS/AAS nodes, a copy of the `inifile.params` file is generated in the temporary SAP installation directory:
    1. PAS inifile path `/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/DISTRIBUTED/ABAP/APP1/inifile.params`
    1. AAS inifile path `/tmp/sapinst_instdir/S4HANA2020/CORE/HDB/INSTALL/AS/APPS/inifile.params`
