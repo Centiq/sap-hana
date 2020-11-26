@@ -82,6 +82,32 @@ step|BoM Content
 [8] |  templates:
     |    - name:     "S4HANA_2020_ISS_v001 ini file"
     |      file:     "S4HANA_2020_ISS_v001.inifile.params"
+    |
+[9] |  stackfiles:
+    |
+    |    - name: Download Basket JSON Manifest
+    |      file: downloadbasket.json
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Spreadsheet
+    |      file: MP_Excel_2001017452_20201030_SWC.xls
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Plan doc
+    |      file: MP_Plan_2001017452_20201030_.pdf
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Stack text
+    |      file: MP_Stack_2001017452_20201030_.txt
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Stack XML
+    |      file: MP_Stack_2001017452_20201030_.xml
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket permalinks
+    |      file: myDownloadBasketFiles.txt
+    |      override_target_location: "{{ target_media_location }}/config"
 ```
 
 ### Create BoM Header
@@ -132,6 +158,16 @@ step|BoM Content
      ... etc ...
    ```
 
+### Add Template Name
+
+1. [8]: Create a `templates` section as shown, with the same filename prefix as the BoM `<stack_version>`.
+
+   ```text
+     templates:
+       - name:     "S4HANA_2020_ISS_v001 ini file"
+         file:     "S4HANA_2020_ISS_v001.inifile.params"
+   ```
+
 ### Override Target Destination
 
 Files downloaded or shared from the archive space will need to be extracted to the correct location on the target server. This is normally set using the `defaults -> target_location` property (see [the defaults section](#red_circle-create-defaults-section)). However, you may override this on a case-by-case basis as shown. Overrides will normally reference `{{ target_media_location }}` as shown, but could be an unrelated path.
@@ -164,16 +200,6 @@ By default, files downloaded or shared from the archive space will be extracted 
 ### Tidy Up Layout
 
 The order of entries in the `media` section does not matter. However, for improved readability, you may wish to group related items together.
-
-### Add Template Name
-
-1. [8]: Create a `templates` section as shown, with the same filename prefix as the BoM `<stack_version>`.
-
-   ```text
-     templates:
-       - name:     "S4HANA_2020_ISS_v001 ini file"
-         file:     "S4HANA_2020_ISS_v001.inifile.params"
-   ```
 
 ### Upload Files to Archive Location
 

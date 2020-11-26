@@ -108,6 +108,32 @@ step|BoM Content
 [8] |  templates:
     |    - name:     "S4HANA_2020_ISS_v001 ini file"
     |      file:     S4HANA_2020_ISS_v001.inifile.params
+    |
+[9] |  stackfiles:
+    |
+    |    - name: Download Basket JSON Manifest
+    |      file: downloadbasket.json
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Spreadsheet
+    |      file: MP_Excel_2001017452_20201030_SWC.xls
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Plan doc
+    |      file: MP_Plan_2001017452_20201030_.pdf
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Stack text
+    |      file: MP_Stack_2001017452_20201030_.txt
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket Stack XML
+    |      file: MP_Stack_2001017452_20201030_.xml
+    |      override_target_location: "{{ target_media_location }}/config"
+    |
+    |    - name: Download Basket permalinks
+    |      file: myDownloadBasketFiles.txt
+    |      override_target_location: "{{ target_media_location }}/config"
 ```
 
 ### Manual Process
@@ -250,9 +276,21 @@ By default, files downloaded or shared from the archive space will be extracted 
 
 The order of entries in the `media` section does not matter. However, for improved readability, you may wish to group related items together.
 
-#### Add/Check Template Name
+#### Add/Check Templates Section
 
 1. [8]: If following the Manual Process, create a `templates` section as shown, with the same filename prefix as the BoM `<stack_version>`.
+
+   If following the Scripted Process, you should check the `file` and `override_target_location` values are as expected and correct if necessary.
+
+   ```text
+     templates:
+       - name:     "S4HANA_2020_ISS_v001 ini file"
+         file:     S4HANA_2020_ISS_v001.inifile.params
+   ```
+
+#### Add/Check Stackfiles Section
+
+1. [9]: If following the Manual Process, create a `stackfiles` section as shown.
 
    If following the Scripted Process, you should check the `file` name is as expected and correct, if necessary.
 
