@@ -82,7 +82,6 @@ step|BoM Content
 [8] |  templates:
     |    - name:     "S4HANA_2020_ISS_v001 ini file"
     |      file:     "S4HANA_2020_ISS_v001.inifile.params"
-    |
 [9] |  stackfiles:
     |
     |    - name: Download Basket JSON Manifest
@@ -133,9 +132,9 @@ step|BoM Content
 
 1. `[7]`: Specify `media:` exactly as shown.
 
-1. Using Microsoft Excel, open the download basket spreadsheet
-
 1. :hand: The `SAPCAR` utility will need to be added separately, because even though it is in the SAP Download Basket, it will not be present in the spreadsheet. :information_source: The `version` property is optional.
+
+1. Using Microsoft Excel, open the download basket spreadsheet
 
    ```text
       - name:     SAPCAR
@@ -160,7 +159,7 @@ step|BoM Content
 
 ### Add Template Name
 
-1. [8]: Create a `templates` section as shown, with the same filename prefix as the BoM `<stack_version>`.
+1. `[8]`: Create a `templates` section as shown, with the same filename prefix as the BoM `<stack_version>`.
 
    ```text
      templates:
@@ -168,7 +167,20 @@ step|BoM Content
          file:     "S4HANA_2020_ISS_v001.inifile.params"
    ```
 
-### Override Target Destination
+### Add Stackfiles Section
+
+1. `[9]`: Create a `stackfiles` section as shown from the steps at the start of **[Process](#process)**.
+
+   ```text
+   stackfiles:
+     - name: Download Basket JSON Manifest
+        file: downloadbasket.json
+
+     - name: Download Basket Spreadsheet
+        file: MP_Excel_2001017452_20201030_SWC.xls
+   ```
+
+### Override Target Location
 
 Files downloaded or shared from the archive space will need to be extracted to the correct location on the target server. This is normally set using the `defaults -> target_location` property (see [the defaults section](#red_circle-create-defaults-section)). However, you may override this on a case-by-case basis as shown. Overrides will normally reference `{{ target_media_location }}` as shown, but could be an unrelated path.
 
