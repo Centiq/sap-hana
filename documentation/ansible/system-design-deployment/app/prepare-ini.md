@@ -143,7 +143,7 @@ Logon users: [root]
     /usr/sap/install/SWPM/sapinst                                           \
       SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml    \
       SAPINST_USE_HOSTNAME=<target vm hostname>                             \
-      SAPINST_INPUT_PARAMETERS_URL=/tmp/app_template/scs.inifile.params         \
+      SAPINST_INPUT_PARAMETERS_URL=/tmp/app_template/scs.inifile.params     \
       SAPINST_EXECUTE_PRODUCT_ID=NW_ABAP_ASCS:S4HANA2020.CORE.HDB.ABAPHA    \
       SAPINST_START_GUI=false                                               \
       SAPINST_START_GUISERVER=false
@@ -269,7 +269,7 @@ Distributed System" , click on "Database Instance" and click "Next"
 
       ```bash
       /usr/sap/install/SWPM/sapinst                                           \
-      SAPINST_INPUT_PARAMETERS_URL=/tmp/app_templates/db.inifile.params          \
+      SAPINST_INPUT_PARAMETERS_URL=/tmp/app_templates/db.inifile.params       \
       SAPINST_STACK_XML=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml     \
       SAPINST_EXECUTE_PRODUCT_ID=NW_ABAP_DB:S4HANA2020.CORE.HDB.ABAP          \
       SAPINST_SKIP_DIALOGS=true                                               \
