@@ -40,3 +40,15 @@
           - "{{ bom.materials.stackfiles is defined }}"
           - "{{ bom.materials.stackfiles | length != 0 }}"
           - "{{ bom.materials.stackfiles | type_debug == 'list' }}"
+
+    - name: "Check optional structure of {{ bom_name }}"
+      assert:
+        that:
+          - "{{ item.property is defined }}"
+      fail_msg: "Warning: {{ item.name }} is not present"
+      loop:
+        - name: "version"
+          property: "{{ bom.version }}"
+        - name: "dependencies"
+          property: "{{ bom.dependencies }}"
+      failed_when: false
