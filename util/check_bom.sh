@@ -3,13 +3,10 @@
 # Usage
 #   /path/to/util/check_bom.sh /other/path/to/bom.yml
 
-declare ERR=0
-command -v yamllint || sudo apt install -y yamllint
-[[ $? -ne 0 ]] && ERR=1
-command -v ansible-lint || sudo apt install -y ansible-lint
-[[ $? -ne 0 ]] && ERR=1
+command -v yamllint >/dev/null || sudo apt install -y yamllint
+command -v ansible-lint >/dev/null || sudo apt install -y ansible-lint
 
-yamllint $1
-ansible-lint $1
+yamllint $1 && echo "... yamllint [ok]" || echo "... yamllint [errors]"
+ansible-lint $1 && echo "... ansible-lint [ok]" || echo "... ansible-lint [errors]"
 
-ansible-playbook check_bom.yml
+ansible-playbook --extra-vars "bom_name=$1" check_bom.yml

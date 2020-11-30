@@ -2,7 +2,6 @@
 
 - hosts: localhost
   vars:
-    bom_name: "../documentation/ansible/system-design-deployment/examples/S4HANA_2020_ISS_v001/bom.yml"
     target_media_location: /usr/sap/install
 
   tasks:
@@ -17,7 +16,7 @@
         file: "{{ bom_name }}"
         name: bom
 
-    - name: "Check basic structure of {{ bom_name }}"
+    - name: "Check required components of {{ bom_name }}"
       assert:
         that:
           - "bom.name is defined"
@@ -39,17 +38,21 @@
           - "bom.materials.stackfiles is defined"
           - "bom.materials.stackfiles | length != 0"
           - "bom.materials.stackfiles | type_debug == 'list'"
+        quiet: true
       ignore_errors: true
 
-    - name: "Check optional structure of {{ bom_name }}"
+    - name: "Check optional components of bom"
       assert:
         that:
-          - "item.property is defined"
+          - "bom.version is defined"
         quiet: true
-        fail_msg: "Warning: {{ item.name }} is not present"
-      loop:
-        - name: "version"
-          property: "{{ bom.version }}"
-        - name: "dependencies"
-          property: "{{ bom.materials.dependencies }}"
+        fail_msg: "Warning: bom version is not present"
+      ignore_errors: true
+
+    - name: "Check optional components of bom materials"
+      assert:
+        that:
+          - "bom.materials.dependencies is defined"
+        quiet: true
+        fail_msg: "Warning: dependencies is not present in bom materials"
       ignore_errors: true
