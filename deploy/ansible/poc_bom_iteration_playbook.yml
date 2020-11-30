@@ -10,3 +10,5 @@
   roles:
 
     - role: process_bom
+    - role: nfs-server-setup
+    - role: scs-install

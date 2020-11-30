@@ -1,0 +1,17 @@
+---
+
+- name: Determine directory status
+  stat:
+    path: "{{ target_media_location }}/{{ item }}"
+  register:
+  loop:
+    - "config"
+    - "cd_exports"
+    - "download_basket"
+    - "downloads"
+  failed_when: false
+
+- name: Check expected directories are present
+  assert:
+    that:
+      - ""
