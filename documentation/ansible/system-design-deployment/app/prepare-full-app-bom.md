@@ -80,8 +80,8 @@ step|BoM Content
     |  target_location: "{{ target_media_location }}/download_basket"
     |
 [5] |product_ids:
-    |  scs:
     |  db:
+    |  scs:
     |  pas:
     |  aas:
     |  web:
