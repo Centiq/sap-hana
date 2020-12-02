@@ -53,6 +53,12 @@ step|BoM Content
 [4] |defaults:
     |  target_location: "{{ target_media_location }}/download_basket"
     |
+    |product_ids:
+    |  scs:
+    |  db:
+    |  pas:
+    |  aas:
+    |
 [5] |materials:
 [6] |  dependencies:
     |    - name:     HANA2_00_052_v001
