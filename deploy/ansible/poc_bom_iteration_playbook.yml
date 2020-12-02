@@ -2,8 +2,9 @@
 
 - hosts: scs
   vars:
-    sapbits_location_base_path: "https://npeus2saplibb546.blob.core.windows.net/sapbits"
-    # sapbits_location_base_path: "https://{{ output.software.storage_account_sapbits.name }}.file.core.windows.net/{{ output.software.storage_account_sapbits.file_share_name }}"
+    output: "{{ lookup('file', '~/output.json') | from_json }}"
+    # sapbits_location_base_path: "https://npeus2saplibb546.blob.core.windows.net/sapbits"
+    sapbits_location_base_path: "https://{{ output.software.storage_account_sapbits.name }}.file.core.windows.net/{{ output.software.storage_account_sapbits.file_share_name }}"
     bom_base_name: "S4HANA_1909_SP2_v002"
     target_media_location: /usr/sap/install/download_basket
     app_sid: Z01
