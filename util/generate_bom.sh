@@ -111,7 +111,7 @@ END {
 ' /dev/null
 
 sed -e 's@\(</[^>][^>]*>\)@\1\n@g' ${XML_FILE[0]} | \
-awk -v "archive=${ARCHIVE}" -v "product=${PRODUCT}" '
+awk -v "archive=${ARCHIVE}" -v "product=${PRODUCT}" -v "jsonfile=${JSON_FILE}" -v "xlsfile=${XLS_FILE}" -v "xmlfile=${XML_FILE}" '
 BEGIN {
   phase = "";
   FS = ",";
@@ -128,8 +128,8 @@ BEGIN {
 END {
 
   printf("---\n\nname: \"%s\"\ntarget: \"%s\"\nversion: \"001\"\n", product, targetname);
-  printf("\ndefaults:\n  target_location: \"{{ target_media_location }}\"\n");
-  printf("\nmaterials:\n  dependencies:\n    - name: \"HANA2\"\n      version: \"003\"\n\n  media:\n");
+  printf("\ndefaults:\n  target_location: \"{{ target_media_location }}/download_basket\"\n");
+  printf("\nmaterials:\n  dependencies:\n    - name: \"HANA2\"\n      version: \"001\"\n\n  media:\n");
 
   while ( getline < "tempworkfile" ) {
     seq = $1;
@@ -138,19 +138,19 @@ END {
     component = $4;
     if ( component == "File on DVD" ) component = (component " - " $3)
 
-    dir = "{{ target_media_location }}";
+    dir = "";
     current = substr(seq,1,2);
     if (current != phase ) {
       phase = current;
       if ( phase == "AA" ) {
         printf("\n    # kernel components\n");
-        overridedir = "{{ target_media_location }}/download_basket";
+        # overridedir = "{{ target_media_location }}/download_basket";
       } else if ( phase == "BB" ) {
         printf("\n    # db export components\n");
-        overridedir = "{{ target_media_location }}/cd_exports";
+        # overridedir = "{{ target_media_location }}/cd_exports";
       } else {
         printf("\n    # other components\n");
-        overridedir = "";
+        # overridedir = "";
       }
     }
 
@@ -161,6 +161,15 @@ END {
     if ( sapurl != "" ) printf("      sapurl: \"https://softwaredownloads.sap.com/file/%s\"\n", sapurl);
   }
 
+  stackfileid = gensub(/^MP_Excel_([0-9]+_[0-9]+).*/, "\\1", "g", xlsfile);
   printf("\n  templates:\n\n    - name: \"%s ini file\"\n      file: \"%s.inifile.params\"\n      override_target_location: \"{{ target_media_location }}/config\"\n", product, product);
+  printf("\n  stackfiles:\n");
+  printf("\n    - name: \"Download Basket JSON Manifest\"\n      file: \"%s\"\n      override_target_location: \"{{ target_media_location }}/config\"\n", jsonfile);
+  printf("\n    - name: \"Download Basket Spreadsheet\"\n      file: \"%s\"\n      override_target_location: \"{{ target_media_location }}/config\"\n", xlsfile);
+  printf("\n    - name: \"Download Basket Plan\"\n      file: \"MP_Plan_%s_.pdf\"\n      override_target_location: \"{{ target_media_location }}/config\"\n", stackfileid);
+  printf("\n    - name: \"Download Basket Stack text\"\n      file: \"MP_Stack_%s_.txt\"\n      override_target_location: \"{{ target_media_location }}/config\"\n", stackfileid);
+  printf("\n    - name: \"Download Basket Stack text\"\n      file: \"MP_Stack_%s_.txt\"\n      override_target_location: \"{{ target_media_location }}/config\"\n", stackfileid);
+  printf("\n    - name: \"Download Basket Stack XML\"\n      file: \"%s\"\n      override_target_location: \"{{ target_media_location }}/config\"\n", xmlfile);
+  printf("\n    - name: \"Download Basket permalinks\"\n      file: \"myDownloadBasketFiles.txt\"\n      override_target_location: \"{{ target_media_location }}/config\"\n");
 }
 '
