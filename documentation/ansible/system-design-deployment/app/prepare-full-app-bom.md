@@ -276,15 +276,13 @@ Files downloaded or shared from the archive space will need to be extracted to t
 1. For each relevant entry in the BoM `media` section, add an `override_target_location:` property with the correct target folder. For example:
 
    ```text
-   - name: "Kernel Part I"
-     archive: "SAPEXE_200-80004393.SAR"
-     sapurl: "https://softwaredownloads.sap.com/file/0020000001063232020"
-     override_target_location: "{{ target_media_location }}/download_basket/"
+   - name: Download Basket Stack XML
+      file: MP_Stack_2001017452_20201030_.xml
+      override_target_location: "{{ target_media_location }}/config"
 
-   - name: "Kernel Part II (777)"
-     archive: "SAPEXEDB_200-80004392.SAR"
-     sapurl: "https://softwaredownloads.sap.com/file/0020000001063182020"
-     override_target_location: "{{ target_media_location }}/download_basket/"
+   - name: Download Basket permalinks
+      file: myDownloadBasketFiles.txt
+      override_target_location: "{{ target_media_location }}/config"
    ```
 
 #### Override Target Filename
