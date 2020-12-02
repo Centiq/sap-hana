@@ -84,6 +84,7 @@ step|BoM Content
     |  db:
     |  pas:
     |  aas:
+    |  web:
     |
 [6] |materials:
 [7] |  dependencies:
@@ -158,6 +159,10 @@ step|BoM Content
 
 1. `[4]`: This section contains:
    1. `target_location`: The folder on the target server, into which the files will be copied for installation. Normally, this will reference `{{ target_media_location }}` as shown.
+
+#### Create Product Ids Section
+
+1. `[5]`: TODO.
 
 #### Create Materials Section
 
