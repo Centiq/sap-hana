@@ -8,7 +8,7 @@
     bom_base_name: "S4HANA_1909_SP2_v002"
     target_media_location: /usr/sap/install/download_basket
     app_sid: Z01
-    test_mode: true
+    # test_mode: true
 
   roles:
 
