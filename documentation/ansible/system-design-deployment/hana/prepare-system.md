@@ -7,7 +7,7 @@
 ## Process
 
 1. Install Prerequisite RPMs installed, See [SAP Note 2886607](https://launchpad.support.sap.com/#/notes/2886607)
-1. Configure recommened swapfile size (e.g. sizings outlined in [SAP note 1597355](https://launchpad.support.sap.com/#/notes/1597355)
+1. Configure recommended swapfile size (e.g. sizings outlined in [SAP note 1597355](https://launchpad.support.sap.com/#/notes/1597355)
     1. Ensure swapfile with correct sizing exists
     1. Add swapfile entry to `/etc/fstab`
     1. Ensure swap is enabled
