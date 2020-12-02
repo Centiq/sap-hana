@@ -77,7 +77,7 @@ step|BoM Content
 [3] |version: 001
     |
 [4] |defaults:
-    |  target_location: "{{ target_media_location }}"
+    |  target_location: "{{ target_media_location }}/download_basket"
     |
 [5] |materials:
 [6] |  dependencies:
@@ -108,6 +108,7 @@ step|BoM Content
 [8] |  templates:
     |    - name:     "S4HANA_2020_ISS_v001 ini file"
     |      file:     S4HANA_2020_ISS_v001.inifile.params
+    |      override_target_location: "{{ target_media_location }}/config"
     |
 [9] |  stackfiles:
     |    - name: Download Basket JSON Manifest
@@ -163,6 +164,12 @@ step|BoM Content
 1. `[7]`: Specify `media:` exactly as shown.
 
 1. :hand: The `SAPCAR` utility will need to be added separately, because even though it is in the SAP Download Basket, it will not be present in the spreadsheet. :information_source: The `version` property is optional.
+
+   ```text
+      - name:     SAPCAR
+        version:  7.21
+        archive:  SAPCAR_1320-80000935.EXE
+   ```
 
 1. Using **your editor**, open the download basket spreadsheet. This will render as XML.
 1. Ensure the XML is formatted for human readability.
