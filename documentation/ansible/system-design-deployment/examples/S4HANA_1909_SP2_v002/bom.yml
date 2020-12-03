@@ -701,15 +701,15 @@ materials:
       override_target_location: "{{ target_media_location }}/config"
 
     - name: "Download Basket Plan"
-      file: "MP_Plan_MP_Excel_1001084693_20201130_.pdf"
+      file: "MP_Plan_1001084693_20201130_.pdf"
       override_target_location: "{{ target_media_location }}/config"
 
     - name: "Download Basket Stack text"
-      file: "MP_Stack_MP_Excel_1001084693_20201130_.txt"
+      file: "MP_Stack_1001084693_20201130_.txt"
       override_target_location: "{{ target_media_location }}/config"
 
     - name: "Download Basket Stack text"
-      file: "MP_Stack_MP_Excel_1001084693_20201130_.txt"
+      file: "MP_Stack_1001084693_20201130_.txt"
       override_target_location: "{{ target_media_location }}/config"
 
     - name: "Download Basket Stack XML"
