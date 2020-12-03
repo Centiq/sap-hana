@@ -54,8 +54,8 @@ step|BoM Content
     |  target_location: "{{ target_media_location }}/download_basket"
     |
 [5] |product_ids:
-    |  db:
     |  scs:
+    |  db:
     |  pas:
     |  aas:
     |  web:
@@ -133,7 +133,7 @@ step|BoM Content
 
 ### Create Product Ids Section
 
-1. `[5]`: TODO.
+1. `[5]`: Create the section as shown. You will populate with values as part of the template preparation.
 
 ### Create Materials Section
 
@@ -213,13 +213,18 @@ Files downloaded or shared from the archive space will need to be extracted to t
 
 By default, files downloaded or shared from the archive space will be extracted with the same filename as the `archive` filename on the target server.  However, you may override this on a case-by-case basis, although this is not normally necessary.
 
-1. For each relevant entry in the BoM `media` section, add an `override_target_filename:` property with the correct target folder. For example:
+1. For each relevant entry in the BoM `media` section, add an `override_target_filename:` property with the correct target folder. For example, the following are recommended (the archive name may be different for your system):
 
    ```text
       - name:     SAPCAR
         version:  7.21
         archive:  SAPCAR_1320-80000935.EXE
         override_target_filename: SAPCAR.EXE
+
+      - name: "SWPM20SP07"
+        archive: "SWPM20SP07_2-80003424.SAR"
+        override_target_filename: SWPM.SAR
+        sapurl: "https://softwaredownloads.sap.com/file/0020000001812632020"
    ```
 
 ### Tidy Up Layout
