@@ -60,6 +60,8 @@
 - name: Ensure SWPM is unarchived
   command: /usr/sap/install/SAPCAR.EXE -xf /usr/sap/install/SWPM.SAR -R /usr/sap/install/SWPM/
 
+# - name: Ensure inifile is prepared from template
+
 - name: Ensure SCS is present and running
   shell: >
     /usr/sap/install/SWPM/sapinst
