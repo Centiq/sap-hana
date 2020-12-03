@@ -376,12 +376,12 @@ To use the inifiles during the installation process, they should be consolidated
 
 The overall process is to download the files to your workstation, extract the uncommented key value pairs into a new file, organise for ease of reference later, update values to Ansible variables for use with automation.
 
-The file should be saved with meaningful name relating to the SAP Product e.g `S4HANA_2020_ISS_v001.inifile.params` and uploaded to the Storage Account.
+The file should be saved with a meaningful name relating to the SAP Product, e.g `S4HANA_2020_ISS_v001.inifile.params` and uploaded to the Storage Account.
 
 1. Download all `inifile.params` files to your workstation, and make a backup of each file.
 1. In **your editor** open each file.
 1. Create a new consolidation file named for the SAP Product, e.g. `S4HANA_2020_ISS_v001.inifile.params`.
-1. From the SCS inifile, copy the header into the consolidated and format for readability, e.g.
+1. From the SCS inifile, copy the header into the consolidated file and format for readability, e.g.
 
    ```ini
    #########################################################################################################################
@@ -480,6 +480,7 @@ The file should be saved with meaningful name relating to the SAP Product e.g `S
     1. In the panel on the right, click Select a file
     1. Select the generated template, e.g. `S4HANA_2020_ISS_v001.inifile.params`
     1. Click "Upload"
+    1. Click "Advanced" to show the advanced options, and enter `templates` for the Upload Directory
 
 1. Upload the updated BoM file to the SAP Library:
     1. In the Azure Portal navigate to the `sapbits` container
