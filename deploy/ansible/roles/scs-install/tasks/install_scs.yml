@@ -1,1 +1,71 @@
 ---
+
+- name: "Ensure {{ bom_base_name }} is available"
+  uri:
+    url: "{{ sapbits_location_base_path }}/boms/{{ bom_base_name }}/bom.yml"
+    dest: "/tmp/{{ bom_base_name }}_bom.yml"
+  delegate_to: localhost
+
+- name: "Ensure {{ bom_base_name }} is used"
+  include_vars:
+    file: "/tmp/{{ bom_base_name }}_bom.yml"
+    name: bom
+  delegate_to: localhost
+
+- name: Ensure /sapmnt is present
+  file:
+    path: "/sapmnt"
+    mode: "0777"
+    state: directory
+
+- name: Determine required variable values
+  block:
+
+    - name: Determine Stack XML file
+      set_fact:
+        stack_xml_file: "{{
+          bom.materials.stackfiles |
+          flatten(levels=1) |
+          selectattr('file', 'match', '^MP_Stack.*\\.xml$') |
+          map(attribute='file') |
+          list |
+          first
+          }}"
+
+    - name: Determine inifile
+      set_fact:
+        inifile: "{{
+          bom.materials.templates |
+          flatten(levels=1) |
+          selectattr('file', 'match', '.*\\.inifile.params$') |
+          map(attribute='file') |
+          list |
+          first
+          }}"
+
+    - name: Determine product id
+      set_fact:
+        product_id: "{{ bom.product_ids.scs }}"
+
+- name: Ensure SAPCAR is executable
+  file:
+    path: /usr/sap/install/download_basket/SAPCAR.EXE
+    mode: "0755"
+
+- name: Ensure SWPM directory is present
+  file:
+    path: /usr/sap/install/SWPM
+    state: directory
+
+- name: Ensure SWPM is unarchived
+  command: /usr/sap/install/SAPCAR.EXE -xf /usr/sap/install/SWPM.SAR -R /usr/sap/install/SWPM/
+
+- name: Ensure SCS is present and running
+  shell: >
+    /usr/sap/install/SWPM/sapinst
+    SAPINST_XML_FILE="/usr/sap/install/config/{{ stack_xml_file }}"
+    SAPINST_USE_HOSTNAME="{{ scs_hostname }}"
+    SAPINST_INPUT_PARAMETERS_URL="/usr/sap/install/config/{{ inifile }}"
+    SAPINST_EXECUTE_PRODUCT_ID="{{ product_id }}"
+    SAPINST_START_GUI=false
+    SAPINST_START_GUISERVER=false

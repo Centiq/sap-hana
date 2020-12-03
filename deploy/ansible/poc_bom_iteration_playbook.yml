@@ -7,7 +7,7 @@
     target_media_location: /usr/sap/install
     aas_hostname:
     aas_instance_number:
-    app_sid: Z01
+    app_sid: "Z01"
     download_basket_dir: "{{ target_media_location }}/download_basket"
     hdb_hostname:
     hdb_instance_number:
@@ -15,7 +15,7 @@
     pas_hostname:
     pas_instance_number:
     password_hana_system:
-    password_master: Passw0rd123
+    password_master: "Passw0rd123"
     sap_fqdn:
     sapadm_uid: 2100
     sapsys_gid: 2000
@@ -27,4 +27,8 @@
   roles:
 
     - role: process_bom
+
+    - role: scs-install
+      become: true
+
     - role: nfs-server-setup
