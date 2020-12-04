@@ -46,28 +46,29 @@
 
 - name: Ensure SAPCAR is executable
   file:
-    path: /usr/sap/install/download_basket/SAPCAR.EXE
+    path: "{{ download_basket_dir }}/SAPCAR.EXE"
     mode: "0755"
 
 - name: Ensure SWPM directory is present
   file:
-    path: /usr/sap/install/SWPM
+    path: "{{ target_media_location }}/SWPM"
     state: directory
 
 - name: Ensure SWPM is unarchived
-  command: /usr/sap/install/SAPCAR.EXE -xf /usr/sap/install/SWPM.SAR -R /usr/sap/install/SWPM/
+  command: >
+    {{ target_media_location }}/SAPCAR.EXE -xf {{ download_basket_dir }}/SWPM.SAR -R {{ target_media_location }}/SWPM/
 
 - name: Ensure inifile is prepared from template
   template:
-    dest: /usr/sap/install/config/scs.inifile.params
-    src: "/usr/sap/install/config/{{ inifile }}"
+    dest: "{{ target_media_location }}/config/scs.inifile.params"
+    src: "{{ target_media_location }}/config/{{ inifile }}"
 
 - name: Ensure SCS is present and running
   shell: >
-    /usr/sap/install/SWPM/sapinst
-    SAPINST_XML_FILE="/usr/sap/install/config/{{ stack_xml_file }}"
+    {{ target_media_location }}/SWPM/sapinst
+    SAPINST_XML_FILE="{{ target_media_location }}/config/{{ stack_xml_file }}"
     SAPINST_USE_HOSTNAME="{{ scs_hostname }}"
-    SAPINST_INPUT_PARAMETERS_URL=/usr/sap/install/config/scs.inifile.params
+    SAPINST_INPUT_PARAMETERS_URL={{ target_media_location }}/config/scs.inifile.params
     SAPINST_EXECUTE_PRODUCT_ID="{{ product_id }}"
     SAPINST_START_GUI=false
     SAPINST_START_GUISERVER=false
