@@ -23,7 +23,7 @@
     path: "{{ download_basket_dir }}"
     state: directory
 
-- name: Determine Stack XML file
+- name: Determine Stack XML file name
   set_fact:
     stack_xml_file: "{{
       bom.materials.stackfiles |
@@ -34,7 +34,7 @@
       first
       }}"
 
-- name: Determine inifile
+- name: Determine inifile name
   set_fact:
     inifile: "{{
       bom.materials.templates |
