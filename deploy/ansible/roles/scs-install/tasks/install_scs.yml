@@ -58,10 +58,16 @@
   command: >
     {{ download_basket_dir }}/SAPCAR.EXE -xf {{ download_basket_dir }}/SWPM.SAR -R {{ target_media_location }}/SWPM/
 
+- name: Ensure the template is available on the controller
+  fetch:
+    dest: /tmp/
+    src: "{{ target_media_location }}/config/{{ inifile }}"
+    flat: yes
+
 - name: Ensure inifile is prepared from template
   template:
     dest: "{{ target_media_location }}/config/scs.inifile.params"
-    src: "{{ target_media_location }}/config/{{ inifile }}"
+    src: "/tmp/{{ inifile }}"
     remote_src: true
 
 - name: Ensure SCS is present and running
