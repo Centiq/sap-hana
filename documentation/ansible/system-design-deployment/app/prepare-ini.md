@@ -178,17 +178,22 @@ The directories to be exported for this process are:
    1. `mount <scs-vm-IP>:/sapmnt/<SID>/global /sapmnt/<SID>/global`
    1. `mount <scs-vm-IP>:/sapmnt/<SID>/profile /sapmnt/<SID>/profile`
 
+### Database Content Load Prerequisites
+
+The following requirements must be in place on the PAS DB VM before attempting the DB Content Load:
+
+1. `<sid>adm` User must exist and must be a member of the `sapinst` group;
+1. The user ID for `<sid>adm` must match the value provided to hdblcm (`2000` is used in this process);
+1. The Directory `/sapmnt/S1D/global/` must be accessible to SWPM `chown <sid>adm:sapsys /sapmnt/<SID>/global`;
+1. `sapinst` group must exist.
+
 ### Generating unattended installation parameter `inifile` for Database Content Load
 
 :hand: Both HANA and SCS instances must be installed, configured and online before completing the DB content load.
 
 1. Make and change to a temporary directory:
 
-   `mkdir /tmp/db_workdir; cd $_`
-
-1. Ensure SWPM is extracted:
-
-   `/usr/sap/downloads/SAPCAR_1311-80000935.EXE -xf /usr/sap/downloads/SWPM20SP07_0-80003424.SAR -R /usr/sap/install/SWPM/`
+   `sudo install -d -m 0777 <sid>adm -g sapinst "/tmp/db_workdir"; cd $_`
 
 1. Launch SWPM with the following command:
 
@@ -214,7 +219,7 @@ Distributed System" , click on "Database Instance" and click "Next"
    1. click "Next"
 1. Verify the connection details and click "OK"
 1. Enter the System Database Administrator Password and click "Next"
-1. Enter the path to the SAPEXE Kernel `/usr/sap/downloads/` and click "Next"
+1. Enter the path to the SAPEXE Kernel `/usr/sap/install/download_basket` and click "Next"
 1. Notice the files are listed as available and click "Next"
 1. Notice the SAPHOSTAGENT file is listed as available and click "Next"
 1. Click "Next" on the SAP System Administrator password confirmation.
@@ -300,7 +305,7 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 1. Ensure the Profile Directory is set to `/sapmnt/<SID>/profile/` or  `/usr/sap/<SID>/SYS/profile` and click "Next"
 1. Set the Message Server Port to `36nn` where `nn` is the ASCS Instance number and click "Next"
 1. Set the Master Password for All Users and click "Next"
-1. On the Software Package Browser Screen set the Search Directory to `/usr/sap/downloads` then click "Next"
+1. On the Software Package Browser Screen set the Search Directory to `/usr/sap/install/download_basket` then click "Next"
 1. ⌛️ ... wait several minutes for `below-the-fold-list` to populate then click "Next"
 1. Ensure the "Upgrade SAP Host Agent to the version of the provided SAPHOSTAGENT.SAR archive" option is unchecked then click "Next"
 1. Enter the Instance Number of the SAP HANA Database and Database System Administrator Password and click "Next"
