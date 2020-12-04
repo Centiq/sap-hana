@@ -68,7 +68,6 @@
   template:
     dest: "{{ target_media_location }}/config/scs.inifile.params"
     src: "/tmp/{{ inifile }}"
-    remote_src: true
 
 - name: Ensure SCS is present and running
   shell: >
