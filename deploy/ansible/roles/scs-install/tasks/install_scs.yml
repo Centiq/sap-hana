@@ -61,7 +61,7 @@
 - name: Ensure inifile is prepared from template
   template:
     dest: "{{ target_media_location }}/config/scs.inifile.params"
-    src: "{{ target_media_location }}/config/{{ inifile }}"
+    remote_src: "{{ target_media_location }}/config/{{ inifile }}"
 
 - name: Ensure SCS is present and running
   shell: >
