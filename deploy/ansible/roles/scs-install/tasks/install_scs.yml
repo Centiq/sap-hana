@@ -56,7 +56,7 @@
 
 - name: Ensure SWPM is unarchived
   command: >
-    {{ target_media_location }}/SAPCAR.EXE -xf {{ download_basket_dir }}/SWPM.SAR -R {{ target_media_location }}/SWPM/
+    {{ download_basket_dir }}/SAPCAR.EXE -xf {{ download_basket_dir }}/SWPM.SAR -R {{ target_media_location }}/SWPM/
 
 - name: Ensure inifile is prepared from template
   template:
