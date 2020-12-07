@@ -25,22 +25,48 @@
 
 - name: Determine Stack XML file name
   set_fact:
-    stack_xml_file: "{{
+    stack_xml_file: "{{ stack_xml_entry.override_target_filename is defined | ternary(stack_xml_entry.override_target_filename, stack_xml_entry.archive) }}"
+  vars:
+    stack_xml_entry: "{{
       bom.materials.stackfiles |
       flatten(levels=1) |
       selectattr('file', 'match', '^MP_Stack.*\\.xml$') |
-      map(attribute='file') |
       list |
       first
       }}"
 
 - name: Determine inifile name
   set_fact:
-    inifile: "{{
+    inifile: "{{ inifile_entry.override_target_filename is defined | ternary(inifile_entry.override_target_filename, inifile_entry.archive) }}"
+  vars:
+    inifile_entry: "{{
       bom.materials.templates |
       flatten(levels=1) |
       selectattr('file', 'match', '.*\\.inifile.params$') |
-      map(attribute='file') |
+      list |
+      first
+      }}"
+
+- name: Determine SAPCAR executable file name
+  set_fact:
+    sapcar_executable: "{{ sapcar_entry.override_target_filename is defined | ternary(sapcar_entry.override_target_filename, sapcar_entry.archive) }}"
+  vars:
+    sapcar_entry: "{{
+      bom.materials.media |
+      flatten(levels=1) |
+      selectattr('archive', 'match', '^SAPCAR.*\\.EXE$') |
+      list |
+      first
+      }}"
+
+- name: Determine SWPM archive name
+  set_fact:
+    swpm_archive: "{{ swpm_entry.override_target_filename is defined | ternary(swpm_entry.override_target_filename, swpm_entry.archive) }}"
+  vars:
+    swpm_entry: "{{
+      bom.materials.media |
+      flatten(levels=1) |
+      selectattr('archive', 'match', '^SWPM.*\\.SAR$') |
       list |
       first
       }}"
@@ -51,7 +77,7 @@
 
 - name: Ensure SAPCAR is executable
   file:
-    path: "{{ download_basket_dir }}/SAPCAR.EXE"
+    path: "{{ download_basket_dir }}/{{ sapcar_executable }}"
     mode: "0755"
 
 - name: Ensure SWPM directory is present
@@ -61,7 +87,8 @@
 
 - name: Ensure SWPM is unarchived
   command: >
-    {{ download_basket_dir }}/SAPCAR.EXE -xf {{ download_basket_dir }}/SWPM.SAR -R {{ target_media_location }}/SWPM/
+    {{ download_basket_dir }}/{{ sapcar_executable }} -xf {{ download_basket_dir }}/{{ swpm_archive }} -R {{ target_media_location }}/SWPM/
+
 
 - name: Ensure the template is available on the controller
   fetch:
