@@ -25,7 +25,7 @@
 
 - name: Determine Stack XML file name
   set_fact:
-    stack_xml_file: "{{ stack_xml_entry.override_target_filename is defined | ternary(stack_xml_entry.override_target_filename, stack_xml_entry.archive) }}"
+    stack_xml_file: "{{ stack_xml_entry.override_target_filename is defined | ternary(stack_xml_entry.override_target_filename, stack_xml_entry.file) }}"
   vars:
     stack_xml_entry: "{{
       bom.materials.stackfiles |
@@ -37,7 +37,7 @@
 
 - name: Determine inifile name
   set_fact:
-    inifile: "{{ inifile_entry.override_target_filename is defined | ternary(inifile_entry.override_target_filename, inifile_entry.archive) }}"
+    inifile: "{{ inifile_entry.override_target_filename is defined | ternary(inifile_entry.override_target_filename, inifile_entry.file) }}"
   vars:
     inifile_entry: "{{
       bom.materials.templates |
