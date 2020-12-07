@@ -7,7 +7,7 @@
     target_media_location: /usr/sap/install
     aas_hostname:
     aas_instance_number:
-    app_sid: "Z01"
+    app_sid: "X00"
     download_basket_dir: "{{ target_media_location }}/download_basket"
     hdb_hostname:
     hdb_instance_number:
