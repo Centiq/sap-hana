@@ -19,8 +19,6 @@
       file:
         path: "/usr/sap"
         state: directory
-        mode: "0777"
-        group: "{{ sapsys_gid }}"
 
     - name: "Mount /usr/sap"
       mount:
@@ -28,3 +26,10 @@
         src: /dev/disk/azure/scsi1/lun0-part1
         fstype: xfs
         state: mounted
+
+    - name: "Ensure /usr/sap permissions are correct"
+      file:
+        path: "/usr/sap"
+        state: directory
+        mode: "0777"
+        group: "{{ sapsys_gid }}"
