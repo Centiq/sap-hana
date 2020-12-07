@@ -16,7 +16,7 @@ product_ids:
 
 materials:
   dependencies:
-    - name: "HANA2"
+    - name: "HANA_2_00_052_v001"
       version: "001"
 
   media:
@@ -1270,7 +1270,7 @@ materials:
   templates:
 
     - name: "SAP_S4HANA_1809 ini file"
-      file: "SAP_S4HANA_1809.inifile.params"
+      file: "S4HANA_1809_SP5_v001.inifile.params"
       override_target_location: "{{ target_media_location }}/config"
 
   stackfiles:
