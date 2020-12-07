@@ -45,35 +45,13 @@
       first
       }}"
 
-- name: Determine SAPCAR executable file name
-  set_fact:
-    sapcar_executable: "{{
-      bom.materials.media |
-      flatten(levels=1) |
-      selectattr('archive', 'match', '^SAPCAR.*\\.EXE$') |
-      map(attribute='archive') |
-      list |
-      first
-      }}"
-
-- name: Determine SWPM archive name
-  set_fact:
-    swpm_archive: "{{
-      bom.materials.media |
-      flatten(levels=1) |
-      selectattr('archive', 'match', '^SWPM.*\\.SAR$') |
-      map(attribute='archive') |
-      list |
-      first
-      }}"
-
 - name: Determine product id
   set_fact:
     product_id: "{{ bom.product_ids.scs }}"
 
 - name: Ensure SAPCAR is executable
   file:
-    path: "{{ download_basket_dir }}/{{ sapcar_executable }}"
+    path: "{{ download_basket_dir }}/SAPCAR.EXE"
     mode: "0755"
 
 - name: Ensure SWPM directory is present
@@ -83,7 +61,7 @@
 
 - name: Ensure SWPM is unarchived
   command: >
-    {{ download_basket_dir }}/{{ sapcar_executable }} -xf {{ download_basket_dir }}/{{ swpm_archive }} -R {{ target_media_location }}/SWPM/
+    {{ download_basket_dir }}/SAPCAR.EXE -xf {{ download_basket_dir }}/SWPM.SAR -R {{ target_media_location }}/SWPM/
 
 - name: Ensure the template is available on the controller
   fetch:
