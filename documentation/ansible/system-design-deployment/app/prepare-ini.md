@@ -166,9 +166,9 @@ The directories to be exported for this process are:
 1. `/sapmnt/<SID>/global`
 1. `/sapmnt/<SID>/profile`
 
-### Mounting SAP FileSystems on APP VM
+### Mounting SAP FileSystems on APP VMs
 
-1. On the PAS VM as `root` ensure the mount points exist:
+1. On the Application VMs connected as `root` ensure the mount points exist:
 
    `mkdir -p /usr/sap/{downloads,install/config,<SID>/SYS} /tmp/app_template /sapmnt/<SID>/{global,profile}`
 
@@ -185,7 +185,7 @@ The following requirements must be in place on the PAS DB VM before attempting t
 
 1. `<sid>adm` User must exist and must be a member of the `sapinst` group;
 1. The user ID for `<sid>adm` must match the value provided to hdblcm (`2000` is used in this process);
-1. The Directory `/sapmnt/S1D/global/` must be accessible to SWPM `chown <sid>adm:sapsys /sapmnt/<SID>/global`;
+1. The Directory `/sapmnt/<SID>/global/` must be accessible to SWPM `chown <sid>adm:sapsys /sapmnt/<SID>/global`;
 1. `sapinst` group must exist.
 
 ### Generating unattended installation parameter `inifile` for Database Content Load
@@ -199,7 +199,7 @@ The following requirements must be in place on the PAS DB VM before attempting t
 1. Launch SWPM with the following command:
 
     ```bash
-    root@sid-xxpas-0 ~]$ /usr/sap/install/SWPM/sapinst   \
+    $ /usr/sap/install/SWPM/sapinst   \
     SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml
     ```
 
@@ -303,7 +303,7 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 1. Navigate through the drop-down menu: "SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "Distributed System" > "Primary Application Server Instance"
 1. On the Parameter Settings Screen Select "Custom" and click "Next"
 1. Ensure the Profile Directory is set to `/sapmnt/<SID>/profile/` or  `/usr/sap/<SID>/SYS/profile` and click "Next"
-1. Set the Message Server Port to `36nn` where `nn` is the ASCS Instance number and click "Next"
+1. Set the Message Server Port to `36nn` where `nn` is the ASCS Instance number, for example: `3600` and click "Next"
 1. Set the Master Password for All Users and click "Next"
 1. On the Software Package Browser Screen set the Search Directory to `/usr/sap/install/download_basket` then click "Next"
 1. ⌛️ ... wait several minutes for `below-the-fold-list` to populate then click "Next"
@@ -349,7 +349,7 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 1. Connect to PAS as `root` user
 1. Change to work directory and ensure the directory is empty:
    `rm -rf /tmp/pas_workdir/*; cd /tmp/pas_workdir`
-1. Launch PAS Unattended install replacing `<target vm hostname>` with the PAS VM hostname:
+1. Launch PAS Unattended install replacing `<target vm hostname>` with the PAS VM hostname
 1. For a PAS unattended install run the following:
 
     ```bash
@@ -364,6 +364,7 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 ### Generating unattended installation parameter `inifile` for Addtional Application Server
 
 This section covers the manual generation of the ABAP AAS (Additional Application Server) unattended install file.
+The inifile can be used for mulitple installations, therefor this process will only be required to be completed once irrespective of the number of AASes you wish to deploy.
 
 :hand: To generate the AAS inifiles you must have a fully built HANA DB and ASCS.
 
@@ -373,12 +374,12 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 1. Make and change to a temporary directory:
    1. For AAS ensure `sapinst` group exists `groupadd sapinst` then `sudo install -d -m 0777 <sid>adm -g sapinst "/tmp/aas_workdir"; cd $_`
 1. The [Access SWPM](#Access-SWPM) steps will need to be completed on the target VM before you can access SWPM
-1. Connect to the AAS Node as Root user and launch Software Provisioning Manager, shown in [Software Provision Manager input](#Example-Software-Provision-Manager-input). Ensure that you update <sap_component> to AAS
+1. Connect to the AAS Node as `root` user and launch Software Provisioning Manager, shown in [Software Provision Manager input](#Example-Software-Provision-Manager-input). Ensure that you update <sap_component> to AAS
 1. Launch the required URL to access SWPM shown in [Software Provision Manager output](#Example-Software-Provision-Manager-output)
-1. Accept the security risk and authenticate with the systems ROOT user credentials
+1. Accept the security risk and authenticate with the systems `root` user credentials
 1. Navigate through the drop-down menu:
-    1. For AAS ""SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "High-Availability System" > "Additional Application Server Instance"
-1. On the Parameter Settings Screen Select "Custom" and click "Next"
+    1. For AAS, "SAP S/4HANA Server 2020" > "SAP HANA Database" > "Installation" > "Application Server ABAP" > "High-Availability System" > "Additional Application Server Instance"
+1. On the Parameter Settings Screen, select "Custom" and click "Next"
 1. Ensure the Profile Directory is set to `/sapmnt/<SID>/profile/` or  `/usr/sap/<SID>/SYS/profile` and click "Next"
 1. Set the Message Server Port to `36nn` where `nn` is the ASCS Instance number and click "Next"
 1. Set the Master Password for All Users and click "Next"
@@ -422,10 +423,10 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 
 :hand: A PAS must exist before the AAS Installation is attempted.
 
-1. Connect to the AAS VM as `root` User
+1. Connect to the AAS VM as the `root` user
 1. Change to work directory and ensure the directory is empty:
    `rm -rf /tmp/aas_workdir/*; cd /tmp/ass_workdir`
-1. Launch AAS Unattended install replacing `<target vm hostname>` with the AAS VM hostname:
+1. Launch AAS Unattended install replacing `<target vm hostname>` with the AAS VM hostname
 1. For a AAS unattended install run the following:
 
     ```bash
