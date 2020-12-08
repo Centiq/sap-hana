@@ -346,11 +346,6 @@ _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP 
 
 `cp <path_to_inifile>/inifile.params /tmp/app_template/pas.2020.inifile.params`
 
-1. The inifiles can be used as the basis for unattended deployments
-1. Create a copy of the `inifile.params` to the `sapbits` container  to the `/templates/` directory and rename to `pas.2020.inifile.params`:
-
-   `cp /tmp/app_template/pas.inifile.params /mnt/<sapbits fileshare path>/templates/`
-
 ### Manual PAS Installation Using Template
 
 1. Connect to PAS as `root` user
