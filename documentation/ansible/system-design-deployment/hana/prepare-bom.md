@@ -25,8 +25,7 @@ step|BoM Content
 [3] |version: 001
     |
 [4] |defaults:
-    |  archive_location: "https://npweeusaplib9545.file.core.windows.net/sapbits/archives/"
-    |  target_location: "/usr/sap/downloads/"
+    |  target_location: "{{ target_media_location }}/downloads/"
     |
 [5] |materials:
 [6] |  media:
@@ -47,7 +46,11 @@ step|BoM Content
     |
     |    - name:     HANA xml
     |      file:     HANA_2_00_052_v001.params.xml
-```
+    |
+[8] |  stackfiles:
+    |    - name: Download Basket permalinks
+    |      file: myDownloadBasketFiles.txt
+    |      override_target_location: "{{ target_media_location }}/```
 
 ## Process
 
@@ -69,8 +72,7 @@ step|BoM Content
 ### Create Defaults Section
 
 1. `[4]`: This section contains:
-   1. `archive_location`: The location to which you will upload the SAP build files. Also, the same location from which the files will be copied to the target server.
-   1. `target_location`: The folder on the target server, into which the files will be copied for installation.
+   1. `target_location`: The folder on the target server, into which the files will be copied for installation. Normally, this will reference `{{ target_media_location }}` as shown, but could be an unrelated path.
 
 ### Create Materials Section
 
@@ -95,9 +97,35 @@ step|BoM Content
      archive:  51054623.ZIP
    ```
 
+### Add Templates Section
+
+1. `[7]`: Create a `templates` section as shown, with the same filename prefix as the BoM `<stack_version>`. Entries are needed for `.params` and `.params.xml` files.
+
+   ```text
+     templates:
+       - name:     HANA params
+         file:     HANA_2_00_052_v001.params
+
+       - name:     HANA xml
+         file:     HANA_2_00_052_v001.params.xml
+   ```
+
+### Add Stackfiles Section
+
+1. `[8]`: Create a `stackfiles` section as shown from the steps at the start of **[Process](#process)**.
+
+   ```text
+   stackfiles:
+     - name: Download Basket JSON Manifest
+        file: downloadbasket.json
+
+     - name: Download Basket Spreadsheet
+        file: MP_Excel_2001017452_20201030_SWC.xls
+   ```
+
 ### Override Target Destination
 
-Files downloaded or shared from the archive space will need to be extracted to the correct location on the target server. This is normally set using the `defaults -> target_location` property (see [the defaults section](#red_circle-create-defaults-section)). However, you may override this on a case-by-case basis, although this is not normally necessary.
+Files downloaded or shared from the archive space will need to be extracted to the correct location on the target server. This is normally set using the `defaults -> target_location` property (see [the defaults section](#red_circle-create-defaults-section)). However, you may override this on a case-by-case basis as shown. Overrides will normally reference `{{ target_media_location }}` as shown, but could be an unrelated path.
 
 1. For each relevant entry in the BoM `media` section, add an `override_target_location:` property with the correct target folder. For example:
 
@@ -105,7 +133,7 @@ Files downloaded or shared from the archive space will need to be extracted to t
    - name:     HANA 2.0
      version:  2.00.052
      archive:  51054623.ZIP
-     override_target_location: "/usr/sap/elsewhere/"
+     override_target_location: "{{ target_media_location }}/elsewhere/"
    ```
 
 ### Override Target Filename
@@ -124,19 +152,6 @@ By default, files downloaded or shared from the archive space will be extracted 
 ### Tidy Up Layout
 
 The order of entries in the `media` section does not matter. However, for improved readability, you may wish to group related items together.
-
-### Add Template Name
-
-1. [8]: Create a `templates` section as shown, with the same filename prefix as the BoM `<stack_version>`. Entries are needed for `.params` and `.params.xml` files.
-
-   ```text
-     templates:
-       - name:     HANA params
-         file:     HANA_2_00_052_v001.params
-
-       - name:     HANA xml
-         file:     HANA_2_00_052_v001.params.xml
-   ```
 
 ### Upload Files to Archive Location
 
