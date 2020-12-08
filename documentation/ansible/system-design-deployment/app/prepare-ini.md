@@ -378,7 +378,7 @@ The inifile can be used for multiple installations, therefore this process will 
 _**Note:** Steps prefixed with * may not be encountered in 2020 versions of SAP Products._
 
 1. Connect to the AAS VM
-1. Ensure `sapinst` group exists `groupadd -g <sapinst-gid> sapinst` then `sudo install -d -m 0777 <sid>adm -g sapinst "/tmp/aas_workdir"; cd $_`
+1. Ensure `sapinst` group exists `groupadd -g 2000 sapinst` then `sudo install -d -m 0777 <sid>adm -g sapinst "/tmp/aas_workdir"; cd $_`
 1. The [Access SWPM](#Access-SWPM) steps will need to be completed on the target VM before you can access SWPM
 1. Connect to the AAS Node as `root` user and launch Software Provisioning Manager, shown in [Software Provision Manager input](#Example-Software-Provision-Manager-input). Ensure that you update <sap_component> to AAS
 1. Launch the required URL to access SWPM shown in [Software Provision Manager output](#Example-Software-Provision-Manager-output)
