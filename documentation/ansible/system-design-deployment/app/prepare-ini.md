@@ -272,7 +272,7 @@ Distributed System" , click on "Database Instance" and click "Next"
 #### Manual DB Content Load Using Template
 
 1. Connect to the PAS VM as `root` User
-1. 1. Change to work directory and ensure the directory is empty:
+1. Clear out and change to work directory:
    `rm -rf /tmp/db_workdir/*; cd /tmp/db_workdir`
 1. Launch the DB Load process via SWPM:
 
