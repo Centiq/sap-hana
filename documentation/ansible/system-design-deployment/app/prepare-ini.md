@@ -199,7 +199,7 @@ The following requirements must be in place on the PAS DB VM before attempting t
 1. Launch SWPM with the following command:
 
     ```bash
-    $ /usr/sap/install/SWPM/sapinst   \
+    /usr/sap/install/SWPM/sapinst   \
     SAPINST_XML_FILE=/usr/sap/install/config/MP_STACK_S4_2020_v001.xml
     ```
 
