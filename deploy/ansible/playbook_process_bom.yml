@@ -4,13 +4,8 @@
   become: yes
   vars:
     tier: preparation
-
-    # BoM Processing variables
-    sapbits_location_base_path: "https://npceussaplib9f39.blob.core.windows.net/sapbits"
-    bom_base_name: "S4HANA_1809_SP5_v001"
-    target_media_location: /usr/sap/install
-    sapsys_gid: 2000
   roles:
     - role: disk-setup
+    - role: ensure-bom
     - role: process_bom
     - role: nfs-server-setup

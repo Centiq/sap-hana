@@ -1,5 +1,16 @@
 ---
 
+- name: "Ensure variables are available"
+  include_vars:
+    file: "../../../vars/sap-config.yml"
+    name: sap_config
+
+- name: "Ensure variables are accessible"
+  set_fact:
+    bom_base_name: "{{ sap_config.bom_base_name }}"
+    sapbits_location_base_path: "{{ sap_config.sapbits_location_base_path }}"
+    target_media_location: "{{ sap_config.target_media_location }}"
+
 - import_tasks: pre_checks.yml
 
 - include_tasks: "{{ iterator }}"
