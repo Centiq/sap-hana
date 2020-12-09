@@ -3,13 +3,13 @@
 # BoM Processing variables
 sapbits_location_base_path: "https://npceussaplib9f39.blob.core.windows.net/sapbits"
 bom_base_name: "S4HANA_1809_SP5_v001"
-target_media_location: /usr/sap/install
+target_media_location: "/usr/sap/install"
 
 # SAP Configuration for templates and install
 aas_hostname:
 aas_instance_number:
 app_sid: "X00"
-download_basket_dir: "{{ target_media_location }}/download_basket"
+download_basket_dir: "/usr/sap/install/download_basket"
 hdb_hostname:
 hdb_instance_number:
 hdb_sid:
