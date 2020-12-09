@@ -24,24 +24,40 @@
           - "bom.target is defined"
           - "bom.target | trim | length != 0"
           - "bom.defaults is defined"
-          - "bom.defaults | length != 0"
+          - "bom.defaults | trim | length != 0"
           - "bom.defaults | type_debug == 'dict'"
+          - "bom.defaults.target_location is defined"
+          - "bom.defaults.target_location | trim | length != 0"
           - "bom.product_ids is defined"
-          - "bom.product_ids | length != 0"
+          - "bom.product_ids | trim | length != 0"
           - "bom.product_ids | type_debug == 'dict'"
           - "bom.materials is defined"
-          - "bom.materials | length != 0"
+          - "bom.materials | trim | length != 0"
           - "bom.materials | type_debug == 'dict'"
           - "bom.materials.media is defined"
-          - "bom.materials.media | length != 0"
+          - "bom.materials.media | trim | length != 0"
           - "bom.materials.media | type_debug == 'list'"
           - "bom.materials.templates is defined"
-          - "bom.materials.templates | length != 0"
+          - "bom.materials.templates | trim | length != 0"
           - "bom.materials.templates | type_debug == 'list'"
           - "bom.materials.stackfiles is defined"
-          - "bom.materials.stackfiles | length != 0"
+          - "bom.materials.stackfiles | trim | length != 0"
           - "bom.materials.stackfiles | type_debug == 'list'"
         quiet: true
+      ignore_errors: true
+
+    - name: "Check required product_ids are present"
+      assert:
+        that:
+          - "bom.product_ids.{{ item }} is defined"
+          - "bom.product_ids.{{ item }} | type_debug == 'string'"
+          - "bom.product_ids.{{ item }} | trim | length != 0"
+      loop:
+        - "scs"
+        - "db"
+        - "pas"
+        - "aas"
+        - "web"
       ignore_errors: true
 
     - name: "Check optional components of bom"
@@ -57,5 +73,44 @@
         that:
           - "bom.materials.dependencies is defined"
         quiet: true
-        fail_msg: "Warning: dependencies is not present in bom materials"
+        fail_msg: "Warning: 'dependencies' is not present in bom materials"
       ignore_errors: true
+
+    - name: "Check for required 'media' values"
+      assert:
+        that:
+          - "item.name is defined"
+          - "item.name | trim | length != 0"
+          - "item.archive is defined"
+          - "item.archive | trim | length != 0"
+      loop: "{{ bom.materials.media | flatten(levels=1) }}"
+      ignore_errors: true
+
+    - name: "Check for required 'templates' values"
+      assert:
+        that:
+          - "item.name is defined"
+          - "item.name | trim | length != 0"
+          - "item.file is defined"
+          - "item.file | trim | length != 0"
+      loop: "{{ bom.materials.templates | flatten(levels=1) }}"
+      ignore_errors: true
+
+    - name: "Check for required 'stackfiles' values"
+      assert:
+        that:
+          - "item.name is defined"
+          - "item.name | trim | length != 0"
+          - "item.file is defined"
+          - "item.file | trim | length != 0"
+      loop: "{{ bom.materials.stackfiles | flatten(levels=1) }}"
+      ignore_errors: true
+
+    # - name: "Check for unexpected media values"
+    #   assert:
+    #     that:
+    #       - "item | dict2items "
+    #   with_nested:
+    #     - "{{ bom.materials.media | flatten(levels=1) }}"
+    #     - ['name', 'archive', 'sapurl', 'override_target_location', 'override_target_filename']
+    #   ignore_errors: true
