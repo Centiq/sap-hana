@@ -10,7 +10,6 @@
   include_vars:
     file: "{{ inventory_dir }}/{{ bom_base_name }}_bom.yml"
     name: bom
-  delegate_to: localhost
 
 - name: "Ensure {{ bom_base_name }} dependencies are available"
   when: bom_dependencies | length != 0
