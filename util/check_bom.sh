@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Usage
-#   /path/to/util/check_bom.sh /other/path/to/bom.yml
+#   cd /path/to/util
+#   ./check_bom.sh /some/other/path/to/bom.yml
 
 YAML_LINT=$(command -v yamllint) || echo "yamllint not found. Try sudo apt install -y yamllint and try again"
 ANSIBLE_LINT=$(command -v ansible-lint) || echo "ansible-lint not found. Try sudo apt install -y ansible-lint and try again"
