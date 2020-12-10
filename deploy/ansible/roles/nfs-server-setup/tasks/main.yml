@@ -3,11 +3,6 @@
 - name: "Ensure variables are available"
   include_vars:
     file: "../../../vars/sap-config.yml"
-    name: sap_config
-
-- name: "Ensure variables are accessible"
-  set_fact:
-    app_sid: "{{ sap_config.app_sid }}"
 
 - import_tasks: configure.yml
   become: true
