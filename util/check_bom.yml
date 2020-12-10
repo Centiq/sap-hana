@@ -16,101 +16,79 @@
         file: "{{ bom_name }}"
         name: bom
 
-    - name: "Check required components of {{ bom_name }}"
-      assert:
-        that:
-          - "bom.name is defined"
-          - "bom.name | trim | length != 0"
-          - "bom.target is defined"
-          - "bom.target | trim | length != 0"
-          - "bom.defaults is defined"
-          - "bom.defaults | trim | length != 0"
-          - "bom.defaults | type_debug == 'dict'"
-          - "bom.defaults.target_location is defined"
-          - "bom.defaults.target_location | trim | length != 0"
-          - "bom.product_ids is defined"
-          - "bom.product_ids | trim | length != 0"
-          - "bom.product_ids | type_debug == 'dict'"
-          - "bom.materials is defined"
-          - "bom.materials | trim | length != 0"
-          - "bom.materials | type_debug == 'dict'"
-          - "bom.materials.media is defined"
-          - "bom.materials.media | trim | length != 0"
-          - "bom.materials.media | type_debug == 'list'"
-          - "bom.materials.templates is defined"
-          - "bom.materials.templates | trim | length != 0"
-          - "bom.materials.templates | type_debug == 'list'"
-          - "bom.materials.stackfiles is defined"
-          - "bom.materials.stackfiles | trim | length != 0"
-          - "bom.materials.stackfiles | type_debug == 'list'"
-        quiet: true
+    - name: "Check bom dict"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ bom }}"
+        required: ['name', 'defaults', 'product_ids', 'materials']
+        optional: ['version', 'target']
       ignore_errors: true
 
-    - name: "Check required product_ids are present"
-      assert:
-        that:
-          - "bom.product_ids.{{ item }} is defined"
-          - "bom.product_ids.{{ item }} | type_debug == 'string'"
-          - "bom.product_ids.{{ item }} | trim | length != 0"
-      loop:
-        - "scs"
-        - "db"
-        - "pas"
-        - "aas"
-        - "web"
+    - name: "Check bom.defaults dict"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ bom.defaults }}"
+        required: ['target_location']
+        optional: []
       ignore_errors: true
 
-    - name: "Check optional components of bom"
-      assert:
-        that:
-          - "bom.version is defined"
-        quiet: true
-        fail_msg: "Warning: bom version is not present"
+    - name: "Check bom.product_ids dict"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ bom.product_ids }}"
+        required: ['scs', 'db', 'pas', 'aas', 'web']
+        optional: []
       ignore_errors: true
 
-    - name: "Check optional components of bom materials"
-      assert:
-        that:
-          - "bom.materials.dependencies is defined"
-        quiet: true
-        fail_msg: "Warning: 'dependencies' is not present in bom materials"
+    - name: "Check bom.materials dict"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ bom.materials }}"
+        required: ['media', 'templates', 'stackfiles']
+        optional: ['dependencies']
       ignore_errors: true
 
-    - name: "Check for required 'media' values"
-      assert:
-        that:
-          - "item.name is defined"
-          - "item.name | trim | length != 0"
-          - "item.archive is defined"
-          - "item.archive | trim | length != 0"
-      loop: "{{ bom.materials.media | flatten(levels=1) }}"
+    - name: "Check bom.materials.dependencies list"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ dict_item }}"
+        required: ['name']
+        optional: ['version']
+      loop: "{{ bom.materials.dependencies | flatten(levels=1) }}"
+      loop_control:
+        loop_var: dict_item
       ignore_errors: true
 
-    - name: "Check for required 'templates' values"
-      assert:
-        that:
-          - "item.name is defined"
-          - "item.name | trim | length != 0"
-          - "item.file is defined"
-          - "item.file | trim | length != 0"
+
+    - name: "Check bom.materials.templates list"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ dict_item }}"
+        required: ['name', 'file']
+        optional: ['version', 'override_target_location', 'override_target_filename']
       loop: "{{ bom.materials.templates | flatten(levels=1) }}"
+      loop_control:
+        loop_var: dict_item
       ignore_errors: true
 
-    - name: "Check for required 'stackfiles' values"
-      assert:
-        that:
-          - "item.name is defined"
-          - "item.name | trim | length != 0"
-          - "item.file is defined"
-          - "item.file | trim | length != 0"
+    - name: "Check bom.materials.stackfiles list"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ dict_item }}"
+        required: ['name', 'file']
+        optional: ['version', 'override_target_location', 'override_target_filename']
       loop: "{{ bom.materials.stackfiles | flatten(levels=1) }}"
+      loop_control:
+        loop_var: dict_item
       ignore_errors: true
 
-    # - name: "Check for unexpected media values"
-    #   assert:
-    #     that:
-    #       - "item | dict2items "
-    #   with_nested:
-    #     - "{{ bom.materials.media | flatten(levels=1) }}"
-    #     - ['name', 'archive', 'sapurl', 'override_target_location', 'override_target_filename']
-    #   ignore_errors: true
+    - name: "Check bom.materials.media list"
+      include_tasks: "./validate_dict.yml"
+      vars:
+        dict: "{{ dict_item }}"
+        required: ['name', 'archive']
+        optional: ['version', 'sapurl', 'override_target_location', 'override_target_filename']
+      loop: "{{ bom.materials.media | flatten(levels=1) }}"
+      loop_control:
+        loop_var: dict_item
+      ignore_errors: true
