@@ -10,6 +10,16 @@ ANSIBLE_LINT=$(command -v ansible-lint) || echo "ansible-lint not found. Try sud
 [[ -n ${YAML_LINT} ]] && ${YAML_LINT} $1 && echo "... yamllint [ok]" || echo "... yamllint [errors]"
 [[ -n ${ANSIBLE_LINT} ]] && ${ANSIBLE_LINT} $1 && echo "... ansible-lint [ok]" || echo "... ansible-lint [errors]"
 
-ansible-playbook --extra-vars "bom_name=$1" check_bom.yml 2>/dev/null |
+TMP_DIR=$(mktemp -d)
+mkfifo ${TMP_DIR}/capture
+cat ${TMP_DIR}/capture &
+
+ERR_COUNT=$(ansible-playbook --extra-vars "bom_name=$1" check_bom.yml 2>/dev/null |
   sed -e 's/, *$//' -n -e '/^failed/,/^}/p' |
-  sed -n -e '/"msg":/s/^.*"msg": "\(.*\)"$/- \1/p'
+  sed -n -e '/"msg":/s/^.*"msg": "\(.*\)"$/  - \1/p' |
+  tee ${TMP_DIR}/capture | wc -l)
+
+wait
+rm -rf "${TMP_DIR}"
+
+[[ ${ERR_COUNT} -eq 0 ]] && echo "... bom structure [ok]" || echo "... bom structure [errors]"
