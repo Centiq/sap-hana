@@ -22,3 +22,4 @@ sapadm_uid: 2100
 sapsys_gid: 2000
 scs_hostname: "{{ ansible_hostname }}"
 scs_instance_number: "00"
+sidadm_uid: 2000
