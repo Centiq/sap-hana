@@ -49,7 +49,7 @@ These files are used for the automated configuration via Ansible.
 
 To prevent the overlap, you must log on to the deployer and comment certain lines in `Azure_SAP_Automated_Deployment/sap-hana/deploy/ansible/sap_playbook.yml`.
 
-The following Ansible plays need to becommented out to stop the tasks from running:
+The following Ansible plays need to be commented out to stop the tasks from running:
 
 1. Azure File Share mounting, lines 49-65:
 
