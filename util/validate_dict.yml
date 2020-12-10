@@ -10,10 +10,12 @@
       map(attribute='key') |
       list
       }}"
+    dict_name: "{{ ' (Check name: ' + dict.name + ')' if dict.name is defined }}"
 
 - name: "Check required keys"
   assert:
     that: "required_key in dict_keys"
+    fail_msg: "Expected to find key '{{ required_key }}' in '{{ reference }}'{{ dict_name }}"
   loop: "{{ required }}"
   loop_control:
     loop_var: required_key
@@ -22,6 +24,7 @@
 - name: "Check optional keys"
   assert:
     that: "key in required + optional"
+    fail_msg: "Unexpected key '{{ key }} in '{{ reference }}'{{ dict_name }}"
   loop: "{{ dict_keys | flatten }}"
   loop_control:
     loop_var: key

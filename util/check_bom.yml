@@ -19,6 +19,7 @@
     - name: "Check bom dict"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom"
         dict: "{{ bom }}"
         required: ['name', 'defaults', 'product_ids', 'materials']
         optional: ['version', 'target']
@@ -27,6 +28,7 @@
     - name: "Check bom.defaults dict"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom.defaults"
         dict: "{{ bom.defaults }}"
         required: ['target_location']
         optional: []
@@ -35,6 +37,7 @@
     - name: "Check bom.product_ids dict"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom.product_ids"
         dict: "{{ bom.product_ids }}"
         required: ['scs', 'db', 'pas', 'aas', 'web']
         optional: []
@@ -43,6 +46,7 @@
     - name: "Check bom.materials dict"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom.materials"
         dict: "{{ bom.materials }}"
         required: ['media', 'templates', 'stackfiles']
         optional: ['dependencies']
@@ -51,6 +55,7 @@
     - name: "Check bom.materials.dependencies list"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom.materials.dependencies"
         dict: "{{ dict_item }}"
         required: ['name']
         optional: ['version']
@@ -59,10 +64,10 @@
         loop_var: dict_item
       ignore_errors: true
 
-
     - name: "Check bom.materials.templates list"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom.materials.templates"
         dict: "{{ dict_item }}"
         required: ['name', 'file']
         optional: ['version', 'override_target_location', 'override_target_filename']
@@ -74,6 +79,7 @@
     - name: "Check bom.materials.stackfiles list"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom.materials.stackfiles"
         dict: "{{ dict_item }}"
         required: ['name', 'file']
         optional: ['version', 'override_target_location', 'override_target_filename']
@@ -85,6 +91,7 @@
     - name: "Check bom.materials.media list"
       include_tasks: "./validate_dict.yml"
       vars:
+        reference: "bom.materials.media"
         dict: "{{ dict_item }}"
         required: ['name', 'archive']
         optional: ['version', 'sapurl', 'override_target_location', 'override_target_filename']
