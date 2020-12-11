@@ -6,15 +6,32 @@
 
 YAML_LINT=$(command -v yamllint) || echo "yamllint not found. Try sudo apt install -y yamllint and try again"
 ANSIBLE_LINT=$(command -v ansible-lint) || echo "ansible-lint not found. Try sudo apt install -y ansible-lint and try again"
+YAML_LINT_ERRORS=0
+ANSIBLE_LINT_ERRORS=0
 
-[[ -n ${YAML_LINT} ]] && ${YAML_LINT} $1 && echo "... yamllint [ok]" || echo "... yamllint [errors]"
-[[ -n ${ANSIBLE_LINT} ]] && ${ANSIBLE_LINT} $1 && echo "... ansible-lint [ok]" || echo "... ansible-lint [errors]"
+if [[ -n ${YAML_LINT} ]]; then
+  if ${YAML_LINT} $1; then
+    echo "... yamllint [ok]"
+  else
+    echo "... yamllint [errors]"
+    YAML_LINT_ERRORS=1
+  fi
+fi
+
+if [[ -n ${ANSIBLE_LINT} ]]; then
+  if ${ANSIBLE_LINT} $1; then
+    echo "... ansible-lint [ok]"
+  else
+    echo "... ansible-lint [errors]"
+    ANSIBLE_LINT_ERRORS=2
+  fi
+fi
 
 TMP_DIR=$(mktemp -d)
 mkfifo ${TMP_DIR}/capture
 cat ${TMP_DIR}/capture &
 
-ERR_COUNT=$(ansible-playbook --extra-vars "bom_name=$1" check_bom.yml 2>/dev/null |
+VALIDATION_ERRORS=$(ansible-playbook --extra-vars "bom_name=$1" check_bom.yml 2>/dev/null |
   sed -e 's/, *$//' -n -e '/^failed/,/^}/p' |
   sed -n -e '/"msg":/s/^.*"msg": "\(.*\)"$/  - \1/p' |
   tee ${TMP_DIR}/capture | wc -l)
@@ -22,4 +39,11 @@ ERR_COUNT=$(ansible-playbook --extra-vars "bom_name=$1" check_bom.yml 2>/dev/nul
 wait
 rm -rf "${TMP_DIR}"
 
-[[ ${ERR_COUNT} -eq 0 ]] && echo "... bom structure [ok]" || echo "... bom structure [errors]"
+if [[ ${VALIDATION_ERRORS} -eq 0 ]]; then
+  echo "... bom structure [ok]"
+else
+  echo "... bom structure [errors]"
+  VALIDATION_ERRORS=4
+fi
+
+exit $(( ${YAML_LINT_ERRORS} + ${ANSIBLE_LINT_ERRORS} + ${VALIDATION_ERRORS} ))
