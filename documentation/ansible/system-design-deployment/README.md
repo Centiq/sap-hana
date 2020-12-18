@@ -176,8 +176,6 @@ ansible-playbook -i hosts.yml ~/Azure_SAP_Automated_Deployment/sap-hana/deploy/a
 
 ### SAP Application
 
-1. **Prepare System**:
-   1. [Prepare System](./app/prepare-system.md)
 1. **Acquisition**
    1. [Acquire Media](./app/acquire-media.md)
 1. **Preparation**
