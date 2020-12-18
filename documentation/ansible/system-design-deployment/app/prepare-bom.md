@@ -237,7 +237,7 @@ The order of entries in the `media` section does not matter. However, for improv
 1. In the panel on the right, click Select a file;
 1. Navigate your workstation to your working directory;
 1. Select `bom.yml`;
-1. Click Advanced to show the advanced options, and enter `bomss/<Stack_Version>` for the Upload Directory.
+1. Click Advanced to show the advanced options, and enter `boms/<Stack_Version>` for the Upload Directory.
 
 ## Results and Outputs
 
